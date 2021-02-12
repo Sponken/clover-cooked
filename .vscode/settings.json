@@ -1,4 +1,7 @@
 {
     "editor.tabSize": 2,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": false,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "prettier.documentSelectors": ["**/*.{ts,js}"]
 }

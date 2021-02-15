@@ -1,6 +1,6 @@
 # Clover-Cooked
 
-Koolaborativ matlagningsapp utvecklad för ett kandidatarbete på Chalmers
+Kollaborativ matlagningsapp utvecklad för ett kandidatarbete på Chalmers
 
 ## Initial insatallation
 

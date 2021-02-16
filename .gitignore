@@ -55,5 +55,4 @@ $RECYCLE.BIN/
 # NPM
 node_modules/
 yarn.lock
-package.json
-package.lock.json
+package-lock.json

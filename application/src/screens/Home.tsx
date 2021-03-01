@@ -18,7 +18,7 @@ export function Home({ navigation }: Props) {
     <View style={styles.container}>
       <Text>Hello World!</Text>
       <Button
-        title="Go to recipe library"
+        title="Recept Bibliotek"
         onPress={() => navigation.navigate("RecipeLibrary")}
       />
     </View>

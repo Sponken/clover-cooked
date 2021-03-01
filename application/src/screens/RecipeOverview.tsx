@@ -26,7 +26,7 @@ export function RecipeOverview({ navigation, route }: Props) {
     <View style={styles.container}>
       <Text style={styles.name}>{recipe.name}</Text>
       <Text style={styles.description}>{recipe.description}</Text>
-      <Text style={styles.description}>Portions: {recipe.portions}</Text>
+      <Text style={styles.description}>Portioner: {recipe.portions}</Text>
     </View>
   );
 }

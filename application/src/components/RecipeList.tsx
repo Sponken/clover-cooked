@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { recipes as importedRecipes } from "../data";
-import { StyleSheet, Text, View, FlatList, Image, Button } from "react-native";
+import { recipes as importedRecipes, Recipe } from "../data";
+import { StyleSheet, Text, View, FlatList, Button } from "react-native";
 
 type RecipeListProps = {
-  viewFunction: (object) => void;
+  viewFunction: (o: Recipe) => void;
 };
 
 export function RecipeList({ viewFunction, ...props }: RecipeListProps) {
@@ -31,11 +31,11 @@ type ListRowProps = {
 };
 
 const ListRow = ({ name, onViewPressed }: ListRowProps) => (
-  <View style={styles.row} testID={"trash-row"}>
-    <View style={styles.trashInfoContainer}>
+  <View style={styles.row}>
+    <View style={styles.rowInfoContainer}>
       <Text style={styles.name}>{name}</Text>
     </View>
-    <Button onPress={onViewPressed} title="View" color="#0000FF" />
+    <Button onPress={onViewPressed} title="Visa" />
   </View>
 );
 
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     // Android shadow
     elevation: 4,
   },
-  trashInfoContainer: {
+  rowInfoContainer: {
     flex: 1,
     marginLeft: 10,
     marginTop: 2,

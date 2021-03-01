@@ -1,7 +1,3 @@
-/**
- * Hem skärm, första skärmen som visas vid vanlig öppning av appen
- */
-
 import { StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import React from "react";

@@ -20,16 +20,20 @@ export function Navigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ title: "Clover Cooked" }}
+        />
         <Stack.Screen
           name="RecipeLibrary"
           component={RecipeLibrary}
-          options={{ title: "Recipe Library" }}
+          options={{ title: "Recept Bibliotek" }}
         />
         <Stack.Screen
           name="RecipeOverview"
           component={RecipeOverview}
-          options={{ title: "Recipe Overview" }}
+          options={{ title: "Recept" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -1,1 +1,12 @@
-export { recipes, Recipe } from "./Recipe";
+export {
+  recipes,
+  Recipe,
+  Task,
+  IngredientUsage,
+  IngredientDecl,
+} from "./Recipe";
+export {
+  getIngredientDecl,
+  getIngredientName,
+  getIngredientUnit,
+} from "./IngredientUtils";

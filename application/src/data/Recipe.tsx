@@ -9,29 +9,29 @@ export const recipes = [
   ugnspannkaka,
 ];
 
-type IngredientDecl = {
+export type IngredientDecl = {
   id: string;
   name: string;
   unit: string;
 };
 
-type IngredientUsage = {
+export type IngredientUsage = {
   ingredientId: string;
   amount: number;
 };
 
-type ResourceDecl = {
+export type ResourceDecl = {
   id: string;
   name: string;
   description?: string;
 };
 
-type ResourceUsage = {
+export type ResourceUsage = {
   resourceId: string;
   amount: number;
 };
 
-type Task = {
+export type Task = {
   id: string;
   name: string;
   instructions: string;
@@ -39,7 +39,7 @@ type Task = {
   resources: ResourceUsage[];
 };
 
-type TaskDependency = {
+export type TaskDependency = {
   taskId: string;
   dependsOn?: string[];
   strongDependsOn?: string[];

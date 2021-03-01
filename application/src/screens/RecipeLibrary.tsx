@@ -16,6 +16,10 @@ type Props = {
   navigation: RecipeLibraryScreenNavigationProp;
 };
 
+/**
+ * Recept bibliotek, skärm för att visa och navigera till recept
+ */
+
 export function RecipeLibrary({ navigation }: Props) {
   return (
     <View style={styles.container}>

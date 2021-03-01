@@ -1,4 +1,4 @@
-//Recept import TODO: dynamiskt få in recept i databasen
+//Recept import TODO: dynamiskt få in recept i databas eller liknande
 import gräddtårta from "../../data/recipes/gräddtårta.json";
 import ikeaköttbullar_med_snabbmakaroner from "../../data/recipes/ikeaköttbullar_med_snabbmakaroner.json";
 import ugnspannkaka from "../../data/recipes/ugnspannkaka.json";
@@ -55,30 +55,3 @@ export type Recipe = {
   portions: number;
   id: string;
 };
-
-/*
-// Jag (Emanuel) försökte få in recepten i en lokal databas eftersom det inte kommer att gå att direkt läsa json filerna
-// Det funkade inte och lyckades inte hitta felet så jag gav upp
-// Sparade koden då jag tror att en liknande lösning är vad vi vill göra i framtiden
-
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const recepiesKey = "@recepies";
-//Initsierar den lokala databasen med recepten i 'recipes'
-export async function loadRecipes(): Promise<void> {
-  try {
-    await AsyncStorage.setItem(recepiesKey, JSON.stringify(recipes));
-  } catch (error) {}
-}
-
-
-//Ger en lista av recepten som fins i den lokala databasen
-export async function readRecipes(): Promise<object[]> {
-  try {
-    const jsonValue = await AsyncStorage.getItem(recepiesKey);
-    return jsonValue != null ? JSON.parse(jsonValue) : [];
-  } catch (error) {}
-  return [];
-}
-*/

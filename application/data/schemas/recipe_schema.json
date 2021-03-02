@@ -10,9 +10,14 @@
     "resources",
     "tasks",
     "taskDependencies",
-    "portions"
+    "portions",
+    "id"
   ],
   "properties": {
+    "id": {
+      "description": "unique id used to identify the recipe",
+      "type": "string"
+    },
     "name": {
       "description": "The name of the meal",
       "type": "string"

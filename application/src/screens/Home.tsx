@@ -25,6 +25,13 @@ export function Home({ navigation }: Props) {
         title="Recept Bibliotek"
         onPress={() => navigation.navigate("RecipeLibrary")}
       />
+      <Button
+        title="DEV Schedule"
+        onPress={() => {
+          schedule();
+          console.log("Schemaläggning avklarad");
+        }}
+      />
     </View>
   );
 }

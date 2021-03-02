@@ -13,7 +13,7 @@
   "resources": [{ "id": "platta", "name": "Spisplatta" }],
   "tasks": [
     {
-      "id": "ugn",
+      "id": "kokaVatten",
       "name": "Sätt på pastavatten",
       "instructions": "Sätt vatten med salt på platten",
       "passive": false,

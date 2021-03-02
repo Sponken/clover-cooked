@@ -1,5 +1,5 @@
 import { type } from "os"
-import * as recipe from "../../data/recipes/ikeaköttbullar_med_snabbmakaroner.json"
+import * as recipe from "../../data/recipes/gräddtårta.json"
 //import {Task} from "../data"
 
 type Task = string
@@ -34,23 +34,24 @@ let calculate = () => {
     C.push([])
     W[g] = new Array(noOfCooks).fill("")
 
-
     completeTasks(W, C[g], g, t, F)
     D[g] = eligibleTasks(C, W, j, g, P, SP)
 
-    let i = 0
-    while (D[g].length > 0 && freeWorkers(W[g]) && i <= 5) {
-      i++
+    while (D[g].length > 0 && freeWorkers(W[g])) {
       let newTask: Task = D[g].pop() ?? ""
       F.set(newTask, p.get(newTask) + t[g])
       addTask(W[g], newTask)
       D[g] = eligibleTasks(C, W, j, g, P, SP)
-
     }
-    if (g > 5) break
   }
 
   printSchedule(W, t)
+  console.log("Tasks that are not completed: ")
+  console.log(nonCompletedTasks(j, C.flat()))
+}
+
+const nonCompletedTasks = (tasks: Task[], completed: Task[]): Task[] => {
+  return tasks.filter(task => !completed.includes(task))
 
 }
 

@@ -1,16 +1,26 @@
+import { StyleSheet, Text, View, Button } from "react-native";
+import React from "react";
+import { StackNavigationProp } from "@react-navigation/stack";
+
+import { RootStackParamList } from "../navigation";
+
+type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;
+
+type Props = {
+  navigation: HomeScreenNavigationProp;
+};
+
 /**
  * Hem skärm, första skärmen som visas vid vanlig öppning av appen
  */
-
-import { StyleSheet, Text, View } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import React from "react";
-
-export function Home() {
+export function Home({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <Text>Hello World!</Text>
-      <StatusBar style="auto" />
+      <Button
+        title="Recept Bibliotek"
+        onPress={() => navigation.navigate("RecipeLibrary")}
+      />
     </View>
   );
 }
@@ -20,6 +30,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center"
-  }
+    justifyContent: "center",
+  },
 });

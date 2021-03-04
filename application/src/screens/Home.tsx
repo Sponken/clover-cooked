@@ -5,7 +5,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation";
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;
-import schedule from "../scheduler/schedule";
 
 type Props = {
   navigation: HomeScreenNavigationProp;
@@ -15,8 +14,6 @@ type Props = {
  * Hem skärm, första skärmen som visas vid vanlig öppning av appen
  */
 export function Home({ navigation }: Props) {
-  schedule();
-  console.log("Schedule avklarad!");
 
   return (
     <View style={styles.container}>
@@ -28,8 +25,6 @@ export function Home({ navigation }: Props) {
       <Button
         title="DEV Schedule"
         onPress={() => {
-          schedule();
-          console.log("Schemaläggning avklarad");
         }}
       />
     </View>

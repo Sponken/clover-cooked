@@ -1,29 +1,83 @@
-import { StyleSheet, Text, View, Button, Pressable } from "react-native";
-import React from "react";
+import { StyleSheet, View, Pressable, Image } from "react-native";
+import React, { useState } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp } from "@react-navigation/native";
 
 import { RootStackParamList } from "../navigation";
+import { UserFastSwitcher, TaskCard, TaskConfirm } from "../components";
+import { User } from "../data";
+import { unsafeFind } from "../utils";
 
 type CookingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "Cooking"
 >;
 
+type CookingRouteProp = RouteProp<RootStackParamList, "Cooking">;
+
 type Props = {
   navigation: CookingScreenNavigationProp;
+  route: CookingRouteProp;
+};
+
+type AssignedTask = {
+  userId: string;
+  taskId: string;
 };
 
 /**
  * Cooking, skärmen som visas under tiden matlagningen sker
  */
-export function Cooking({ navigation }: Props) {
+export function Cooking({ navigation, route }: Props) {
+  const { recipe, users } = route.params;
+
+  const [activeUser, setActiveUser] = useState(users[0].id); //id på aktiv användare
+  const [userNotifications, setUserNotifications] = useState<string[]>([]); //lista med användarid som är notifierade
+  const [assignedTasks, setAssignedTasks] = useState<AssignedTask[]>([]); //lista med användarid och dess taskid
+  const [passiveTasks, setPassiveTasks] = useState<string[]>([]); //lista med passiva task som är frikopplade från användare
+
   return (
     <View style={styles.screenContainer}>
-      <View style={styles.topBarContainer}></View>
-      <View style={styles.contentContainer}>
-        <Text>Hello</Text>
+      <View style={styles.topBarContainer}>
+        <View style={{ flex: 1, flexDirection: "column-reverse" }}>
+          <UserFastSwitcher
+            users={users}
+            activeUser={activeUser}
+            userNotifications={userNotifications}
+            onActiveUserSwitch={(userId: string) => setActiveUser(userId)}
+          />
+        </View>
+        <View style={styles.topBarRightMenu}>
+          <Pressable>
+            <Image
+              source={require("../../assets/image/icon.png")} //Placeholder tills ikon finns
+              style={styles.topBarRightMenuIcon}
+            />
+          </Pressable>
+          <Pressable>
+            <Image
+              source={require("../../assets/image/icon.png")} //Placeholder tills ikon finns
+              style={styles.topBarRightMenuIcon}
+            />
+          </Pressable>
+        </View>
       </View>
-      <View style={styles.buttonContainer}></View>
+      <View style={styles.contentContainer}>
+        <TaskCard
+          taskId={recipe.tasks[1].id} //Exempel kod, då användare inte än kan få tasks
+          //taskId={unsafeFind(assignedTasks, (o: AssignedTask) => o.userId == activeUser)}
+          recipe={recipe}
+          userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
+          userColor={unsafeFind(users, (u: User) => u.id == activeUser).color}
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <TaskConfirm //Exempel kod för att visa knappar
+          confirmType={"extendOrFinish"}
+          onExtendPress={() => null}
+          onFinishPress={() => null}
+        />
+      </View>
     </View>
   );
 }
@@ -35,15 +89,24 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   topBarContainer: {
-    backgroundColor: "blue",
-    height: 100,
+    flexDirection: "row",
+  },
+  topBarRightMenu: {
+    flexDirection: "column",
+    alignSelf: "flex-end",
+  },
+  topBarRightMenuIcon: {
+    width: 44,
+    height: 44,
+    margin: 3,
   },
   contentContainer: {
     flex: 1,
-    backgroundColor: "green",
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonContainer: {
-    backgroundColor: "yellow",
     height: 100,
+    alignItems: "center",
   },
 });

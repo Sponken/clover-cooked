@@ -1,3 +1,4 @@
 export { RecipeList } from "./RecipeList";
-export { Task } from "./Task";
 export { UserFastSwitcher } from "./UserFastSwitcher";
+export { TaskCard } from "./TaskCard";
+export { TaskConfirm } from "./TaskConfirm";

@@ -5,12 +5,50 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation";
 import { recipes } from "../data";
 
+// Exempelkod för att matlagnings skärmen skall fungera
 const example_recipe = recipes[0];
 const example_users = [
   {
     id: "kalle",
     name: "Kalle Anka",
-    color: "white",
+    color: "red",
+    icon: require("../../assets/image/icon.png"),
+  },
+  {
+    id: "musse",
+    name: "Musse Pigg",
+    color: "blue",
+    icon: require("../../assets/image/icon.png"),
+  },
+  {
+    id: "anna",
+    name: "Anna Anka",
+    color: "green",
+    icon: require("../../assets/image/icon.png"),
+  },
+  {
+    id: "ovowewewe",
+    name:
+      "Ovowewewe Onienteiniewe Ogwemobwem Ossas Ovowewewe Onienteiniewe Ogwemobwem Ossas",
+    color: "purple",
+    icon: require("../../assets/image/icon.png"),
+  },
+  {
+    id: "olof",
+    name: "Olof",
+    color: "teal",
+    icon: require("../../assets/image/icon.png"),
+  },
+  {
+    id: "janne",
+    name: "Jan Eliasson",
+    color: "black",
+    icon: require("../../assets/image/icon.png"),
+  },
+  {
+    id: "axel",
+    name: "Kam Axel",
+    color: "#ffcd42",
     icon: require("../../assets/image/icon.png"),
   },
 ];

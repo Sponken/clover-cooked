@@ -37,6 +37,9 @@ export type Task = {
   instructions: string;
   ingredients: IngredientUsage[];
   resources: ResourceUsage[];
+  initialTask: boolean;
+  finalTask: boolean;
+  estimatedTime: number;
 };
 
 export type TaskDependency = {

@@ -10,3 +10,4 @@ export {
   getIngredientName,
   getIngredientUnit,
 } from "./IngredientUtils";
+export { chefs, Chef } from "./Chef";

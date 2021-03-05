@@ -6,8 +6,8 @@ type RecipeListProps = {
   viewFunction: (o: Recipe) => void;
 };
 
-/** 
- * Recept lista, komponent som visar en FlatList med recept.
+/**
+ * Receptlista, komponent som visar en FlatList med recept.
  * viewFunction körs vid tryckning på 'Visa' och används för redirection till receptet
  */
 
@@ -35,7 +35,7 @@ type ListRowProps = {
   onViewPressed: () => void;
 };
 
-/** 
+/**
  * Listans rader
  */
 const ListRow = ({ name, onViewPressed }: ListRowProps) => (

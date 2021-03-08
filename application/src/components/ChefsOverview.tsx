@@ -11,7 +11,7 @@ import {
 } from "react-native";
 
 type ChefListProps = {
-  viewFunction: (o: Chef) => void;
+  chefList: any;
 };
 
 /**
@@ -19,8 +19,8 @@ type ChefListProps = {
  *
  */
 
-export function ChefsOverview({ viewFunction, ...props }: ChefListProps) {
-  const [chefs, setChefs] = useState(importedChefs); //TODO, store chefs somewhere? History? Like Smash Bros
+export function ChefsOverview({ chefList }: ChefListProps) {
+   //TODO, store chefs somewhere? History? Like Smash Bros
 
   // useEffect(() => {
   //   setChefs(importedChefs);
@@ -29,11 +29,10 @@ export function ChefsOverview({ viewFunction, ...props }: ChefListProps) {
   return (
     <View>
       <FlatList
-        {...props}
-        data={chefs}
+        data={chefList}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ListRow chef={item} chefs={chefs} setChefs={setChefs} /> //remove chef/edit chef instead?
+          <ListRow chef={item} /> //remove chef/edit chef instead?
         )}
       />
     </View>
@@ -53,20 +52,10 @@ type ListRowProps = {
  * Listans rader
  * https://reactnative.dev/docs/image
  */
-const ListRow = ({ chef, chefs, setChefs }: ListRowProps) => {
+const ListRow = ({ chef}: ListRowProps) => {
   // const delChef = () => {
   //   setChefs(chefs.filter((x) => x.id !== chef.id));
   // };
-
-  const [value, setValue] = useState(chef.name);
-
-  //let value = chef.name;
-  function edit(index, chef) {
-    let b = chefs;
-    chef.name = value;
-    b.splice(index, 1, chef);
-    return b;
-  }
 
   return (
     <View style={styles.row}>

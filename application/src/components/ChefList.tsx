@@ -9,10 +9,11 @@ import {
   Image,
   TextInput,
 } from "react-native";
+import { Console } from "console";
 
 type ChefListProps = {
-  chefs: any;
-  setChefs: any;
+  chefList: any;
+  setChefList: any;
 };
 
 /**
@@ -20,7 +21,7 @@ type ChefListProps = {
  *
  */
 
-export function ChefList({ chefs, setChefs, ...props }: ChefListProps) {
+export function ChefList({ chefList, setChefList}: ChefListProps) {
   useEffect(() => {
     // setChefs(setChefs(edit(chefs.findIndex((el) => el.id === chef.id), chef));
   }, []);
@@ -29,46 +30,47 @@ export function ChefList({ chefs, setChefs, ...props }: ChefListProps) {
     <View>
       <FlatList
         // {...props}
-        data={chefs}
+        data={chefList}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ListRow chef={item} chefs={chefs} setChefs={setChefs} /> //remove chef/edit chef instead?
+          <ListRow chef={item} chefList={chefList} setChefList={setChefList} /> //remove chef/edit chef instead?
         )}
       />
-
-      <Button title="Log" onPress={() => console.log(chefs)} />
-
-      {/* Button with image inside: https://aboutreact.com/image-icon-inside-the-react-native-button/#Image-Icon-in-Button */}
-      {/* Not sure how to fix "onPress" here though! */}
-      {/* <TouchableOpacity activeOpacity={0.5}>
-        <Image
-          style={styles.chefImageInList}
-          source={require("../../assets/image/favicon.png")} //TODO: chef.image
-        />
-        <Text> Lägg till Kock </Text>
-      </TouchableOpacity> */}
     </View>
   );
 }
 
 type ListRowProps = {
   chef: Chef;
-  chefs: any;
-  setChefs: any;
+  chefList: any;
+  setChefList: any;
 };
 
 /**
  * Listans rader
  * https://reactnative.dev/docs/image
  */
-const ListRow = ({ chef, chefs, setChefs }: ListRowProps) => {
-  const [temporaryChefName, settemporaryChefName] = useState(chef.name);
+const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
 
-  //let temporaryChefName = chef.name;
-  function edit(index, chef) {
-    let b = chefs;
-    chef.name = temporaryChefName;
-    b.splice(index, 1, chef);
+  //console.log("Logging Listrow in chefList")
+  //console.log(chefList)
+
+  //Här spagettas det hårt, funktionen gör en kopia på chefList och splicear in den chef vi vill ändra.
+  //Funktionen kommer göra det efter varje gång man ändrar texten, vet inte om det innebär varje gång man
+  //skriver en ny bokstav eller när man editat klart.
+  function edit(index, chef, name) {
+
+    let b = Array.from(chefList)
+
+    let tempChef: Chef = {
+      id: chef.id,
+      name: name,
+      color: chef.color,
+      image: chef.image
+    }
+
+    b.splice(index, 1, tempChef);
+    //console.log(b)
     return b;
   }
 
@@ -89,19 +91,13 @@ const ListRow = ({ chef, chefs, setChefs }: ListRowProps) => {
           alignItems: "flex-start",
           flex: 1,
         }}
-        defaultValue={temporaryChefName}
-        onChangeText={(temporaryChefName) => {
-          settemporaryChefName(temporaryChefName);
-        }}
-
-        // /*(value) => setValue(value)*/
-        // () => {
-        //   setChefs(edit(chefs.findIndex((el) => el.id === chef.id), chef));
-        // }
+        defaultValue={chef.name}
+        onChangeText={(name) => 
+          {setChefList(edit(chefList.findIndex((c) => c.id === chef.id), chef, name))}}
       />
 
       <Button
-        onPress={() => setChefs(chefs.filter((x) => x.id !== chef.id))}
+        onPress={() => setChefList(chefList.filter((x) => x.id !== chef.id))}
         title="Delete"
       />
     </View>

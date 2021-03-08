@@ -33,15 +33,13 @@ type Props = {
  */
 
 export function SessionStart({ navigation, route }: Props) {
-  // let users;
-  // if (route.params?.post === undefined) {users = [{userName: "Bob", id: 1}, {userName: "Rob", id: 2}, {userName: "Nob", id: 3}]}
-  // else users = route.params?.post;
+  //const [chefs, setChefs] = useState(importedChefs);
 
-  const [chefs, setChefs] = useState(importedChefs);
+  let chefList;//: Chef[];
+  if(route.params?.chefList === undefined){
+    chefList = importedChefs;
+  } else {chefList = route.params?.chefList.chefList}
 
-  // function updatingChefs(a) {
-  //   setChefs(a);
-  // }
 
   return (
     <View style={styles.container}>
@@ -49,28 +47,17 @@ export function SessionStart({ navigation, route }: Props) {
         TODO: Hamburgerknapp ska finnas här med
       </Text>
       <Text style={styles.container}>TODO: Visa bild på recept här</Text>
-      <View style={styles.container}>
-        <ChefsOverview />
+      <View style={{flex: 7}}>
+        <ChefsOverview chefList={chefList}/>
+      </View>
+      <View style={{flex: 1}}>
         <Button
-          title="Edit Chefs"
-          onPress={() =>
-            navigation.navigate("Chef Management", {
-              chefs: chefs,
-              setChefs: setChefs,
-            })
-          }
-        />
-        {/* TODO: ev ta med setChefs?
-
-        Skickar med en funktion
-        */}
-        {/* <RecipeList
-        viewFunction={(recipe) =>
-          navigation.navigate("RecipeOverview", {
-            recipe: recipe,
-          })
-        }
-      /> */}
+            title="Edit Chefs"
+            onPress={() =>
+              navigation.navigate("Chef Management", {
+                chefList: {chefList} })
+            }
+         />
       </View>
 
       <StatusBar style="auto" />

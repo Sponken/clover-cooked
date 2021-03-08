@@ -15,14 +15,17 @@ export type Scheduler = {
   currentTasks: Map<Cook, Task>;
   finishTask: (task: Task, cook: Cook) => void;
   assignNewTask: (cook: Cook) => Task | undefined;
-  passiveTaskListener: (task: Task, cook: Cook) => void;
+  passiveTaskListener: (task: Task, cook: Cook) => void; // Lägg till tasken som är klar
+  // Metod för att få alla pågåenda passiva?
+  // Metod för att kunna avbryta passiv i förväg?
+  // Metod för att kunna förlänga passiv task?
 };
 
 // Funktion för att skapa en ny scheduler. Den ska användas genom
 // ```
-// let scheduler: Scheduler = getScheduler(recipe, ["William", "Pontus"], listener);
-// let new_task: Task = scheduler.assignNewTask("William");
-// scheduler.finishTask(new_task, "William");
+ let scheduler: Scheduler = createScheduler(recipe, ["William", "Pontus"], listenerFunction);
+ let new_task: Task = scheduler.assignNewTask("William");
+ scheduler.finishTask(new_task, "William");
 // ```
 export function createScheduler(recipe: Recipe, cooks: Cook[], passiveTaskListener: (task: Task, cook: Cook) => void): Scheduler {
   let scheduler: Scheduler = {

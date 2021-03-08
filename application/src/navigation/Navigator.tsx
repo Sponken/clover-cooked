@@ -56,12 +56,14 @@ const Session = () => (
     <Stack.Screen
       name="Session Start"
       component={SessionStart}
-      options={{ title: "Session Start" }}
+      options={{ title: "Session Start" ,
+        headerShown: false}}
     />
     <Stack.Screen
       name="Chef Management"
       component={ChefManagement}
-      options={{ title: "Chef Management" }}
+      options={{ title: "Chef Management",
+        headerShown: false}}
     />
   </Stack.Navigator>
 );

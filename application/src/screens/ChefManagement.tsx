@@ -44,37 +44,10 @@ export function ChefManagement({ navigation, route }: Props) {
 
   return (
     <View style={styles.container}>
-      <View style={{flex: 1}}>
-        <Button
-          title="Log from ChefManagemnet"
-          onPress={() => {
-            console.log("Logging chefList using Chefmanagement button:")
-            console.log(chefList)}}
-        />
+      <View style={{flex: 0.5}}>
+        {/* TODO: not sure why content outside of screen */}
       </View>
-      
-      <View style={{flex: 7}}>
-        <ChefList chefList={chefList} setChefList={setChefList}/>
-      </View>
-
-      <View style={{flex: 1}}>
-        <Button
-          onPress={() => {
-            setChefList([
-              ...chefList,
-              {
-                id: Date.now().toString(),
-                name: "New User",
-                color: "Blue",
-                image: "todo",
-              },
-            ]);
-          }}
-          title="Add Chef New"
-        />
-      </View>
-
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, justifyContent: "flex-start", flexDirection: 'row', paddingLeft: 10}}>
         <Button
           onPress={() => {   
             navigation.navigate("Session Start", {chefList: {chefList}})
@@ -82,6 +55,55 @@ export function ChefManagement({ navigation, route }: Props) {
           title="Back"
         />
       </View>
+      {/* <View style={{flex: 1}}>
+        <Button
+          title="Log from ChefManagemnet"
+          onPress={() => {
+            console.log("Logging chefList using Chefmanagement button:")
+            console.log(chefList)}}
+        />
+      </View> */}
+      
+      <View style={{flex: 7}}>
+        <ChefList chefList={chefList} setChefList={setChefList}/>
+      </View>
+
+      <View style={{flex: 1}}>
+        <TouchableOpacity
+        style={{
+          margin: 10,
+          height: 75,
+          width: 75,
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderRadius: 75 * 2,
+          flexDirection: "row",
+          
+        }}
+        onPress={() => {
+          setChefList([
+            ...chefList,
+            {
+              id: Date.now().toString(),
+              name: "New User",
+              color: "Blue",
+              image: "todo",
+            },
+          ]);
+        }}
+        >
+          
+          <Image 
+            style={styles.chefImageInList}
+            source={require("../../assets/image/Add_chef_icon.png")} //TODO: chef.image
+            // check chef.color to decide color of border
+          />
+          <Text>Add New Chef</Text>
+        </TouchableOpacity>
+
+      </View>
+
+      
 
     
 

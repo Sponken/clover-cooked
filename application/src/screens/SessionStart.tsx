@@ -43,11 +43,14 @@ export function SessionStart({ navigation, route }: Props) {
 
   return (
     <View style={styles.container}>
+      <View style={{flex: 1}}>
+        {/* TODO: not sure why content outside of screen */}
+      </View>
       <Text style={styles.container}>
         TODO: Hamburgerknapp ska finnas här med
       </Text>
       <Text style={styles.container}>TODO: Visa bild på recept här</Text>
-      <View style={{flex: 7}}>
+      <View style={{flex: 8, justifyContent: "center"}}>
         <ChefsOverview chefList={chefList}/>
       </View>
       <View style={{flex: 1}}>
@@ -55,6 +58,16 @@ export function SessionStart({ navigation, route }: Props) {
             title="Edit Chefs"
             onPress={() =>
               navigation.navigate("Chef Management", {
+                chefList: {chefList} })
+            }
+         />
+      </View>
+
+      <View style={{flex: 1}}>
+        <Button
+            title="Starta"
+            onPress={() =>
+              navigation.navigate("Chef Management", { // Todo: navigate to "cooking view"
                 chefList: {chefList} })
             }
          />

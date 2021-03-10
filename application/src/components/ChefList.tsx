@@ -21,7 +21,7 @@ type ChefListProps = {
  *
  */
 
-export function ChefList({ chefList, setChefList}: ChefListProps) {
+export function ChefList({ chefList, setChefList }: ChefListProps) {
   useEffect(() => {
     // setChefs(setChefs(edit(chefs.findIndex((el) => el.id === chef.id), chef));
   }, []);
@@ -51,7 +51,6 @@ type ListRowProps = {
  * https://reactnative.dev/docs/image
  */
 const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
-
   //console.log("Logging Listrow in chefList")
   //console.log(chefList)
 
@@ -59,15 +58,14 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
   //Funktionen kommer göra det efter varje gång man ändrar texten, vet inte om det innebär varje gång man
   //skriver en ny bokstav eller när man editat klart.
   function edit(index, chef, name) {
-
-    let b = Array.from(chefList)
+    let b = Array.from(chefList);
 
     let tempChef: Chef = {
       id: chef.id,
       name: name,
       color: chef.color,
-      image: chef.image
-    }
+      image: chef.image,
+    };
 
     b.splice(index, 1, tempChef);
     //console.log(b)
@@ -84,21 +82,27 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
         {/* Färg på namn beroende på deras färg? Hur syns den ifall personen har bild annars?*/}
         {/* <Text style={styles.name}>{chef.name}</Text> */}
       </View>
-      <TextInput
-        style={{
-          height: 40,
-          backgroundColor: "white",
-          alignItems: "flex-start",
-          flex: 1,
-        }}
-        defaultValue={chef.name}
-        onChangeText={(name) => 
-          {setChefList(edit(chefList.findIndex((c) => c.id === chef.id), chef, name))}}
-      />
+
+      <View style={{ flex: 4, flexDirection: "row", alignItems: "flex-start" }}>
+        <TextInput
+          style={{
+            height: 40,
+            backgroundColor: "white",
+            alignItems: "flex-start",
+            flex: 1,
+          }}
+          defaultValue={chef.name}
+          onChangeText={(name) => {
+            setChefList(
+              edit(chefList.findIndex((c) => c.id === chef.id), chef, name)
+            );
+          }}
+        />
+      </View>
 
       <Button
         onPress={() => setChefList(chefList.filter((x) => x.id !== chef.id))}
-        title="Delete"
+        title="x" // Delete?
       />
     </View>
   );

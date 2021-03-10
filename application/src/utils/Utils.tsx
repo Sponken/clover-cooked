@@ -8,3 +8,10 @@ export function unsafeFind<T>(array: T[], matchFunction: (o: T) => boolean): T {
   }
   return foundItem;
 }
+
+/**
+ * Kollar om den första array innehåller alla element från den andra
+ */
+export function includesAll(superArr: any[], subArr: any[]): boolean {
+  return subArr.every((e) => superArr.includes(e));
+}

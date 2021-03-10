@@ -1,57 +1,59 @@
 import { Recipe, Task } from "../data";
+import {Scheduler, CookID} from "./scheduler"
+import {includesAll} from "../utils"
 
-type Cook = string;
 type TaskId = string
-
-// Detta representerar en schemaläggare som har koll på och delar ut tasks.
-// "finishTask" och "assignNewTask" används för att avsluta respektive dela ut nya uppgifter. assignNewTask returnerar den
-// delegerade uppgiften, och undefined i de fall då ingen uppgift delades ut.
-// passiveTaskListener kallas på när en passiv task är avslutat, och returnar uppgiften tillsammans med en kock som ska utföra den.
-// - OBS passiveTaskListener är inte implementerad OBS -
-export type Scheduler = {
-  cooks: Cook[];
-  recipe: Recipe;
-  completedTasks: Task[];
-  currentTasks: Map<Cook, Task>;
-  finishTask: (task: Task, cook: Cook) => void;
-  assignNewTask: (cook: Cook) => Task | undefined;
-  passiveTaskListener: (task: Task, cook: Cook) => void; // Lägg till tasken som är klar
-  // Metod för att få alla pågåenda passiva?
-  // Metod för att kunna avbryta passiv i förväg?
-  // Metod för att kunna förlänga passiv task?
-};
 
 // Funktion för att skapa en ny scheduler. Den ska användas genom
 // ```
- let scheduler: Scheduler = createScheduler(recipe, ["William", "Pontus"], listenerFunction);
- let new_task: Task = scheduler.assignNewTask("William");
- scheduler.finishTask(new_task, "William");
+// let scheduler: Scheduler = createScheduler(recipe, ["William", "Pontus"], listenerFunction);
+// let new_task: Task = scheduler.assignNewTask("William");
+// scheduler.finishTask(new_task, "William");
 // ```
-export function createScheduler(recipe: Recipe, cooks: Cook[], passiveTaskListener: (task: Task, cook: Cook) => void): Scheduler {
+export function createBasicScheduler(recipe: Recipe, cooks: CookID[], passiveTaskListener: (task: Task, cook: CookID) => void): Scheduler {
   let scheduler: Scheduler = {
     cooks: cooks,
     recipe: recipe,
     completedTasks: [],
     currentTasks: new Map(),
-    finishTask: function (task: Task, cook: Cook) {
+    currentPassiveTasks: new Map(),
+    finishTask: function (task: Task, cook: CookID) {
       this.completedTasks.push(task);
       this.currentTasks.delete(cook);
     },
-    assignNewTask: function (cook: Cook): Task | undefined {
+    assignNewTask: function (cook: CookID): Task | undefined {
       let task = getNextTask(this.recipe, this.completedTasks, this.currentTasks);
       if (task) {
         this.currentTasks.set(cook, task);
       }
       return task;
     },
-    passiveTaskListener: passiveTaskListener
+    passiveTaskListener: passiveTaskListener,
+    extendPassive: function(task: Task, add: number){
+
+    },
+    getPassiveTasks: function() {
+      let entries = Array.from(this.currentPassiveTasks.entries())
+      let timeToFinish: Map<Task, number> = new Map(entries.map(([task, date]) => {
+        let now: Date = new Date();
+        let diffTime = Math.abs(now.getTime() - date.getTime()) / (1000*60)
+        let timeLeft = task.estimatedTime - diffTime;
+        return [task, timeLeft]
+
+      }));
+      return timeToFinish
+
+    },
+    getPassiveTask: function(task: Task) {
+      return this.getPassiveTasks().get(task)
+    }
   };
 
   return scheduler;
 }
 
 // Returnerar en giltig task. Returner undefined om det inte finns någon giltig task.
-function getNextTask(recipe: Recipe, completedTasks: Task[], currentTasks: Map<Cook, Task>): Task | undefined {
+function getNextTask(recipe: Recipe, completedTasks: Task[], currentTasks: Map<CookID, Task>): Task | undefined {
   let task: Task | undefined = basicFindTask(recipe, completedTasks, Array.from(currentTasks.values()))
 
   return task;
@@ -99,6 +101,3 @@ let getDependencyMaps = (recipe: Recipe): [Map<TaskId, TaskId[]>, Map<TaskId, Ta
   return [depMap, strongDepMap]
 }
 
-const includesAll = (superArr: any[], subArr: any[]): boolean => subArr.every(e =>
-  superArr.includes(e)
-)

@@ -79,7 +79,6 @@ function basicFindTask(recipe: Recipe, completedTasks: Task[], currentTasks: Tas
     eligible = task;
   }
 
-
   return eligible;
 }
 

@@ -3,19 +3,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
-import {
-  Home,
-  RecipeLibrary,
-  RecipeOverview,
-  SessionStart,
-  ChefManagement,
-} from "../screens";
-import { Recipe } from "../data";
+import { Home, RecipeLibrary, RecipeOverview, Cooking } from "../screens";
+import { Recipe, User } from "../data";
 
 export type RootStackParamList = {
   Home: undefined;
   RecipeLibrary: undefined;
   RecipeOverview: { recipe: Recipe };
+  Cooking: { recipe: Recipe; users: User[] };
 };
 
 const Drawer = createDrawerNavigator();
@@ -46,6 +41,12 @@ export function Navigator() {
           component={RecipeLibraryNav}
           options={{ title: "Recipe Library" }}
         />
+        <Drawer.Screen
+          name="RecipeOverview"
+          component={RecipeOverview}
+          options={{ title: "Recept" }}
+        />
+        <Drawer.Screen name="Cooking" component={Cooking} />
       </Drawer.Navigator>
     </NavigationContainer>
   );

@@ -1,2 +1,2 @@
-export { createBasicScheduler } from "./basic_scheduler";
-export { Scheduler } from "./scheduler";
+export { createBasicScheduler } from "./BasicScheduler";
+export { Scheduler } from "./Scheduler";

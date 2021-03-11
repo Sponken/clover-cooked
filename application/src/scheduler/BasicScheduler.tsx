@@ -1,5 +1,5 @@
 import { Recipe, Task } from "../data";
-import {Scheduler, CookID} from "./scheduler"
+import {Scheduler, CookID} from "./Scheduler"
 import {includesAll, removeElement} from "../utils"
 
 type TaskID = string

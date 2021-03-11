@@ -36,7 +36,7 @@
       "instructions": "Häll i makaronerna i det kokande vattnet.",
       "passive": false,
       "estimatedTime": 1,
-      "ingredients": [{ "ingredientId": "Pasta", "amount": 100 }],
+      "ingredients": [{ "ingredientId": "makaron", "amount": 100 }],
       "resources": [{ "resourceId": "platta", "amount": 1 }]
     },
     {

@@ -2,7 +2,7 @@ import { Recipe, Task } from "../data";
 import {Scheduler, CookID} from "./scheduler"
 import {includesAll, removeElement} from "../utils"
 
-type TaskId = string
+type TaskID = string
 
 // Funktion för att skapa en ny scheduler. Den ska användas genom
 // ```
@@ -10,18 +10,18 @@ type TaskId = string
 // let new_task: Task = scheduler.assignNewTask("William");
 // scheduler.finishTask(new_task, "William");
 // ```
-export function createBasicScheduler(recipe: Recipe, cooks: CookID[], passiveTaskListener: (task: Task, cook: CookID) => void): Scheduler {
+export function createBasicScheduler(recipe: Recipe, cooks: CookID[], passiveTaskListener: (task: TaskID, cook: CookID) => void): Scheduler {
   let scheduler: Scheduler = {
     cooks: cooks,
     recipe: recipe,
     completedTasks: [],
-    currentTasks: new Map(),
-    currentPassiveTasks: new Map(),
-    finishTask: function (task: Task, cook: CookID) {
+    currentTasks: new Map<CookID, TaskID>(),
+    currentPassiveTasks: new Map<TaskID, Date>(),
+    finishTask: function (task: TaskID, cook: CookID) {
       this.completedTasks.push(task);
       this.currentTasks.delete(cook);
     },
-    assignNewTask: function (cook: CookID): Task | undefined {
+    assignNewTask: function (cook: CookID): TaskID | undefined {
       let task = getNextTask(this.recipe, this.completedTasks, this.currentTasks);
       if (task) {
         this.currentTasks.set(cook, task);
@@ -29,22 +29,22 @@ export function createBasicScheduler(recipe: Recipe, cooks: CookID[], passiveTas
       return task;
     },
     passiveTaskListener: passiveTaskListener,
-    extendPassive: function(task: Task, add: number){
+    extendPassive: function(task: TaskID, add: number){
 
     },
     getPassiveTasks: function() {
       let entries = Array.from(this.currentPassiveTasks.entries())
-      let timeToFinish: Map<Task, number> = new Map(entries.map(([task, date]) => {
+      let timeToFinish: Map<TaskID, number> = new Map(entries.map(([task, date]) => {
         let now: Date = new Date();
         let diffTime = Math.abs(now.getTime() - date.getTime()) / (1000*60)
-        let timeLeft = task.estimatedTime - diffTime;
+        let timeLeft = getTask(recipe, task).estimatedTime - diffTime;
         return [task, timeLeft]
 
       }));
       return timeToFinish
 
     },
-    getPassiveTask: function(task: Task) {
+    getPassiveTask: function(task: TaskID) {
       return this.getPassiveTasks().get(task)
     },
     addCook: function(cook: CookID){
@@ -60,38 +60,38 @@ export function createBasicScheduler(recipe: Recipe, cooks: CookID[], passiveTas
 }
 
 // Returnerar en giltig task. Returner undefined om det inte finns någon giltig task.
-function getNextTask(recipe: Recipe, completedTasks: Task[], currentTasks: Map<CookID, Task>): Task | undefined {
-  let task: Task | undefined = basicFindTask(recipe, completedTasks, Array.from(currentTasks.values()))
+function getNextTask(recipe: Recipe, completedTasks: TaskID[], currentTasks: Map<CookID, TaskID>): TaskID | undefined {
+  let task: TaskID | undefined = basicFindTask(recipe, completedTasks, Array.from(currentTasks.values()))
 
   return task;
 }
 
 
 // En funktion som hittar någon task att tilldela.
-function basicFindTask(recipe: Recipe, completedTasks: Task[], currentTasks: Task[]): Task | undefined {
+function basicFindTask(recipe: Recipe, completedTasks: TaskID[], currentTasks: TaskID[]): TaskID | undefined {
 
-  let eligible: Task | undefined;
+  let eligible: TaskID | undefined;
   let [depMap, strongDepMap] = getDependencyMaps(recipe);
 
   for (const task of recipe.tasks) {
-    if (completedTasks.includes(task) || currentTasks.includes(task)) {
+    if (completedTasks.includes(task.id) || currentTasks.includes(task.id)) {
       continue
     }
     if (!(includesAll(completedTasks, depMap.get(task.id) ?? []) && includesAll(completedTasks, strongDepMap.get(task.id) ?? []))) {
       continue
     }
     if (strongDepMap.get(task.id) != []) {
-      return task
+      return task.id
     }
-    eligible = task;
+    eligible = task.id;
   }
 
   return eligible;
 }
 
-let getDependencyMaps = (recipe: Recipe): [Map<TaskId, TaskId[]>, Map<TaskId, TaskId[]>] => {
-  let depMap: Map<TaskId, TaskId[]> = new Map()
-  let strongDepMap: Map<TaskId, TaskId[]> = new Map()
+let getDependencyMaps = (recipe: Recipe): [Map<TaskID, TaskID[]>, Map<TaskID, TaskID[]>] => {
+  let depMap: Map<TaskID, TaskID[]> = new Map()
+  let strongDepMap: Map<TaskID, TaskID[]> = new Map()
 
 
   recipe.tasks.forEach(task => {
@@ -107,3 +107,10 @@ let getDependencyMaps = (recipe: Recipe): [Map<TaskId, TaskId[]>, Map<TaskId, Ta
   return [depMap, strongDepMap]
 }
 
+function getTask(recipe: Recipe, taskID: TaskID): Task{
+  for (let i = 0; i < recipe.tasks.length ; i++) {
+    if(recipe.tasks[i].id === taskID)
+      return recipe.tasks[i]
+  }
+  throw "getTask: Task not found"
+}

@@ -34,7 +34,7 @@ describe("Basic scheduler", () => {
   });
 
   test("Finds the only existing task", () => {
-    expect(scheduler.assignNewTask(cooks[0])).toEqual(recipe.tasks[0]);
+    expect(scheduler.assignNewTask(cooks[0])).toEqual(recipe.tasks[0].id);
     expect(scheduler.assignNewTask(cooks[1])).toBeUndefined();
   });
 });

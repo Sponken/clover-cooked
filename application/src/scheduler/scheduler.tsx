@@ -36,4 +36,12 @@ export type Scheduler = {
    * Returnerar hur lång tid det är kvar i minuter för en given task. Returnerar undefined om tasken inte är pågående
    */
   getPassiveTask: (task: Task) => number | undefined;
+  /**
+   * Lägg till en kock med dens ID.
+   */
+  addCook: (cook: CookID) => void;
+  /**
+   * Ta bort en kock utifrån ett givet ID.
+   */
+  removeCook: (cook: CookID) => void;
 };

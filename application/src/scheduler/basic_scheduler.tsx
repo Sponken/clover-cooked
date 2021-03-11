@@ -1,6 +1,6 @@
 import { Recipe, Task } from "../data";
 import {Scheduler, CookID} from "./scheduler"
-import {includesAll} from "../utils"
+import {includesAll, removeElement} from "../utils"
 
 type TaskId = string
 
@@ -46,6 +46,13 @@ export function createBasicScheduler(recipe: Recipe, cooks: CookID[], passiveTas
     },
     getPassiveTask: function(task: Task) {
       return this.getPassiveTasks().get(task)
+    },
+    addCook: function(cook: CookID){
+      cooks.includes(cook) ? "" : cooks.push(cook)
+    },
+    removeCook: function(cook: CookID){
+      this.currentTasks.delete(cook)
+      removeElement(cooks, cook)
     }
   };
 

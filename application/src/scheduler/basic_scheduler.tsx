@@ -53,6 +53,11 @@ export function createBasicScheduler(recipe: Recipe, cooks: CookID[], passiveTas
     removeCook: function(cook: CookID){
       this.currentTasks.delete(cook)
       removeElement(cooks, cook)
+    },
+    // Enkel implementation som antar att varje task tar 5 minuter
+    timeLeft: function(){
+      return (recipe.tasks.length - this.completedTasks.length) * 5
+
     }
   };
 

@@ -45,4 +45,8 @@ export type Scheduler = {
    * Ta bort en kock utifrån ett givet ID.
    */
   removeCook: (cook: CookID) => void;
+  /**
+   * Hur lång tid som är kvar i minuter innan maten är klar
+   */
+  timeLeft: () => number;
 };

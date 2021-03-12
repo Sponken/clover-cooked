@@ -315,7 +315,7 @@
     },
     {
       "taskId": "inUgn",
-      "dependsOn": ["hällForm", "ugnPå"]
+      "dependsOn": ["hällForm"]
     },
     {
       "taskId": "gräddas",
@@ -330,7 +330,7 @@
       "strongDependsOn": ["taUt"]
     },
     {
-      "taskId": "delaBotten",
+      "taskId": "dela",
       "dependsOn": ["svalna"]
     },
     {

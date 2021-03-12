@@ -13,6 +13,7 @@ import {
 
 type ChefListProps = {
   chefList: any;
+  nav: any;
 };
 
 /**
@@ -20,21 +21,74 @@ type ChefListProps = {
  *
  */
 
-export function ChefsOverview({ chefList }: ChefListProps) {
+export function ChefsOverview({ chefList, nav }: ChefListProps) {
   //TODO, store chefs somewhere? History? Like Smash Bros
 
-  // useEffect(() => {
-  //   setChefs(importedChefs);
-  // }, []);
-
   return (
-    <View>
+    <View style={{ height: 500 }}>
       <FlatList
-        data={chefList}
+        data={[...chefList, { edit: true, id: "editChef" }]}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <ListRow chef={item} /> //remove chef/edit chef instead?
-        )}
+        renderItem={({ item }) => {
+          if (item.edit) {
+            return (
+              <TouchableOpacity
+                style={styles.editChefsButton}
+                onPress={() =>
+                  nav.navigate("ChefManagement", {
+                    users: { chefList },
+                  })
+                }
+              >
+                <View style={styles.rowInfoContainer}>
+                  <View
+                    style={{
+                      flex: 1,
+                      alignItems: "flex-start",
+                      flexDirection: "row",
+                      // backgroundColor: "red",
+                    }}
+                  >
+                    <Image
+                      style={{
+                        margin: 0,
+                        marginLeft: 13,
+                        height: 75,
+                        width: 75,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 100 * 2,
+                      }}
+                      source={require("../../assets/image/editChef.png")} //TODO: chef.image
+                      // check chef.color to decide color of border
+                    />
+                  </View>
+                  <View
+                    style={{
+                      flex: 2.5,
+                      alignItems: "center",
+                      flexDirection: "row",
+                      height: 75,
+                      // backgroundColor: "red",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        alignItems: "flex-start",
+                        justifyContent: "center",
+                        flex: 1,
+                        fontSize: 18,
+                      }}
+                    >
+                      Edit Chefs
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          }
+          return <ListRow chef={item} />; //remove chef/edit chef instead?
+        }}
       />
     </View>
   );
@@ -66,12 +120,12 @@ const ListRow = ({ chef }: ListRowProps) => {
     />
   );
 
-  let userColor;
-  if ((chef.color = "Blue")) {
-    userColor = "#7986cb";
-  } else {
-    userColor = "#1281cb";
-  }
+  // let userColor;
+  // if ((chef.color = "Blue")) {
+  //   userColor = "#7986cb";
+  // } else {
+  //   userColor = "#1281cb";
+  // }
 
   let defaultImage = (
     <TouchableOpacity
@@ -79,7 +133,7 @@ const ListRow = ({ chef }: ListRowProps) => {
         margin: 0,
         height: 100,
         width: 100,
-        backgroundColor: userColor,
+        backgroundColor: chef.color, //userColor,
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 100 * 2,
@@ -91,7 +145,7 @@ const ListRow = ({ chef }: ListRowProps) => {
   );
 
   let userCircleView;
-  if (chef.image != "todo") {
+  if (chef.icon != undefined) {
     userCircleView = userImage;
   } else {
     userCircleView = defaultImage;
@@ -103,8 +157,8 @@ const ListRow = ({ chef }: ListRowProps) => {
         <View
           style={{
             flex: 1,
-            alignItems: "flex-starts",
-            flexDirection: "column",
+            alignItems: "flex-start",
+            flexDirection: "row",
           }}
         >
           {userCircleView}
@@ -113,7 +167,9 @@ const ListRow = ({ chef }: ListRowProps) => {
         {/* Färg på namn beroende på deras färg? Hur syns den ifall personen har bild annars?*/}
         {/* <Text style={styles.name}>{chef.name}</Text> */}
       </View>
-      <Text style={styles.name}>[Chefs next task]</Text>
+      {/* <Text style={{ alignItems: "center", fontSize: 24 }}>{chef.name}</Text> */}
+
+      {/* <Text style={styles.quickView}>[Chef's next task]</Text> */}
     </View>
   );
 };
@@ -123,38 +179,51 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexShrink: 1,
     alignItems: "center",
-    marginVertical: 3,
     paddingVertical: 10,
     paddingLeft: 10,
     paddingRight: 20,
-    backgroundColor: "#FFFFFF",
+    // backgroundColor: "#FFFFFF",
     borderRadius: 10,
 
-    // iOS shadow
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    // Android shadow
-    elevation: 4,
+    // // iOS shadow
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.23,
+    // shadowRadius: 2.62,
+    // // Android shadow
+    // elevation: 4,
   },
   rowInfoContainer: {
     flex: 1,
+    flexDirection: "row",
+    alignItems: "flex-start",
     marginLeft: 10,
     marginTop: 2,
   },
   chefImageInList: {
-    marginLeft: 5,
-    width: 100,
-    height: 100,
+    marginLeft: 20,
+    width: 80,
+    height: 80,
+    flex: 1,
   },
-  name: {
+  editChefsButton: {
+    flexDirection: "row",
+    flexShrink: 1,
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
+    paddingVertical: 10,
+    paddingLeft: 10,
+    paddingRight: 20,
+    // backgroundColor: "red",
+    borderRadius: 10,
+  },
+  quickView: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
     marginLeft: 5,
     fontSize: 18,
   },

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, TouchableOpacity } from "react";
-import { chefs as importedChefs, Chef } from "../data";
+//import { chefs as importedChefs, Chef } from "../data";
 import {
   StyleSheet,
   Text,
@@ -27,7 +27,7 @@ export function ChefList({ chefList, setChefList }: ChefListProps) {
   }, []);
 
   return (
-    <View>
+    <View style={{ height: 800 }}>
       <FlatList
         // {...props}
         data={chefList}
@@ -41,7 +41,7 @@ export function ChefList({ chefList, setChefList }: ChefListProps) {
 }
 
 type ListRowProps = {
-  chef: Chef;
+  chef: any;
   chefList: any;
   setChefList: any;
 };
@@ -60,11 +60,11 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
   function edit(index, chef, name) {
     let b = Array.from(chefList);
 
-    let tempChef: Chef = {
+    let tempChef = {
       id: chef.id,
       name: name,
       color: chef.color,
-      image: chef.image,
+      icon: chef.ico,
     };
 
     b.splice(index, 1, tempChef);
@@ -79,10 +79,7 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
           style={styles.chefImageInList}
           source={require("../../assets/image/favicon.png")} //TODO: chef.image
         />
-        {/* Färg på namn beroende på deras färg? Hur syns den ifall personen har bild annars?*/}
-        {/* <Text style={styles.name}>{chef.name}</Text> */}
       </View>
-
       <View style={{ flex: 4, flexDirection: "row", alignItems: "flex-start" }}>
         <TextInput
           style={{
@@ -90,6 +87,7 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
             backgroundColor: "white",
             alignItems: "flex-start",
             flex: 1,
+            fontSize: 24,
           }}
           defaultValue={chef.name}
           onChangeText={(name) => {
@@ -99,8 +97,25 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
           }}
         />
       </View>
+      {/* <View>
+        <TouchableOpacity
+          style={{
+            marginRight: 10,
+            height: 25,
+            width: 25,
+            borderRadius: 10,
+          }}
+          onPress={() => setChefList(chefList.filter((x) => x.id !== chef.id))}
+        >
+          <Image
+            style={styles.chefImageInList}
+            source={require("../../assets/image/editChef.png")} //TODO: chef.image
+          />
+        </TouchableOpacity>
+      </View> */}
 
       <Button
+        style={{ color: "black" }}
         onPress={() => setChefList(chefList.filter((x) => x.id !== chef.id))}
         title="x" // Delete?
       />
@@ -120,16 +135,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 10,
 
-    // iOS shadow
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    // Android shadow
-    elevation: 4,
+    // // iOS shadow
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.23,
+    // shadowRadius: 2.62,
+    // // Android shadow
+    // elevation: 4,
   },
   rowInfoContainer: {
     flex: 1,

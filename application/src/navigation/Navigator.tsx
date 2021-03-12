@@ -3,7 +3,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
-import { Home, RecipeLibrary, RecipeOverview, Cooking } from "../screens";
+import {
+  Home,
+  RecipeLibrary,
+  RecipeOverview,
+  Cooking,
+  ChefManagement,
+  SessionStart,
+} from "../screens";
 import { Recipe, User } from "../data";
 
 export type RootStackParamList = {
@@ -11,6 +18,8 @@ export type RootStackParamList = {
   RecipeLibrary: undefined;
   RecipeOverview: { recipe: Recipe };
   Cooking: { recipe: Recipe; users: User[] };
+  SessionStart: { recipe: Recipe; users: User[] };
+  ChefManagement: { users: User[] };
 };
 
 const Drawer = createDrawerNavigator();
@@ -41,36 +50,29 @@ export function Navigator() {
           component={RecipeLibraryNav}
           options={{ title: "Recipe Library" }}
         />
-        <Drawer.Screen
-          name="RecipeOverview"
-          component={RecipeOverview}
-          options={{ title: "Recept" }}
-        />
-        <Drawer.Screen name="Cooking" component={Cooking} />
       </Drawer.Navigator>
     </NavigationContainer>
   );
 }
 
 const Session = () => (
-  <Stack.Navigator initialRouteName="Session Start">
+  <Stack.Navigator initialRouteName="SessionStart">
     <Stack.Screen
-      name="Session Start"
+      name="SessionStart"
       component={SessionStart}
-      options={{ title: "Session Start" ,
-        headerShown: false}}
+      options={{ title: "Session Start", headerShown: false }}
     />
     <Stack.Screen
-      name="Chef Management"
+      name="ChefManagement"
       component={ChefManagement}
-      options={{ title: "Chef Management",
-        headerShown: false}}
+      options={{ title: "ChefManagement", headerShown: false }}
     />
+    <Stack.Screen name="Cooking" component={Cooking} />
   </Stack.Navigator>
 );
 
 const RecipeLibraryNav = () => (
-  <Stack.Navigator initialRouteName="Home">
+  <Stack.Navigator initialRouteName="RecipeLibrary">
     <Stack.Screen
       name="Home"
       component={Home}

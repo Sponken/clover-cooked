@@ -26,15 +26,15 @@ describe("Basic scheduler", () => {
   let cooks: string[] = ["musse", "kalle"];
 
   beforeEach(() => {
-    scheduler = createBasicScheduler(recipe, cooks, () => {});
+    scheduler = createBasicScheduler(recipe, cooks, () => {}, () => {});
   });
 
   test("Scheduler exists", () => {
     expect(scheduler).toBeDefined();
   });
 
-  test("Finds the only existing task", () => {
-    expect(scheduler.assignNewTask(cooks[0])).toEqual(recipe.tasks[0].id);
-    expect(scheduler.assignNewTask(cooks[1])).toBeUndefined();
+  test("Finds the only existing task that should have been assigned", () => {
+    expect(scheduler.currentTasks.get(cooks[0])).toEqual(recipe.tasks[0].id);
+    expect(scheduler.currentTasks.get(cooks[1])).toBeUndefined();
   });
 });

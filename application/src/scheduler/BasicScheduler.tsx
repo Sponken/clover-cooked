@@ -6,11 +6,16 @@ type TaskID = string
 
 // Funktion för att skapa en ny scheduler. Den ska användas genom
 // ```
-// let scheduler: Scheduler = createScheduler(recipe, ["William", "Pontus"], listenerFunction);
-// let new_task: Task = scheduler.assignNewTask("William");
+// let const tal  = (task: TaskID, cook: CookID)     => { /* gör saker när du får en task */ };
+// let const ptsl = (task: TaskID, duration: number) => { /* gör saker när du får passiv task */ };
+// let scheduler: Scheduler = createScheduler(recipe, ["William", "Pontus"], tal, ptsl);
 // scheduler.finishTask(new_task, "William");
 // ```
-export function createBasicScheduler(recipe: Recipe, cooks: CookID[], passiveTaskListener: (task: TaskID, cook: CookID) => void): Scheduler {
+export function createBasicScheduler(recipe: Recipe, 
+  cooks: CookID[], 
+  taskAssignedListener: (task: TaskID, cook: CookID) => void, 
+  passiveTaskStartedListener: (task: TaskID, duration: number) => void
+  ): Scheduler {
   let scheduler: Scheduler = {
     cooks: cooks,
     recipe: recipe,
@@ -20,15 +25,10 @@ export function createBasicScheduler(recipe: Recipe, cooks: CookID[], passiveTas
     finishTask: function (task: TaskID, cook: CookID) {
       this.completedTasks.push(task);
       this.currentTasks.delete(cook);
+      assignNewTask(cook, this)
     },
-    assignNewTask: function (cook: CookID): TaskID | undefined {
-      let task = getNextTask(this.recipe, this.completedTasks, this.currentTasks);
-      if (task) {
-        this.currentTasks.set(cook, task);
-      }
-      return task;
-    },
-    passiveTaskListener: passiveTaskListener,
+    taskAssignedListener: taskAssignedListener,
+    passiveTaskStartedListener: passiveTaskStartedListener,
     extendPassive: function(task: TaskID, add: number){
 
     },
@@ -49,6 +49,9 @@ export function createBasicScheduler(recipe: Recipe, cooks: CookID[], passiveTas
     },
     addCook: function(cook: CookID){
       cooks.includes(cook) ? "" : cooks.push(cook)
+      let task = getNextTask(recipe, this.completedTasks, this.currentTasks)
+      assignNewTask(cook, this)
+
     },
     removeCook: function(cook: CookID){
       this.currentTasks.delete(cook)
@@ -58,11 +61,32 @@ export function createBasicScheduler(recipe: Recipe, cooks: CookID[], passiveTas
     timeLeft: function(){
       return (recipe.tasks.length - this.completedTasks.length) * 5
 
-    }
+    },
   };
 
+
+
+  scheduler.cooks.forEach(cook => {
+    assignNewTask(cook, scheduler)
+  });
+  
+  
   return scheduler;
 }
+
+
+function assignNewTask(cook: CookID, scheduler: Scheduler): TaskID | undefined {
+  if(scheduler.currentTasks.get(cook))
+    return undefined
+  
+  let task = getNextTask(scheduler.recipe, scheduler.completedTasks, scheduler.currentTasks);
+  if (task) {
+    scheduler.currentTasks.set(cook, task);
+    scheduler.taskAssignedListener(task, cook)
+  }
+  return task;
+}
+
 
 // Returnerar en giltig task. Returner undefined om det inte finns någon giltig task.
 function getNextTask(recipe: Recipe, completedTasks: TaskID[], currentTasks: Map<CookID, TaskID>): TaskID | undefined {

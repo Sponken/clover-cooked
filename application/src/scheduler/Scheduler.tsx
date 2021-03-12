@@ -6,25 +6,24 @@ export type TaskID = string;
 /** Detta representerar en schemaläggare som har koll på och delar ut tasks.
  * Enbart metoderna bör användas. Ändra inte i de övriga fälten
  */
-export type Scheduler = {
-  cooks: CookID[];
-  recipe: Recipe;
-  completedTasks: TaskID[];
-  currentTasks: Map<CookID, TaskID>;
-  currentPassiveTasks: Map<TaskID, Date>;
+export interface Scheduler {
+  readonly cooks: CookID[];
+  readonly recipe: Recipe;
+  readonly completedTasks: TaskID[];
+  readonly currentTasks: Map<CookID, TaskID>;
+  readonly currentPassiveTasks: Map<TaskID, Date>;
   /**
    * Avslutar en given task för en användare. Kan även användas för passiva tasks
    */
   finishTask: (task: TaskID, cook: CookID) => void;
   /**
-   * Tilldelar en ny task till en användare. Om ingen tasks tilldelas returneras undefined
+   * Metod som kallas på när en task är tilldelad
    */
-  assignNewTask: (cook: CookID) => TaskID | undefined;
+  taskAssignedListener: (task: TaskID, cook: CookID) => void;
   /**
-   * Callback metod som används när en passiv task är klar.
-   * Då skickas task:en som avslutar den passiva tillbaks, tillsammans med vems om bör avsluta den
+   * Metod som kallas på när en ny passiv task är startad
    */
-  passiveTaskListener: (task: TaskID, cook: CookID) => void;
+  passiveTaskStartedListener: (task: TaskID, duration: number) => void;
   /**
    * Utöker tiden på en pågående passiv task
    */
@@ -49,4 +48,4 @@ export type Scheduler = {
    * Hur lång tid som är kvar i minuter innan maten är klar
    */
   timeLeft: () => number;
-};
+}

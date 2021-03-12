@@ -11,7 +11,7 @@ import { StyleSheet, Text, View, FlatList } from "react-native";
 import { unsafeFind } from "../utils";
 
 type TaskCardProps = {
-  taskId: string;
+  taskId: string | undefined;
   recipe: Recipe;
   userName: string;
   userColor: ColorValue;
@@ -26,7 +26,19 @@ export const TaskCard = ({
   userName,
   userColor,
 }: TaskCardProps) => {
-  const task = unsafeFind(recipe.tasks, (o: TaskType) => o.id == taskId);
+  let task: TaskType;
+  if (taskId) {
+    task = unsafeFind(recipe.tasks, (o: TaskType) => o.id == taskId);
+  } else {
+    task = {
+      id: "__FÄRDIG__",
+      name: "Nu är du klar",
+      instructions: "Vila :)",
+      ingredients: [],
+      resources: [],
+      estimatedTime: 9999,
+    };
+  }
 
   return (
     <View style={styles.container}>

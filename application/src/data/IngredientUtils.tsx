@@ -6,7 +6,13 @@ import { Recipe } from ".";
  * @param recipe recept ingrediens är deklarerad i
  */
 export const getIngredientDecl = (ingredientId: string, recipe: Recipe) => {
-  return recipe.ingredients.find((ingredient) => ingredient.id == ingredientId);
+  const foundIngredient = recipe.ingredients.find(
+    (ingredient) => ingredient.id == ingredientId
+  );
+  if (foundIngredient != undefined) {
+    return foundIngredient;
+  }
+  throw "getIngredientDecl: Ingredient " + ingredientId + " not found";
 };
 
 /**
@@ -16,10 +22,7 @@ export const getIngredientDecl = (ingredientId: string, recipe: Recipe) => {
  */
 export const getIngredientName = (ingredientId: string, recipe: Recipe) => {
   const foundIngredient = getIngredientDecl(ingredientId, recipe);
-  if (foundIngredient != undefined) {
-    return foundIngredient.name;
-  }
-  return undefined;
+  return foundIngredient.name;
 };
 
 /**
@@ -29,8 +32,34 @@ export const getIngredientName = (ingredientId: string, recipe: Recipe) => {
  */
 export const getIngredientUnit = (ingredientId: string, recipe: Recipe) => {
   const foundIngredient = getIngredientDecl(ingredientId, recipe);
-  if (foundIngredient != undefined) {
-    return foundIngredient.unit;
-  }
-  return undefined;
+  return foundIngredient.unit;
+};
+
+export type IngredientListing = {
+  name: string;
+  amount: number;
+  unit: string;
+};
+
+/**
+ * Tar ut ingredienser, mängd och enhets för ett recept
+ */
+export const getIngredientListings = (recipe: Recipe) => {
+  const ingredients: Record<string, IngredientListing> = {};
+  recipe.tasks.forEach((task) => {
+    task.ingredients.forEach(({ ingredientId, amount }) => {
+      if (ingredientId in ingredients) {
+        ingredients[ingredientId].amount += amount;
+      } else {
+        const ingredientUnit = getIngredientUnit(ingredientId, recipe);
+        const ingredientName = getIngredientName(ingredientId, recipe);
+        ingredients[ingredientId] = {
+          name: ingredientName,
+          amount: amount,
+          unit: ingredientUnit,
+        };
+      }
+    });
+  });  
+  return Object.values(ingredients);
 };

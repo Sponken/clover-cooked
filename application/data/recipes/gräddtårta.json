@@ -70,7 +70,7 @@
       "estimatedTime": 5,
       "ingredients": [
         { "ingredientId": "vetemjöl", "amount": 1.5 },
-        { "ingredientId": "potMjöl", "amount": 0.5 },
+        { "ingredientId": "potmjöl", "amount": 0.5 },
         { "ingredientId": "bakpulver", "amount": 1.5 }
       ],
       "resources": []
@@ -315,7 +315,7 @@
     },
     {
       "taskId": "inUgn",
-      "dependsOn": ["hällForm", "ugnPå"]
+      "dependsOn": ["hällForm"]
     },
     {
       "taskId": "gräddas",
@@ -330,7 +330,7 @@
       "strongDependsOn": ["taUt"]
     },
     {
-      "taskId": "delaBotten",
+      "taskId": "dela",
       "dependsOn": ["svalna"]
     },
     {

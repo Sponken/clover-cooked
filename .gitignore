@@ -56,6 +56,3 @@ $RECYCLE.BIN/
 node_modules/
 yarn.lock
 package-lock.json
-
-# Dum expo mapp
-/.expo/

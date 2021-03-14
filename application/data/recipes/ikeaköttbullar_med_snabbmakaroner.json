@@ -13,7 +13,7 @@
   "resources": [{ "id": "platta", "name": "Spisplatta" }],
   "tasks": [
     {
-      "id": "ugn",
+      "id": "kokaVatten",
       "name": "Sätt på pastavatten",
       "instructions": "Sätt vatten med salt på platten",
       "passive": false,
@@ -36,7 +36,7 @@
       "instructions": "Häll i makaronerna i det kokande vattnet.",
       "passive": false,
       "estimatedTime": 1,
-      "ingredients": [{ "ingredientId": "makaron", "amount": 100 }],
+      "ingredients": [{ "ingredientId": "Pasta", "amount": 100 }],
       "resources": [{ "resourceId": "platta", "amount": 1 }]
     },
     {

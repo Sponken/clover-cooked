@@ -51,8 +51,6 @@ type ListRowProps = {
  * https://reactnative.dev/docs/image
  */
 const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
-  //console.log("Logging Listrow in chefList")
-  //console.log(chefList)
 
   //Här spagettas det hårt, funktionen gör en kopia på chefList och splicear in den chef vi vill ändra.
   //Funktionen kommer göra det efter varje gång man ändrar texten, vet inte om det innebär varje gång man
@@ -68,7 +66,6 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
     };
 
     b.splice(index, 1, tempChef);
-    //console.log(b)
     return b;
   }
 
@@ -77,7 +74,7 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
       <View style={styles.rowInfoContainer}>
         <Image
           style={styles.chefImageInList}
-          source={require("../../assets/image/favicon.png")} //TODO: chef.image
+          source={require("../../assets/image/favicon.png")}
         />
       </View>
       <View style={{ flex: 4, flexDirection: "row", alignItems: "flex-start" }}>

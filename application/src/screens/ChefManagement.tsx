@@ -14,7 +14,6 @@ import { ChefList } from "../components";
 
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation";
-import { Chef } from "../data";
 
 
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
@@ -33,16 +32,8 @@ type Props = {
  */
 
 export function ChefManagement({ navigation, route }: Props) {
-  console.log(route.params.users.chefList);
 
-  const [chefList, setChefList] = useState(route.params?.users.chefList);
-
- // navigation.setOptions({headerLeft: () => <Button
- //   onPress={() => {   
- //     navigation.navigate("Session Start")
- //   }}
- //   title="Back"
- // />})
+  const [users, setUsers] = useState(route.params?.users);
 
   return (
     <View style={styles.container}>
@@ -52,7 +43,7 @@ export function ChefManagement({ navigation, route }: Props) {
       <View style={{flex: 1, justifyContent: "flex-start", flexDirection: 'row', paddingLeft: 10}}>
         <Button
           onPress={() => {   
-            navigation.navigate("SessionStart", {users: {chefList}})
+            navigation.navigate("SessionStart", {users})
           }}
           title="Back"
         />
@@ -67,7 +58,7 @@ export function ChefManagement({ navigation, route }: Props) {
       </View> */}
       
       <View style={{flex: 8}}>
-        <ChefList chefList={chefList} setChefList={setChefList}/>
+        <ChefList chefList={users} setChefList={setUsers}/>
       </View>
 
       <View style={{flex: 1, alignItems: "flex-start", justifyContent: "flex-start", margin: 60}}>
@@ -84,8 +75,8 @@ export function ChefManagement({ navigation, route }: Props) {
           
         }}
         onPress={() => {
-          setChefList([
-            ...chefList,
+          setUsers([
+            ...users,
             {
               id: Date.now().toString(),
               name: "New User",

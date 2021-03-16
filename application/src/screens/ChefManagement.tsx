@@ -33,16 +33,8 @@ type Props = {
  */
 
 export function ChefManagement({ navigation, route }: Props) {
-  console.log(route.params.users.chefList);
 
   const [chefList, setChefList] = useState(route.params?.users.chefList);
-
- // navigation.setOptions({headerLeft: () => <Button
- //   onPress={() => {   
- //     navigation.navigate("Session Start")
- //   }}
- //   title="Back"
- // />})
 
   return (
     <View style={styles.container}>

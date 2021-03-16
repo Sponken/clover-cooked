@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { chefs as importedChefs, Chef } from "../data";
+import React from "react";
 import {
   StyleSheet,
   Text,
   View,
   FlatList,
-  Button,
   Image,
-  TextInput,
   TouchableOpacity,
 } from "react-native";
+import { User } from "../data";
 
 type ChefListProps = {
-  chefList: any;
+  users: User[];
   nav: any;
 };
 
@@ -21,13 +19,13 @@ type ChefListProps = {
  *
  */
 
-export function ChefsOverview({ chefList, nav }: ChefListProps) {
+export function ChefsOverview({ users, nav }: ChefListProps) {
   //TODO, store chefs somewhere? History? Like Smash Bros
 
   return (
-    <View style={{ height: 500 }}>
+    <View style={{}}>
       <FlatList
-        data={[...chefList, { edit: true, id: "editChef" }]}
+        data={[...users, { edit: true, id: "editChef" }]}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           if (item.edit) {
@@ -36,7 +34,7 @@ export function ChefsOverview({ chefList, nav }: ChefListProps) {
                 style={styles.editChefsButton}
                 onPress={() =>
                   nav.navigate("ChefManagement", {
-                    users: { chefList },
+                    users
                   })
                 }
               >
@@ -95,22 +93,16 @@ export function ChefsOverview({ chefList, nav }: ChefListProps) {
 }
 
 type ListRowProps = {
-  chef: Chef;
+  chef: any;
   chefs: any;
   setChefs: any;
 };
-
-//signaler för att uppdatera saker
-// lägga in funktioner i en signal, ber den uppdatera om det behövs
 
 /**
  * Listans rader
  * https://reactnative.dev/docs/image
  */
 const ListRow = ({ chef }: ListRowProps) => {
-  // const delChef = () => {
-  //   setChefs(chefs.filter((x) => x.id !== chef.id));
-  // };
 
   let userImage = (
     <Image
@@ -119,13 +111,6 @@ const ListRow = ({ chef }: ListRowProps) => {
       // check chef.color to decide color of border
     />
   );
-
-  // let userColor;
-  // if ((chef.color = "Blue")) {
-  //   userColor = "#7986cb";
-  // } else {
-  //   userColor = "#1281cb";
-  // }
 
   let defaultImage = (
     <TouchableOpacity
@@ -138,7 +123,6 @@ const ListRow = ({ chef }: ListRowProps) => {
         justifyContent: "center",
         borderRadius: 100 * 2,
       }}
-      // onPress={props.onPress}
     >
       <Text style={{ color: "white", fontSize: 20 }}>{chef.name}</Text>
     </TouchableOpacity>

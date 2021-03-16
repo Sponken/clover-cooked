@@ -29,12 +29,7 @@ type AssignedTask = {
  * Cooking, skärmen som visas under tiden matlagningen sker
  */
 export function Cooking({ navigation, route }: Props) {
-  //const { recipe, users } = route.params;
-  //console.log("User in cooking: " + route.params?.users[0]);
-  //console.log("Listing route users")
-  //console.log(route.params?.recipe)
-  const users = route.params?.users.chefList;
-  const recipe = route.params?.recipe.example_recipe;
+  const { recipe, users } = route.params;
 
   const [activeUser, setActiveUser] = useState(users[0].id); //id på aktiv användare
   const [userNotifications, setUserNotifications] = useState<string[]>([]); //lista med användarid som är notifierade

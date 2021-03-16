@@ -4,23 +4,19 @@ import {
   Image,
   View,
   TouchableOpacity,
-  Button,
   SafeAreaView
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
-import React, { useState } from "react";
-
-//import { chefs as importedChefs, Chef } from "../data";
+import React from "react";
 
 import { ChefsOverview } from "../components";
 
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation";
 
-import { recipes } from "../data";
 
-import { Recipe, User } from "../data";
+import { Recipe, User, recipes } from "../data";
 
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
 type ChefManagementScreenNavigationProp = StackNavigationProp<
@@ -69,19 +65,19 @@ const example_users = [
  * Skärm för att starta matlagningen, du har valt recept innan denna
  */
 
-
 export function SessionStart({ navigation, route }: Props) {
-  //const [chefs, setChefs] = useState(importedChefs);
 
-  //console.log(route.params?.users)
+  let recipe: Recipe;
+  let users: User[];
 
-  //let recipeList = route.params.recipe;
-
-  let chefList: User[]; //: Chef[];
+  //Initiera users och recipe om de inte finns
   if(route.params?.users === undefined){
-    chefList = example_users;
-    //console.log("USERS IS UNDEFINED")
-  } else {chefList = route.params?.users.chefList}
+    users = example_users;
+  } else {users = route.params?.users}
+
+  if(route.params?.recipe === undefined){
+    recipe = example_recipe;
+  } else {recipe = route.params?.recipe}
   
   return (
     <SafeAreaView style={styles.container}>
@@ -133,17 +129,12 @@ export function SessionStart({ navigation, route }: Props) {
         
       </View>
 
-      
-
-      
-
-
       <View style={{alignItems: "center", justifyContent: "space-between"}}>
         <Text style={{fontSize: 20, margin: 10}}>{example_recipe.name}</Text>
 
-        <Image
+      <Image
           style={{height: 150, width: 300, borderRadius: 10}}
-          source={require("../../assets/image/gräddtårta_placeholder.jpeg")}
+          source={require("../../assets/image/graddtarta_placeholder.jpeg")}
         />
       </View>
       
@@ -153,20 +144,8 @@ export function SessionStart({ navigation, route }: Props) {
 
       {/* example_recipe.icon */}
       <View style={{ flex: 10, justifyContent: "center" }}>
-        <ChefsOverview chefList={chefList} nav={navigation}/>
-      </View>
-
-      {/* <View style={{ flex: 1, margin: 10 }}>
-        <Button
-          title="Edit Chefs"
-          onPress={() =>
-            navigation.navigate("ChefManagement", {
-              users: { chefList },
-            })
-          }
-        />
-      </View> */}
-      
+        <ChefsOverview users={users} nav={navigation}/>
+      </View>      
 
       {/* Conditional: ska visa "Fortsätt" om det redan är startat */}
 
@@ -184,8 +163,8 @@ export function SessionStart({ navigation, route }: Props) {
         }}
         onPress={() =>{
           navigation.navigate("Cooking", {
-            recipe: { example_recipe },
-            users: { chefList },
+            recipe,
+            users
           })
         } 
         }

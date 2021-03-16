@@ -51,7 +51,7 @@ export function Cooking({ navigation, route }: Props) {
   useEffect(() => {
     const taskAssignedListener = (task: string, cook: string) => {
       console.log("task assigned " + task + " to " + cook);
-      setAssignedTasks(new Map(assignedTasks.set(cook, task)));
+      setAssignedTasks((assigned) => new Map(assigned.set(cook, task)));
     };
 
     const passiveTaskStartedListener = (task: string, duration: number) => {
@@ -115,8 +115,11 @@ export function Cooking({ navigation, route }: Props) {
           onFinishPress={() => {
             let a = activeUser;
             let t = assignedTasks.get(a);
-            assignedTasks.delete(a);
-            setAssignedTasks(new Map(assignedTasks));
+            setAssignedTasks((assigned) => {
+              assigned.delete(a);
+              return new Map(assigned);
+            });
+
             if (t) {
               // TODO: Says scheduler may be undefined... but it is initialized in useEffect.
               scheduler.finishTask(t, a);

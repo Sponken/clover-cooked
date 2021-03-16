@@ -14,6 +14,7 @@ import { ChefList } from "../components";
 
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation";
+import { Recipe, User } from "../data";
 
 
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
@@ -33,7 +34,8 @@ type Props = {
 
 export function ChefManagement({ navigation, route }: Props) {
 
-  const [users, setUsers] = useState(route.params?.users);
+  const [users, setUsers] = useState<User[]>(route.params?.users);
+  let recipe: Recipe;
 
   return (
     <View style={styles.container}>
@@ -43,7 +45,7 @@ export function ChefManagement({ navigation, route }: Props) {
       <View style={{flex: 1, justifyContent: "flex-start", flexDirection: 'row', paddingLeft: 10}}>
         <Button
           onPress={() => {   
-            navigation.navigate("SessionStart", {users})
+            navigation.navigate("SessionStart", {recipe, users})
           }}
           title="Back"
         />
@@ -81,7 +83,7 @@ export function ChefManagement({ navigation, route }: Props) {
               id: Date.now().toString(),
               name: "New User",
               color: "#5884E0", // TODO: randomize color from e.g. 8 ones, or always take the 4 ones that work best first
-              icon: undefined
+              icon: null
             },
           ]);
         }}

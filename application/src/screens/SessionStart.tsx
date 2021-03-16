@@ -69,7 +69,7 @@ const example_users = [
 export function SessionStart({ navigation, route }: Props) {
 
   let recipe: Recipe;
-  let users: any;
+  let users: User[];
 
   //Initiera users och recipe om de inte finns
   if(route.params?.users === undefined){

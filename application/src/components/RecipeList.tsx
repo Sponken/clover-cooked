@@ -1,6 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { recipes as importedRecipes, Recipe } from "../data";
-import { StyleSheet, Text, View, FlatList, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Button,
+  Image,
+  Pressable,
+} from "react-native";
+import { getRecipeThumbnail } from "../data";
 
 type RecipeListProps = {
   viewFunction: (o: Recipe) => void;
@@ -11,20 +20,19 @@ type RecipeListProps = {
  * viewFunction körs vid tryckning på 'Visa' och används för redirection till receptet
  */
 
-export function RecipeList({ viewFunction, ...props }: RecipeListProps) {
-  const [recipes, setRecipes] = useState(importedRecipes);
-
-  useEffect(() => {
-    setRecipes(importedRecipes);
-  }, []);
+export function RecipeList({ viewFunction }: RecipeListProps) {
+  const recipes = importedRecipes;
 
   return (
     <FlatList
-      {...props}
       data={recipes}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
-        <ListRow name={item.name} onViewPressed={() => viewFunction(item)} />
+        <ListRow
+          name={item.name}
+          id={item.id}
+          onViewPressed={() => viewFunction(item)}
+        />
       )}
     />
   );
@@ -32,33 +40,43 @@ export function RecipeList({ viewFunction, ...props }: RecipeListProps) {
 
 type ListRowProps = {
   name: string;
+  id: string;
   onViewPressed: () => void;
 };
 
 /**
  * Listans rader
  */
-const ListRow = ({ name, onViewPressed }: ListRowProps) => (
-  <View style={styles.row}>
-    <View style={styles.rowInfoContainer}>
-      <Text style={styles.name}>{name}</Text>
-    </View>
-    <Button onPress={onViewPressed} title="Visa" />
-  </View>
+const ListRow = ({ name, id, onViewPressed }: ListRowProps) => (
+  <Pressable onPress={onViewPressed}>
+    {({ pressed }) => (
+      <View
+        style={[
+          styles.recipeCard,
+          pressed ? styles.recipeCardColorPressed : styles.recipeCardColor,
+        ]}
+      >
+        <View style={styles.recipeNameContainer}>
+          <Text style={styles.recipeNameText}>{name}</Text>
+        </View>
+        <View style={styles.recipeThumbnailContainer}>
+          <Image
+            source={getRecipeThumbnail(id)}
+            style={styles.recipeThumbnail}
+          />
+        </View>
+      </View>
+    )}
+  </Pressable>
 );
 
 const styles = StyleSheet.create({
-  row: {
+  recipeCard: {
     flexDirection: "row",
-    flexShrink: 1,
     alignItems: "center",
     marginVertical: 3,
-    paddingVertical: 10,
-    paddingLeft: 10,
-    paddingRight: 20,
-    backgroundColor: "#FFFFF0",
+    padding: 5,
     borderRadius: 10,
-
     // iOS shadow
     shadowColor: "#000",
     shadowOffset: {
@@ -70,14 +88,28 @@ const styles = StyleSheet.create({
     // Android shadow
     elevation: 4,
   },
-  rowInfoContainer: {
+  recipeCardColor: {
+    backgroundColor: "white",
+  },
+  recipeCardColorPressed: {
+    backgroundColor: "lightgray",
+  },
+  recipeNameContainer: {
     flex: 1,
     marginLeft: 10,
     marginTop: 2,
   },
-  name: {
+  recipeNameText: {
     marginLeft: 5,
     fontSize: 20,
-    lineHeight: 20,
+  },
+  recipeThumbnail: {
+    overflow: "hidden",
+    height: 70,
+    width: 70,
+    borderRadius: 10,
+  },
+  recipeThumbnailContainer: {
+    marginLeft: 5,
   },
 });

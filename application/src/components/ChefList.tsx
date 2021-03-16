@@ -1,4 +1,4 @@
-import React, { useEffect, useState, TouchableOpacity } from "react";
+import React, { useEffect} from "react";
 //import { chefs as importedChefs, Chef } from "../data";
 import {
   StyleSheet,
@@ -112,7 +112,6 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
       </View> */}
 
       <Button
-        style={{ color: "black" }}
         onPress={() => setChefList(chefList.filter((x) => x.id !== chef.id))}
         title="x" // Delete?
       />

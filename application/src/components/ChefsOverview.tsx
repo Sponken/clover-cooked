@@ -25,10 +25,10 @@ export function ChefsOverview({ users, nav }: ChefListProps) {
   return (
     <View style={{}}>
       <FlatList
-        data={[...users, { edit: true, id: "editChef" }]}
+        data={[...users, {id: "editChef" }]}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
-          if (item.edit !== undefined) {
+          if (item.id === "editChef") {
             return (
               <TouchableOpacity
                 style={styles.editChefsButton}
@@ -210,3 +210,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
+
+export default ChefsOverview;

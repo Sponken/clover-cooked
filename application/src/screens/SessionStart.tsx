@@ -17,6 +17,7 @@ import { RootStackParamList } from "../navigation";
 
 
 import { Recipe, User, recipes } from "../data";
+import { DrawerActions } from "@react-navigation/routers";
 
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
 type ChefManagementScreenNavigationProp = StackNavigationProp<
@@ -68,7 +69,7 @@ const example_users = [
 export function SessionStart({ navigation, route }: Props) {
 
   let recipe: Recipe;
-  let users;
+  let users: any;
 
   //Initiera users och recipe om de inte finns
   if(route.params?.users === undefined){
@@ -94,7 +95,7 @@ export function SessionStart({ navigation, route }: Props) {
             borderRadius: 30 * 2,
             flexDirection: "row",
           }}
-          onPress={() => navigation.toggleDrawer()}
+          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         >
           <Image
             style={styles.chefImageInList}

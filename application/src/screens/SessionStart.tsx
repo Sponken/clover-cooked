@@ -37,29 +37,10 @@ const example_recipe = recipes[0];
 const example_users = [
   {
     id: "1",
-    name: "Alexandra",
+    name: "Test User",
     color: "#EB4F40",
     icon: null //require("../../assets/image/icon.png"),
-  },
-  {
-    id: "2",
-    name: "EO",
-    color: "#5884E0",
-    icon: null //require("../../assets/image/icon.png"),
-  },
-  {
-    id: "3",
-    name: "Pontus",
-    color: "#579668",
-    icon: null, //require("../../assets/image/icon.png"),
-  },
-  // {
-  //   id: "4",
-  //   name:
-  //     "William",
-  //   color: "#F19A38",
-  //   icon: null, // //require("../../assets/image/icon.png"),
-  // },
+  }
 ];
 
 /**
@@ -67,6 +48,7 @@ const example_users = [
  */
 
 export function SessionStart({ navigation, route }: Props) {
+  console.log(route.params?.users);
 
   let recipe: Recipe;
   let users: User[];

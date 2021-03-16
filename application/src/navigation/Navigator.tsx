@@ -34,7 +34,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 export function Navigator() {
   return (
     <NavigationContainer>
-      <Drawer.Navigator initialRouteName="Current Session">
+      <Drawer.Navigator initialRouteName="RecipeLibrary">
         <Drawer.Screen
           name="Home"
           component={Home}

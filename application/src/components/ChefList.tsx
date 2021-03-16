@@ -1,4 +1,4 @@
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 //import { chefs as importedChefs, Chef } from "../data";
 import {
   StyleSheet,
@@ -51,7 +51,6 @@ type ListRowProps = {
  * https://reactnative.dev/docs/image
  */
 const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
-
   //Här spagettas det hårt, funktionen gör en kopia på chefList och splicear in den chef vi vill ändra.
   //Funktionen kommer göra det efter varje gång man ändrar texten, vet inte om det innebär varje gång man
   //skriver en ny bokstav eller när man editat klart.

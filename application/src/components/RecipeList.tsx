@@ -16,7 +16,7 @@ type RecipeListProps = {
 };
 
 /**
- * Recept lista, komponent som visar en FlatList med recept.
+ * Receptlista, komponent som visar en FlatList med recept.
  * viewFunction körs vid tryckning på 'Visa' och används för redirection till receptet
  */
 

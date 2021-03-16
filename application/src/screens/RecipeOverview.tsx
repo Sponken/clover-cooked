@@ -123,7 +123,14 @@ export function RecipeOverview({ navigation, route }: Props) {
       </View>
       <View style={styles.buttonContainer}>
         <Pressable
-          onPress={() => navigation.navigate("SessionStart", { recipe })}
+          onPress={() =>
+            navigation.navigate("Current Session", {
+              screen: "SessionStart",
+              params: {
+                recipe,
+              },
+            })
+          }
         >
           {({ pressed }) => (
             <View

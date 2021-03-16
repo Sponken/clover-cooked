@@ -75,9 +75,12 @@ export function Home({ navigation }: Props) {
       <Button
         title="Matlagningsskärm"
         onPress={() =>
-          navigation.navigate("Cooking", {
-            recipe,
-            users,
+          navigation.navigate("Current Session", {
+            screen: "Cooking",
+            params: {
+              recipe,
+              users,
+            },
           })
         }
       />

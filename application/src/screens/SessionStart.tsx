@@ -19,6 +19,8 @@ import { RootStackParamList } from "../navigation";
 import { Recipe, User, recipes } from "../data";
 import { DrawerActions } from "@react-navigation/routers";
 
+import { getRecipeThumbnail } from "../data";
+
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
 type ChefManagementScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -84,7 +86,6 @@ export function SessionStart({ navigation, route }: Props) {
             source={require("../../assets/image/hamburger.png")} //TODO: chef.image
             // check chef.color to decide color of border
           />
-          
 
         </TouchableOpacity>
         <View style={{alignItems: "flex-end", justifyContent: "flex-end"}}>
@@ -113,11 +114,11 @@ export function SessionStart({ navigation, route }: Props) {
       </View>
 
       <View style={{alignItems: "center", justifyContent: "space-between"}}>
-        <Text style={{fontSize: 20, margin: 10}}>{example_recipe.name}</Text>
+        <Text style={{fontSize: 20, margin: 10}}>{recipe.name}</Text>
 
       <Image
           style={{height: 150, width: 300, borderRadius: 10}}
-          source={require("../../assets/image/graddtarta_placeholder.jpeg")}
+          source={getRecipeThumbnail(recipe.id)}
         />
       </View>
       

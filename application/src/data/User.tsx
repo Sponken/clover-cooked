@@ -3,5 +3,5 @@ export type User = {
   id: string;
   name: string;
   color: ColorValue;
-  icon: ImageSourcePropType | undefined;
+  icon: ImageSourcePropType | null;
 };

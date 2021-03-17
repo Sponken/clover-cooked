@@ -5,7 +5,8 @@ import {
   View,
   Button,
   TouchableOpacity,
-  SafeAreaView
+  SafeAreaView,
+  Pressable,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
@@ -14,7 +15,7 @@ import { ChefList } from "../components";
 
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation";
-import { Recipe, User } from "../data";
+import { User } from "../data";
 
 
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
@@ -35,7 +36,6 @@ type Props = {
 export function ChefManagement({ navigation, route }: Props) {
 
   const [users, setUsers] = useState<User[]>(route.params?.users);
-  let recipe: Recipe;
 
   return (
     <View style={styles.container}>
@@ -43,21 +43,14 @@ export function ChefManagement({ navigation, route }: Props) {
         {/* TODO: not sure why content outside of screen */}
       </View>
       <View style={{flex: 1, justifyContent: "flex-start", flexDirection: 'row', paddingLeft: 10}}>
-        <Button
-          onPress={() => {   
-            navigation.navigate("SessionStart", {recipe, users})
-          }}
-          title="Back"
-        />
+        <Pressable style={styles.klarContainer} onPress={() => {   
+            navigation.navigate("SessionStart", {users})
+          }}>
+          <Text style={{fontSize: 18, color:"white", fontWeight: "bold"}}>Klar</Text>
+        </Pressable>
+        
       </View>
-      {/* <View style={{flex: 1}}>
-        <Button
-          title="Log from ChefManagemnet"
-          onPress={() => {
-            console.log("Logging chefList using Chefmanagement button:")
-            console.log(chefList)}}
-        />
-      </View> */}
+
       
       <View style={{flex: 8}}>
         <ChefList chefList={users} setChefList={setUsers}/>
@@ -114,5 +107,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
   },
+  klarContainer: {
+    padding: 10,
+    height: 40,
+    backgroundColor: "green",
+    borderRadius: 8,
+  },
   
 });
+
+

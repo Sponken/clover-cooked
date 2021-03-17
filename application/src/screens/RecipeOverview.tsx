@@ -6,6 +6,7 @@ import {
   ImageBackground,
   Pressable,
   useWindowDimensions,
+  SafeAreaView,
 } from "react-native";
 import React from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -88,13 +89,18 @@ export function RecipeOverview({ navigation, route }: Props) {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
         <View style={styles.topImageContainer}>
           <ImageBackground
             source={getRecipeThumbnail(recipe.id)}
             style={styles.topImage}
           >
+            <Pressable onPress={() => navigation.navigate("RecipeLibrary")}>
+              <View style={styles.backIconContainer}>
+                <Image source={require("../../assets/image/backImg.png")} />
+              </View>
+            </Pressable>
             <View style={styles.timeContainer}>
               <Image
                 style={styles.timeIcon}
@@ -144,7 +150,7 @@ export function RecipeOverview({ navigation, route }: Props) {
           )}
         </Pressable>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -161,7 +167,16 @@ const styles = StyleSheet.create({
   },
   topImage: {
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
+  },
+  backIconContainer: {
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
+    margin: 6,
+    padding: 12,
+    borderRadius: 12,
+    flexDirection: "row",
+    alignItems: "center",
   },
   timeContainer: {
     alignSelf: "flex-end",

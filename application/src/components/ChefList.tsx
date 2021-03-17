@@ -8,6 +8,7 @@ import {
   Button,
   Image,
   TextInput,
+  Pressable,
 } from "react-native";
 import { Console } from "console";
 
@@ -22,10 +23,6 @@ type ChefListProps = {
  */
 
 export function ChefList({ chefList, setChefList }: ChefListProps) {
-  useEffect(() => {
-    // setChefs(setChefs(edit(chefs.findIndex((el) => el.id === chef.id), chef));
-  }, []);
-
   return (
     <View style={{ height: 800 }}>
       <FlatList
@@ -61,7 +58,44 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
       id: chef.id,
       name: name,
       color: chef.color,
-      icon: chef.ico,
+      icon: chef.icon,
+    };
+
+    b.splice(index, 1, tempChef);
+    return b;
+  }
+
+  function editColor(index, chef) {
+    let b = Array.from(chefList);
+
+    let color = [
+      "#5884E0",
+      "#9400D3",
+      "#4B0082",
+      "#0000FF",
+      "#00FF00",
+      "#FFF000",
+      "#FF7F00",
+      "#FF0000",
+    ];
+
+    function checkColor(col) {
+      return col == chef.color.toString();
+    }
+    let colIndex = color.findIndex(checkColor);
+    //let colIndex = color.findIndex((c) => c == chef.color.toString());
+
+    if (colIndex < color.length - 1) {
+      colIndex += 1;
+    } else {
+      colIndex = 0;
+    }
+
+    let tempChef = {
+      id: chef.id,
+      name: chef.name,
+      color: color[colIndex],
+      icon: chef.icon,
     };
 
     b.splice(index, 1, tempChef);
@@ -71,9 +105,21 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
   return (
     <View style={styles.row}>
       <View style={styles.rowInfoContainer}>
-        <Image
-          style={styles.chefImageInList}
-          source={require("../../assets/image/favicon.png")}
+        <Pressable
+          style={{
+            margin: 0,
+            height: 30,
+            width: 30,
+            backgroundColor: chef.color, //userColor,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 100 * 2,
+          }}
+          onPress={() => {
+            setChefList(
+              editColor(chefList.findIndex((c) => c.id === chef.id), chef)
+            );
+          }}
         />
       </View>
       <View style={{ flex: 4, flexDirection: "row", alignItems: "flex-start" }}>
@@ -93,22 +139,6 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
           }}
         />
       </View>
-      {/* <View>
-        <TouchableOpacity
-          style={{
-            marginRight: 10,
-            height: 25,
-            width: 25,
-            borderRadius: 10,
-          }}
-          onPress={() => setChefList(chefList.filter((x) => x.id !== chef.id))}
-        >
-          <Image
-            style={styles.chefImageInList}
-            source={require("../../assets/image/editChef.png")} //TODO: chef.image
-          />
-        </TouchableOpacity>
-      </View> */}
 
       <Button
         onPress={() => setChefList(chefList.filter((x) => x.id !== chef.id))}
@@ -129,17 +159,6 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     backgroundColor: "#FFFFFF",
     borderRadius: 10,
-
-    // // iOS shadow
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.23,
-    // shadowRadius: 2.62,
-    // // Android shadow
-    // elevation: 4,
   },
   rowInfoContainer: {
     flex: 1,

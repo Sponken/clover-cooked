@@ -4,7 +4,8 @@ import {
   Image,
   View,
   TouchableOpacity,
-  SafeAreaView
+  SafeAreaView,
+  Pressable
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
@@ -50,7 +51,6 @@ const example_users = [
  */
 
 export function SessionStart({ navigation, route }: Props) {
-  console.log(route.params?.users);
 
   let recipe: Recipe;
   let users: User[];
@@ -61,8 +61,38 @@ export function SessionStart({ navigation, route }: Props) {
   } else {users = route.params?.users}
 
   if(route.params?.recipe === undefined){
-    recipe = example_recipe;
   } else {recipe = route.params?.recipe}
+
+  const EmptyRecipeCheck = () => {
+    if(recipe === undefined){
+      return(
+        <View style={{height: 155}}>
+        <Text style={{fontSize: 20, margin: 50, justifyContent: "center",}}> No recipe chosen </Text>
+        </View>
+      )
+    }
+    else{
+      return (
+        <View style={{alignItems: "center", justifyContent: "space-between"}}>
+        <Text style={{fontSize: 20, margin: 10}}>{recipe.name}</Text>
+
+      <Image
+          style={{height: 150, width: 300, borderRadius: 10}}
+          source={getRecipeThumbnail(recipe.id)}
+        />
+      </View>
+      )
+    }
+  }
+
+  function startButtonSessionCheck() {
+    if(route.params?.recipe === undefined){
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
   
   return (
     <SafeAreaView style={styles.container}>
@@ -86,42 +116,28 @@ export function SessionStart({ navigation, route }: Props) {
             source={require("../../assets/image/hamburger.png")} //TODO: chef.image
             // check chef.color to decide color of border
           />
-
         </TouchableOpacity>
+
         <View style={{alignItems: "flex-end", justifyContent: "flex-end"}}>
-          <TouchableOpacity
-              style={{
-                margin: 10,
-                height: 40,
-                width: 70,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 10,
-                backgroundColor: "red",
-
-              }}
-              onPress={() =>{
-                navigation.navigate("RecipeLibrary")
+          <Pressable
+              style={styles.deleteSession}
+              onPress={() =>{{
+                  navigation.setParams({ recipe: undefined })
+                  navigation.navigate("RecipeLibrary", {
+                    screen: "RecipeLibrary",
+                  })
+                } 
               } 
-              }
-            >
-              <Text style={{color: "white", fontWeight: "bold"}}>Cancel</Text>
-
-            </TouchableOpacity>
-
+              }>
+              <Text style={{color: "white", fontWeight: "bold"}}>Delete Session</Text>
+            </Pressable>
         </View>
         
       </View>
 
-      <View style={{alignItems: "center", justifyContent: "space-between"}}>
-        <Text style={{fontSize: 20, margin: 10}}>{recipe.name}</Text>
-
-      <Image
-          style={{height: 150, width: 300, borderRadius: 10}}
-          source={getRecipeThumbnail(recipe.id)}
-        />
-      </View>
+      <EmptyRecipeCheck />
       
+
       {/* <View style={{height: 10}}>
         
         </View> */}
@@ -134,37 +150,18 @@ export function SessionStart({ navigation, route }: Props) {
       {/* Conditional: ska visa "Fortsätt" om det redan är startat */}
 
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", margin: 10}}>
-      <TouchableOpacity
-        style={{
-          height: 70,
-          width: 250,
-          alignItems: "center",
-          // justifyContent: "center",
-          borderRadius: 10,
-          backgroundColor: "#186C3B",
-          flexDirection: "row",
-          margin: 20,
-        }}
-        onPress={() =>{
-          navigation.navigate("Cooking", {
-            recipe,
-            users
-          })
-        } 
-        }
+      
+      <Pressable disabled={startButtonSessionCheck()} 
+        style={startButtonSessionCheck() ? styles.cannotBePressed : styles.canBePressed} 
+        onPress={() =>{navigation.navigate("Cooking", {recipe,users})} }
       >
-        
         <Image
           style={{height: 32, width: 24, margin: 15, marginLeft: 63}}
           source={require("../../assets/image/play-button.png")} //TODO: chef.image
           // check chef.color to decide color of border
         />
-
         <Text style={{color: "white", fontSize: 32}}>Starta</Text>
-        
-
-
-      </TouchableOpacity>
+      </Pressable>
       </View>
 
       <StatusBar style="auto" />
@@ -179,6 +176,15 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     // flexDirection: "column"
   },
+  deleteSession:{
+    margin: 10,
+    height: 40,
+    width: 70,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+    backgroundColor: "red",
+  },
   chefImageInList: {
     height: 30,
     width: 30,
@@ -187,6 +193,26 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
   },
+  canBePressed: {
+    height: 70,
+    width: 250,
+    alignItems: "center",
+    borderRadius: 10,
+    backgroundColor: "#186C3B",
+    flexDirection: "row",
+    margin: 20,
+  },
+  cannotBePressed: {
+    height: 70,
+    width: 250,
+    alignItems: "center",
+    borderRadius: 10,
+    backgroundColor: "gray",
+    flexDirection: "row",
+    margin: 20,
+
+  },
 });
+
 
 export default SessionStart;

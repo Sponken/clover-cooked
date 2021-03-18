@@ -55,6 +55,7 @@ export function Cooking({ navigation, route }: Props) {
 
     const passiveTaskStartedListener = (task: string, finish: Date) => {
       // TODO: Hur hanteras passiva tasks?
+      
     };
     let cooks = users.map((u) => u.id);
     let ssss: Scheduler = createBasicScheduler(
@@ -63,6 +64,8 @@ export function Cooking({ navigation, route }: Props) {
     );
     const taskAssignedUnsubscribe = ssss.subscribeTaskAssigned(taskAssignedListener);
     const passiveTaskUnsubscribe = ssss.subscribePassiveTaskStarted(passiveTaskStartedListener);
+    
+    setAssignedTasks(ssss.getTasks());
     setScheduler(ssss);
     return () => {taskAssignedUnsubscribe(); passiveTaskUnsubscribe();}
   }, []);

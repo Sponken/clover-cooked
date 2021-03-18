@@ -51,6 +51,10 @@ export interface Scheduler {
    * Hur lång tid som är kvar i minuter innan maten är klar
    */
   timeLeft: () => number;
+  /**
+   * Hämtar nuvarande tasks
+   */
+  getTasks: () => Map<CookID, TaskID>
 
   // Subscription listor med alla listerner funktioner
   readonly passiveTaskSubscribers: PassiveTaskListener[];

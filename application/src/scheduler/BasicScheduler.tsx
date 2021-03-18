@@ -1,5 +1,5 @@
 import { Recipe, Task } from "../data";
-import {Scheduler, CookID, PassiveTaskListener, TaskAssignedListener} from "./Scheduler"
+import {Scheduler, CookID, PassiveTaskSubscriber, TaskAssignedSubscriber} from "./Scheduler"
 import {includesAll, removeElement} from "../utils"
 
 type TaskID = string
@@ -14,8 +14,8 @@ type TaskID = string
 export function createBasicScheduler(recipe: Recipe, 
   cooks: CookID[], 
   ): Scheduler {
-  const taskAssignedSubscribers: TaskAssignedListener[] = [];
-  const passiveTaskSubscribers: PassiveTaskListener[] = [];
+  const taskAssignedSubscribers: TaskAssignedSubscriber[] = [];
+  const passiveTaskSubscribers: PassiveTaskSubscriber[] = [];
   let scheduler: Scheduler = {
     taskAssignedSubscribers: taskAssignedSubscribers,
     passiveTaskSubscribers: passiveTaskSubscribers,

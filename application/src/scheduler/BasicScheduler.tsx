@@ -1,5 +1,5 @@
 import { Recipe, Task } from "../data";
-import {Scheduler, CookID} from "./Scheduler"
+import {Scheduler, CookID, PassiveTaskListener, TaskAssignedListener} from "./Scheduler"
 import {includesAll, removeElement} from "../utils"
 
 type TaskID = string
@@ -13,10 +13,12 @@ type TaskID = string
 // ```
 export function createBasicScheduler(recipe: Recipe, 
   cooks: CookID[], 
-  taskAssignedListener: (task: TaskID, cook: CookID) => void, 
-  passiveTaskStartedListener: (task: TaskID, duration: number) => void
   ): Scheduler {
+  const taskAssignedSubscribers: TaskAssignedListener[] = [];
+  const passiveTaskSubscribers: PassiveTaskListener[] = [];
   let scheduler: Scheduler = {
+    taskAssignedSubscribers: taskAssignedSubscribers,
+    passiveTaskSubscribers: passiveTaskSubscribers,
     cooks: cooks,
     recipe: recipe,
     completedTasks: [],
@@ -27,8 +29,8 @@ export function createBasicScheduler(recipe: Recipe,
       this.currentTasks.delete(cook);
       assignNewTask(cook, this)
     },
-    taskAssignedListener: taskAssignedListener,
-    passiveTaskStartedListener: passiveTaskStartedListener,
+    subscribeTaskAssigned: getSubscribeFunction(taskAssignedSubscribers),
+    subscribePassiveTaskStarted: getSubscribeFunction(passiveTaskSubscribers),
     extendPassive: function(task: TaskID, add: number){
 
     },
@@ -82,7 +84,7 @@ function assignNewTask(cook: CookID, scheduler: Scheduler): TaskID | undefined {
   let task = getNextTask(scheduler.recipe, scheduler.completedTasks, scheduler.currentTasks);
   if (task) {
     scheduler.currentTasks.set(cook, task);
-    scheduler.taskAssignedListener(task, cook)
+    scheduler.taskAssignedSubscribers.forEach((fn) => fn(task, cook));
   }
   return task;
 }
@@ -142,4 +144,17 @@ function getTask(recipe: Recipe, taskID: TaskID): Task{
       return recipe.tasks[i]
   }
   throw "getTask: Task not found"
+}
+/**
+ * Skapar subscription function till en given array med subscribers
+ * @param subList array där subscribers sparas
+ * @returns subscription function till subList som returnerar unsub function
+ */
+function getSubscribeFunction<FunctionType>(subList: FunctionType[]) {
+  const _subscribe = (subscribedFunction: FunctionType) => {
+    const _unsubscribe = () => subList.filter((value) => value !== subscribedFunction);
+    subList.push(subscribedFunction);
+    return _unsubscribe;
+  }
+  return _subscribe;
 }

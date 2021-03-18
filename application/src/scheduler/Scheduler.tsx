@@ -3,6 +3,9 @@ import { Recipe, Task } from "../data";
 export type CookID = string;
 export type TaskID = string;
 
+export type PassiveTaskListener = (task: TaskID, finish: Date) => void;
+export type TaskAssignedListener = (task: TaskID | undefined, cook: CookID) => void;
+
 /** Detta representerar en schemaläggare som har koll på och delar ut tasks.
  * Enbart metoderna bör användas. Ändra inte i de övriga fälten
  */
@@ -19,11 +22,11 @@ export interface Scheduler {
   /**
    * Metod som kallas på när en task är tilldelad
    */
-  taskAssignedListener: (task: TaskID, cook: CookID) => void;
+  subscribeTaskAssigned: (f: TaskAssignedListener) => (() => void);
   /**
    * Metod som kallas på när en ny passiv task är startad
    */
-  passiveTaskStartedListener: (task: TaskID, duration: number) => void;
+  subscribePassiveTaskStarted: (f: PassiveTaskListener) => (() => void);
   /**
    * Utöker tiden på en pågående passiv task
    */
@@ -48,4 +51,9 @@ export interface Scheduler {
    * Hur lång tid som är kvar i minuter innan maten är klar
    */
   timeLeft: () => number;
+
+  // Subscription listor med alla listerner funktioner
+  readonly passiveTaskSubscribers: PassiveTaskListener[];
+  readonly taskAssignedSubscribers: TaskAssignedListener[];
+
 }

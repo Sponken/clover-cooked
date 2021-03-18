@@ -42,28 +42,29 @@ export function Cooking({ navigation, route }: Props) {
   // `setAssignedTasks(new Map(assignedTasks.set(key, new_value)));`
   // för att värdet ska uppdateras i react-trädet.
   // Source: https://medium.com/swlh/using-es6-map-with-react-state-hooks-800b91eedd5f
-  const [assignedTasks, setAssignedTasks] = useState<Map<string, string>>(
+  const [assignedTasks, setAssignedTasks] = useState<Map<string, string | undefined>>(
     new Map()
   );
 
   const [scheduler, setScheduler] = useState<Scheduler>();
   useEffect(() => {
-    const taskAssignedListener = (task: string, cook: string) => {
+    const taskAssignedListener = (task: string | undefined, cook: string) => {
       console.log("task assigned " + task + " to " + cook);
       setAssignedTasks((assigned) => new Map(assigned.set(cook, task)));
     };
 
-    const passiveTaskStartedListener = (task: string, duration: number) => {
+    const passiveTaskStartedListener = (task: string, finish: Date) => {
       // TODO: Hur hanteras passiva tasks?
     };
     let cooks = users.map((u) => u.id);
     let ssss: Scheduler = createBasicScheduler(
       recipe,
       cooks,
-      taskAssignedListener,
-      passiveTaskStartedListener
     );
+    const taskAssignedUnsubscribe = ssss.subscribeTaskAssigned(taskAssignedListener);
+    const passiveTaskUnsubscribe = ssss.subscribePassiveTaskStarted(passiveTaskStartedListener);
     setScheduler(ssss);
+    return () => {taskAssignedUnsubscribe(); passiveTaskUnsubscribe();}
   }, []);
 
   return (

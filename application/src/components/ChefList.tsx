@@ -2,15 +2,15 @@ import React, { useEffect } from "react";
 //import { chefs as importedChefs, Chef } from "../data";
 import {
   StyleSheet,
-  Text,
   View,
   FlatList,
   Button,
-  Image,
   TextInput,
   Pressable,
+  ColorValue,
 } from "react-native";
-import { Console } from "console";
+
+import { User } from "../data";
 
 type ChefListProps = {
   chefList: any;
@@ -26,7 +26,6 @@ export function ChefList({ chefList, setChefList }: ChefListProps) {
   return (
     <View style={{ height: 800 }}>
       <FlatList
-        // {...props}
         data={chefList}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
@@ -51,22 +50,22 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
   //Här spagettas det hårt, funktionen gör en kopia på chefList och splicear in den chef vi vill ändra.
   //Funktionen kommer göra det efter varje gång man ändrar texten, vet inte om det innebär varje gång man
   //skriver en ny bokstav eller när man editat klart.
-  function edit(index, chef, name) {
-    let b = Array.from(chefList);
+  function edit(index: number, chef: User, name: string) {
+    let newChefs: User[] = Array.from(chefList);
 
-    let tempChef = {
+    let tempChef: User = {
       id: chef.id,
       name: name,
       color: chef.color,
       icon: chef.icon,
     };
 
-    b.splice(index, 1, tempChef);
-    return b;
+    newChefs.splice(index, 1, tempChef);
+    return newChefs;
   }
 
-  function editColor(index, chef) {
-    let b = Array.from(chefList);
+  function editColor(index: number, chef: User) {
+    let newChefs = Array.from(chefList);
 
     let color = [
       "#5884E0",
@@ -79,9 +78,10 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
       "#FF0000",
     ];
 
-    function checkColor(col) {
+    function checkColor(col: ColorValue) {
       return col == chef.color.toString();
     }
+
     let colIndex = color.findIndex(checkColor);
     //let colIndex = color.findIndex((c) => c == chef.color.toString());
 
@@ -98,30 +98,23 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
       icon: chef.icon,
     };
 
-    b.splice(index, 1, tempChef);
-    return b;
+    newChefs.splice(index, 1, tempChef);
+    return newChefs;
   }
 
   return (
     <View style={styles.row}>
       <View style={styles.rowInfoContainer}>
         <Pressable
-          style={{
-            margin: 0,
-            height: 30,
-            width: 30,
-            backgroundColor: chef.color, //userColor,
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 100 * 2,
-          }}
+          style={[styles.chefColor, { backgroundColor: chef.color }]} //userColor,}
           onPress={() => {
             setChefList(
-              editColor(chefList.findIndex((c) => c.id === chef.id), chef)
+              editColor(chefList.findIndex((c: User) => c.id === chef.id), chef)
             );
           }}
         />
       </View>
+
       <View style={{ flex: 4, flexDirection: "row", alignItems: "flex-start" }}>
         <TextInput
           style={{
@@ -134,14 +127,20 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
           defaultValue={chef.name}
           onChangeText={(name) => {
             setChefList(
-              edit(chefList.findIndex((c) => c.id === chef.id), chef, name)
+              edit(
+                chefList.findIndex((c: User) => c.id === chef.id),
+                chef,
+                name
+              )
             );
           }}
         />
       </View>
 
       <Button
-        onPress={() => setChefList(chefList.filter((x) => x.id !== chef.id))}
+        onPress={() =>
+          setChefList(chefList.filter((c: User) => c.id !== chef.id))
+        }
         title="x" // Delete?
       />
     </View>
@@ -169,6 +168,14 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     width: 50,
     height: 50,
+  },
+  chefColor: {
+    margin: 0,
+    height: 30,
+    width: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 100 * 2,
   },
   name: {
     marginLeft: 5,

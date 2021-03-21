@@ -3,9 +3,7 @@ import {
   Text,
   Image,
   View,
-  Button,
   TouchableOpacity,
-  SafeAreaView,
   Pressable,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
@@ -43,7 +41,8 @@ export function ChefManagement({ navigation, route }: Props) {
         {/* TODO: not sure why content outside of screen */}
       </View>
       <View style={{flex: 1, justifyContent: "flex-start", flexDirection: 'row', paddingLeft: 10}}>
-        <Pressable style={styles.klarContainer} onPress={() => {   
+        
+        <Pressable style={styles.doneContainer} onPress={() => {   
             navigation.navigate("SessionStart", {users})
           }}>
           <Text style={{fontSize: 18, color:"white", fontWeight: "bold"}}>Klar</Text>
@@ -93,10 +92,6 @@ export function ChefManagement({ navigation, route }: Props) {
 
       </View>
 
-      
-
-    
-
       <StatusBar style="auto" />
     </View>
   );
@@ -107,7 +102,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
   },
-  klarContainer: {
+  doneContainer: {
     padding: 10,
     height: 40,
     backgroundColor: "green",

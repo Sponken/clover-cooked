@@ -21,6 +21,7 @@ import { Recipe, User, recipes } from "../data";
 import { DrawerActions } from "@react-navigation/routers";
 
 import { getRecipeThumbnail } from "../data";
+import { ScreenContainer } from "react-native-screens";
 
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
 type ChefManagementScreenNavigationProp = StackNavigationProp<
@@ -97,42 +98,36 @@ export function SessionStart({ navigation, route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
 
-      <View style={{ flex: 1, padding: 10, flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between"}}>
-        <TouchableOpacity
-          style={{
-            margin: 10,
-            height: 30,
-            width: 30,
-            
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 30 * 2,
-            flexDirection: "row",
-          }}
+      <View style={styles.topContainer}>
+        <Pressable
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         >
-          <Image
-            style={styles.chefImageInList}
-            source={require("../../assets/image/hamburger.png")} //TODO: chef.image
-            // check chef.color to decide color of border
-          />
-        </TouchableOpacity>
+          <View>
+            <Image
+              style={styles.hamburgerContainer}
+              source={require("../../assets/image/hamburger.png")}
+            />
+          </View>
 
-        <View style={{alignItems: "flex-end", justifyContent: "flex-end"}}>
-          <Pressable
-              style={styles.deleteSession}
-              onPress={() =>{{
-                  navigation.setParams({ recipe: undefined })
-                  navigation.navigate("RecipeLibrary", {
-                    screen: "RecipeLibrary",
-                  })
-                } 
-              } 
-              }>
-              <Text style={{color: "white", fontWeight: "bold"}}>Delete Session</Text>
-            </Pressable>
-        </View>
-        
+            
+        </Pressable>
+
+        <View style={styles.titleContainer}></View>
+
+        <Pressable
+          style={styles.deleteSession}
+          onPress={() =>{{
+            navigation.setParams({ recipe: undefined })
+            navigation.navigate("RecipeLibrary", {
+              screen: "RecipeLibrary"
+              })
+            }} 
+          }>
+          <Text style={{color: "white", fontWeight: "bold"}}>Delete Session</Text>
+        </Pressable>
+
+        {/*Vien under är fulhack för att centrera texten på hela skärmen*/}
+        <View style={styles.topContainer}></View>
       </View>
 
       <EmptyRecipeCheck />
@@ -176,8 +171,36 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     // flexDirection: "column"
   },
-  deleteSession:{
+
+  drawer: {
     margin: 10,
+    height: 30,
+    width: 30,
+    
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 30 * 2,
+    flexDirection: "row",
+  },
+
+  topContainer: {
+    height: 30,
+    flexDirection: "row",
+    margin: 10,
+  },
+  hamburgerContainer: {
+    height: 30,
+    width: 30,
+  },
+  titleContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    flexGrow: 1,
+  },
+
+  deleteSession:{
+
+    
     height: 40,
     width: 70,
     alignItems: "center",
@@ -185,6 +208,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "red",
   },
+
   chefImageInList: {
     height: 30,
     width: 30,

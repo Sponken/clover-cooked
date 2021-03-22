@@ -17,7 +17,7 @@ type Props = {
 };
 
 /**
- * Recept bibliotek, skärm för att visa och navigera till recept
+ * Receptbibliotek, skärm för att visa och navigera till recept
  */
 
 export function RecipeLibrary({ navigation }: Props) {

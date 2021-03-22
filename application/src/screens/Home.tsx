@@ -30,14 +30,16 @@ type Props = {
 };
 
 /**
- * Hem skärm, första skärmen som visas vid vanlig öppning av appen
+ * Hemskärm, första skärmen som visas vid vanlig öppning av appen
+ * TODO: Ifall recept igång, visa det som första skärm,
+ *  annars Receptbibliotek som första skärmen, menu om en klickar på Hamburger top left
  */
 export function Home({ navigation }: Props) {
   return (
     <View style={styles.container}>
-      <Text>Hello World!</Text>
+      <Text>Fortsätt sessionen</Text>
       <Button
-        title="Recept Bibliotek"
+        title="Receptbibliotek"
         onPress={() => navigation.navigate("RecipeLibrary")}
       />
       <Button

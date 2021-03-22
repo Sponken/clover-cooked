@@ -79,6 +79,15 @@
       "resources": [{ "resourceId": "ugn", "amount": 1 }]
     },
     {
+      "id": "ugnVarm",
+      "name": "Värm ugnen",
+      "instructions": "Låt ugnen bli 225°C.",
+      "passive": true,
+      "estimatedTime": 10,
+      "ingredients": [],
+      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
       "id": "bunkeBlanda",
       "name": "Blanda i bunke",
       "instructions": "Blanda mjöl, socker, salt i bunke.",
@@ -205,6 +214,10 @@
       "dependsOn": ["hällUppLingon"]
     },
     {
+      "taskId": "ugnVarm",
+      "dependsOn": ["ugnStart"]
+    },
+    {
       "taskId": "vispaBunke",
       "dependsOn": ["bunkeBlanda"]
     },
@@ -230,7 +243,7 @@
     },
     {
       "taskId": "smetUgn",
-      "dependsOn": ["hällSmet"]
+      "dependsOn": ["hällSmet", "ugnVarm"]
     },
     {
       "taskId": "grädda",

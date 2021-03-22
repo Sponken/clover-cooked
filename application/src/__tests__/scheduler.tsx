@@ -26,7 +26,7 @@ describe("Basic scheduler", () => {
   let cooks: string[] = ["musse", "kalle"];
 
   beforeEach(() => {
-    scheduler = createBasicScheduler(recipe, cooks, () => {}, () => {});
+    scheduler = createBasicScheduler(recipe, cooks);
   });
 
   test("Scheduler exists", () => {

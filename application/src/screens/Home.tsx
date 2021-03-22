@@ -6,7 +6,7 @@ import { RootStackParamList } from "../navigation";
 import { recipes } from "../data";
 
 // Exempelkod för att matlagnings skärmen skall fungera
-const example_recipe = recipes[1];
+const example_recipe = recipes[2];
 const example_users = [
   {
     id: "kalle",
@@ -20,7 +20,6 @@ const example_users = [
     color: "blue",
     icon: require("../../assets/image/icon.png"),
   },
-
 ];
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;

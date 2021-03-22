@@ -51,7 +51,6 @@ export function createBasicScheduler(recipe: Recipe,
     },
     addCook: function(cook: CookID){
       cooks.includes(cook) ? "" : cooks.push(cook)
-      let task = getNextTask(recipe, this.completedTasks, this.currentTasks)
       assignNewTask(cook, this)
 
     },

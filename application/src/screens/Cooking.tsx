@@ -1,4 +1,4 @@
-import { StyleSheet, View, Pressable, Image, SafeAreaView } from "react-native";
+import { StyleSheet, View, Pressable, Image } from "react-native";
 import React, { useState, useEffect } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
@@ -74,7 +74,7 @@ export function Cooking({ navigation, route }: Props) {
   }, []);
 
   return (
-    <SafeAreaView style={styles.screenContainer}>
+    <View style={styles.screenContainer}>
       <View style={styles.topBarContainer}>
         <View style={{ flex: 1, flexDirection: "column-reverse" }}>
           <UserFastSwitcher
@@ -87,9 +87,9 @@ export function Cooking({ navigation, route }: Props) {
           />
         </View>
         <View style={styles.topBarRightMenu}>
-          <Pressable onPress={() => navigation.navigate("SessionStart")}>
+          <Pressable>
             <Image
-              source={require("../../assets/image/editChef.png")} //Placeholder tills ikon finns
+              source={require("../../assets/image/icon.png")} // TODO: Placeholder tills ikon finns
               style={styles.topBarRightMenuIcon}
             />
           </Pressable>
@@ -128,7 +128,7 @@ export function Cooking({ navigation, route }: Props) {
           }}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

@@ -25,7 +25,7 @@ export function ChefsOverview({ users, nav }: ChefListProps) {
   return (
     <View style={{}}>
       <FlatList
-        data={[...users, { id: "editChef" }]}
+        data={[...users, {id: "editChef" }]}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           if (item.id === "editChef") {
@@ -34,7 +34,7 @@ export function ChefsOverview({ users, nav }: ChefListProps) {
                 style={styles.editChefsButton}
                 onPress={() =>
                   nav.navigate("ChefManagement", {
-                    users,
+                    users
                   })
                 }
               >
@@ -101,6 +101,7 @@ type ListRowProps = {
  * https://reactnative.dev/docs/image
  */
 const ListRow = ({ chef }: ListRowProps) => {
+
   let userImage = (
     <Image
       style={styles.chefImageInList}

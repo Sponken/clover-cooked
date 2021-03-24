@@ -6,8 +6,8 @@ import { RootStackParamList } from "../navigation";
 import { recipes } from "../data";
 
 // Exempelkod för att matlagnings skärmen skall fungera
-const recipe = recipes[0];
-const users = [
+const example_recipe = recipes[1];
+const example_users = [
   {
     id: "kalle",
     name: "Kalle Anka",
@@ -45,12 +45,9 @@ export function Home({ navigation }: Props) {
       <Button
         title="Matlagningsskärm"
         onPress={() =>
-          navigation.navigate("Current Session", {
-            screen: "Cooking",
-            params: {
-              recipe,
-              users,
-            },
+          navigation.navigate("Cooking", {
+            recipe: example_recipe,
+            users: example_users,
           })
         }
       />

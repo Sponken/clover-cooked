@@ -1,16 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect} from "react";
 //import { chefs as importedChefs, Chef } from "../data";
 import {
   StyleSheet,
+  Text,
   View,
   FlatList,
   Button,
+  Image,
   TextInput,
-  Pressable,
-  ColorValue,
 } from "react-native";
-
-import { User } from "../data";
+import { Console } from "console";
 
 type ChefListProps = {
   chefList: any;
@@ -23,9 +22,14 @@ type ChefListProps = {
  */
 
 export function ChefList({ chefList, setChefList }: ChefListProps) {
+  useEffect(() => {
+    // setChefs(setChefs(edit(chefs.findIndex((el) => el.id === chef.id), chef));
+  }, []);
+
   return (
     <View style={{ height: 800 }}>
       <FlatList
+        // {...props}
         data={chefList}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
@@ -47,74 +51,32 @@ type ListRowProps = {
  * https://reactnative.dev/docs/image
  */
 const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
+
   //Här spagettas det hårt, funktionen gör en kopia på chefList och splicear in den chef vi vill ändra.
   //Funktionen kommer göra det efter varje gång man ändrar texten, vet inte om det innebär varje gång man
   //skriver en ny bokstav eller när man editat klart.
-  function edit(index: number, chef: User, name: string) {
-    let newChefs: User[] = Array.from(chefList);
-
-    let tempChef: User = {
-      id: chef.id,
-      name: name,
-      color: chef.color,
-      icon: chef.icon,
-    };
-
-    newChefs.splice(index, 1, tempChef);
-    return newChefs;
-  }
-
-  function editColor(index: number, chef: User) {
-    let newChefs = Array.from(chefList);
-
-    let color = [
-      "#5884E0",
-      "#9400D3",
-      "#4B0082",
-      "#0000FF",
-      "#00FF00",
-      "#FFF000",
-      "#FF7F00",
-      "#FF0000",
-    ];
-
-    function checkColor(col: ColorValue) {
-      return col == chef.color.toString();
-    }
-
-    let colIndex = color.findIndex(checkColor);
-    //let colIndex = color.findIndex((c) => c == chef.color.toString());
-
-    if (colIndex < color.length - 1) {
-      colIndex += 1;
-    } else {
-      colIndex = 0;
-    }
+  function edit(index, chef, name) {
+    let b = Array.from(chefList);
 
     let tempChef = {
       id: chef.id,
-      name: chef.name,
-      color: color[colIndex],
-      icon: chef.icon,
+      name: name,
+      color: chef.color,
+      icon: chef.ico,
     };
 
-    newChefs.splice(index, 1, tempChef);
-    return newChefs;
+    b.splice(index, 1, tempChef);
+    return b;
   }
 
   return (
     <View style={styles.row}>
       <View style={styles.rowInfoContainer}>
-        <Pressable
-          style={[styles.chefColor, { backgroundColor: chef.color }]} //userColor,}
-          onPress={() => {
-            setChefList(
-              editColor(chefList.findIndex((c: User) => c.id === chef.id), chef)
-            );
-          }}
+        <Image
+          style={styles.chefImageInList}
+          source={require("../../assets/image/favicon.png")}
         />
       </View>
-
       <View style={{ flex: 4, flexDirection: "row", alignItems: "flex-start" }}>
         <TextInput
           style={{
@@ -127,20 +89,30 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
           defaultValue={chef.name}
           onChangeText={(name) => {
             setChefList(
-              edit(
-                chefList.findIndex((c: User) => c.id === chef.id),
-                chef,
-                name
-              )
+              edit(chefList.findIndex((c) => c.id === chef.id), chef, name)
             );
           }}
         />
       </View>
+      {/* <View>
+        <TouchableOpacity
+          style={{
+            marginRight: 10,
+            height: 25,
+            width: 25,
+            borderRadius: 10,
+          }}
+          onPress={() => setChefList(chefList.filter((x) => x.id !== chef.id))}
+        >
+          <Image
+            style={styles.chefImageInList}
+            source={require("../../assets/image/editChef.png")} //TODO: chef.image
+          />
+        </TouchableOpacity>
+      </View> */}
 
       <Button
-        onPress={() =>
-          setChefList(chefList.filter((c: User) => c.id !== chef.id))
-        }
+        onPress={() => setChefList(chefList.filter((x) => x.id !== chef.id))}
         title="x" // Delete?
       />
     </View>
@@ -158,6 +130,17 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     backgroundColor: "#FFFFFF",
     borderRadius: 10,
+
+    // // iOS shadow
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.23,
+    // shadowRadius: 2.62,
+    // // Android shadow
+    // elevation: 4,
   },
   rowInfoContainer: {
     flex: 1,
@@ -168,14 +151,6 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     width: 50,
     height: 50,
-  },
-  chefColor: {
-    margin: 0,
-    height: 30,
-    width: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 100 * 2,
   },
   name: {
     marginLeft: 5,

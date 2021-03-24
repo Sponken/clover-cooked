@@ -34,10 +34,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 export function Navigator() {
   return (
     <NavigationContainer>
-      <Drawer.Navigator
-        initialRouteName="RecipeLibrary"
-        drawerStyle={{ backgroundColor: "#f5f5f5", width: 190 }}
-      >
+      <Drawer.Navigator initialRouteName="Current Session">
         <Drawer.Screen
           name="Home"
           component={Home}
@@ -70,11 +67,7 @@ const Session = () => (
       component={ChefManagement}
       options={{ title: "ChefManagement", headerShown: false }}
     />
-    <Stack.Screen
-      name="Cooking"
-      component={Cooking}
-      options={{ headerShown: false }}
-    />
+    <Stack.Screen name="Cooking" component={Cooking} />
   </Stack.Navigator>
 );
 
@@ -88,12 +81,12 @@ const RecipeLibraryNav = () => (
     <Stack.Screen
       name="RecipeLibrary"
       component={RecipeLibrary}
-      options={{ title: "Recept Bibliotek", headerShown: false }}
+      options={{ title: "Recept Bibliotek" }}
     />
     <Stack.Screen
       name="RecipeOverview"
       component={RecipeOverview}
-      options={{ headerShown: false }}
+      options={{ title: "Recept" }}
     />
   </Stack.Navigator>
 );

@@ -1,4 +1,4 @@
-import { StyleSheet, View, Pressable, Image } from "react-native";
+import { StyleSheet, View, Pressable, Image, SafeAreaView } from "react-native";
 import React, { useState } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
@@ -37,7 +37,7 @@ export function Cooking({ navigation, route }: Props) {
   const [passiveTasks, setPassiveTasks] = useState<string[]>([]); //lista med passiva task som är frikopplade från användare
 
   return (
-    <View style={styles.screenContainer}>
+    <SafeAreaView style={styles.screenContainer}>
       <View style={styles.topBarContainer}>
         <View style={{ flex: 1, flexDirection: "column-reverse" }}>
           <UserFastSwitcher
@@ -48,9 +48,9 @@ export function Cooking({ navigation, route }: Props) {
           />
         </View>
         <View style={styles.topBarRightMenu}>
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate("SessionStart")}>
             <Image
-              source={require("../../assets/image/icon.png")} //Placeholder tills ikon finns
+              source={require("../../assets/image/editChef.png")} //Placeholder tills ikon finns
               style={styles.topBarRightMenuIcon}
             />
           </Pressable>
@@ -78,7 +78,7 @@ export function Cooking({ navigation, route }: Props) {
           onFinishPress={() => null}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

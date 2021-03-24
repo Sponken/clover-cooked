@@ -3,7 +3,7 @@ import gräddtårta from "../../data/recipes/gräddtårta.json";
 import ikeaköttbullar_med_snabbmakaroner from "../../data/recipes/ikeaköttbullar_med_snabbmakaroner.json";
 import ugnspannkaka from "../../data/recipes/ugnspannkaka.json";
 
-export const recipes: Recipe[] = [
+export const recipes = [
   gräddtårta,
   ikeaköttbullar_med_snabbmakaroner,
   ugnspannkaka,
@@ -37,9 +37,6 @@ export type Task = {
   instructions: string;
   ingredients: IngredientUsage[];
   resources: ResourceUsage[];
-  initialTask?: boolean;
-  finalTask?: boolean;
-  estimatedTime: number;
 };
 
 export type TaskDependency = {

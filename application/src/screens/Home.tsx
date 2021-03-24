@@ -6,8 +6,8 @@ import { RootStackParamList } from "../navigation";
 import { recipes } from "../data";
 
 // Exempelkod för att matlagnings skärmen skall fungera
-const example_recipe = recipes[0];
-const example_users = [
+const recipe = recipes[0];
+const users = [
   {
     id: "kalle",
     name: "Kalle Anka",
@@ -60,22 +60,27 @@ type Props = {
 };
 
 /**
- * Hem skärm, första skärmen som visas vid vanlig öppning av appen
+ * Hemskärm, första skärmen som visas vid vanlig öppning av appen
+ * TODO: Ifall recept igång, visa det som första skärm,
+ *  annars Receptbibliotek som första skärmen, menu om en klickar på Hamburger top left
  */
 export function Home({ navigation }: Props) {
   return (
     <View style={styles.container}>
-      <Text>Hello World!</Text>
+      <Text>Fortsätt sessionen</Text>
       <Button
-        title="Recept Bibliotek"
+        title="Receptbibliotek"
         onPress={() => navigation.navigate("RecipeLibrary")}
       />
       <Button
         title="Matlagningsskärm"
         onPress={() =>
-          navigation.navigate("Cooking", {
-            recipe: example_recipe,
-            users: example_users,
+          navigation.navigate("Current Session", {
+            screen: "Cooking",
+            params: {
+              recipe,
+              users,
+            },
           })
         }
       />

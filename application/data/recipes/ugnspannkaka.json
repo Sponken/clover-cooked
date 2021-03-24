@@ -6,8 +6,12 @@
   "ingredients": [
     { "id": "bacon", "name": "Bacon", "unit": "paket (140g)" },
     { "id": "lingon", "name": "Färska lingon", "unit": "dl" },
-    { "id": "strösocker", "name": "Strösocker", "unit": "dl" },
-    { "id": "matfett", "name": "Matfett", "unit": "tsk" }
+    { "id": "socker", "name": "Strösocker", "unit": "dl" },
+    { "id": "matfett", "name": "Matfett", "unit": "tsk" },
+    { "id": "vetemjöl", "name": "Vetemjöl", "unit": "dl"},
+    { "id": "ägg", "name": "Ägg", "unit": "st"},
+    { "id": "salt", "name": "Salt", "unit": "tsk"},
+    { "id": "mjölk", "name": "Mjölk", "unit": "dl"}
   ],
   "resources": [
     { "id": "platta", "name": "Spisplatta" },
@@ -86,7 +90,7 @@
       "estimatedTime": 1,
       "ingredients": [
         { "ingredientId": "vetemjöl", "amount": 3 },
-        { "ingredientId": "strösocker", "amount": 1 },
+        { "ingredientId": "socker", "amount": 1 },
         { "ingredientId": "salt", "amount": 1 }
       ],
       "resources": []

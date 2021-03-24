@@ -64,6 +64,7 @@ export function createBasicScheduler(recipe: Recipe,
       return (recipe.tasks.length - this.completedTasks.length) * 5
 
     },
+    getTasks: function(){return new Map(this.currentTasks);}
   };
 
 

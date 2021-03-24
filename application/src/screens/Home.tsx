@@ -20,37 +20,7 @@ const users = [
     color: "blue",
     icon: require("../../assets/image/icon.png"),
   },
-  {
-    id: "anna",
-    name: "Anna Anka",
-    color: "green",
-    icon: require("../../assets/image/icon.png"),
-  },
-  {
-    id: "ovowewewe",
-    name:
-      "Ovowewewe Onienteiniewe Ogwemobwem Ossas Ovowewewe Onienteiniewe Ogwemobwem Ossas",
-    color: "purple",
-    icon: require("../../assets/image/icon.png"),
-  },
-  {
-    id: "olof",
-    name: "Olof",
-    color: "teal",
-    icon: require("../../assets/image/icon.png"),
-  },
-  {
-    id: "janne",
-    name: "Jan Eliasson",
-    color: "black",
-    icon: require("../../assets/image/icon.png"),
-  },
-  {
-    id: "axel",
-    name: "Kam Axel",
-    color: "#ffcd42",
-    icon: require("../../assets/image/icon.png"),
-  },
+
 ];
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;

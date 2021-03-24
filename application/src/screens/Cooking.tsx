@@ -31,7 +31,6 @@ type AssignedTask = {
  */
 export function Cooking({ navigation, route }: Props) {
   const { recipe, users } = route.params;
-  console.log("HUEHUE3");
 
   const [activeUser, setActiveUser] = useState(users[0].id); //id på aktiv användare
   const [userNotifications, setUserNotifications] = useState<string[]>([]); //lista med användarid som är notifierade
@@ -55,10 +54,8 @@ export function Cooking({ navigation, route }: Props) {
     };
 
     const passiveTaskStartedListener = (task: string, duration: number) => {
-      console.log("HUEHUE2");
       // TODO: Hur hanteras passiva tasks?
     };
-    console.log("DEN SKAPADES");
     let cooks = users.map((u) => u.id);
     let ssss: Scheduler = createBasicScheduler(
       recipe,
@@ -68,9 +65,6 @@ export function Cooking({ navigation, route }: Props) {
     );
     setScheduler(ssss);
   }, []);
-
-  let first = assignedTasks.get(users[0].id);
-  console.log(first);
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -94,7 +88,7 @@ export function Cooking({ navigation, route }: Props) {
           </Pressable>
           <Pressable>
             <Image
-              source={require("../../assets/image/icon.png")} //Placeholder tills ikon finns
+              source={require("../../assets/image/icon.png")} // TODO: Placeholder tills ikon finns
               style={styles.topBarRightMenuIcon}
             />
           </Pressable>
@@ -102,7 +96,7 @@ export function Cooking({ navigation, route }: Props) {
       </View>
       <View style={styles.contentContainer}>
         <TaskCard
-          taskId={assignedTasks.get(activeUser)} //Exempel kod, då användare inte än kan få tasks
+          taskId={assignedTasks.get(activeUser)}
           recipe={recipe}
           userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
           userColor={unsafeFind(users, (u: User) => u.id == activeUser).color}

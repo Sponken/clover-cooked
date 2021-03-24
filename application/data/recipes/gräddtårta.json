@@ -34,6 +34,16 @@
       "resources": [{ "resourceId": "ugn", "amount": 1 }]
     },
     {
+      "id": "ugnVärms",
+      "name": "Varm ugnen",
+      "instructions": "Låt ugnen bli 175°C.",
+      "initalTask": false,
+      "passive": true,
+      "estimatedTime": 5,
+      "ingredients": [],
+      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
       "id": "förberedForm",
       "name": "Förbered formen",
       "instructions": "Smörj och bröa en form med löstagbar kant (ca 24cm i diameter)",
@@ -64,7 +74,7 @@
       "resources": []
     },
     {
-      "id": "blandaTort",
+      "id": "blandaTorrt",
       "name": "Torra ingredienser",
       "instructions": "Blanda ihop vetemjöl, potatismjöl och bakpulver.",
       "estimatedTime": 5,
@@ -314,8 +324,12 @@
       "dependsOn": ["sikta"]
     },
     {
+      "taskId": "ugnVärms",
+      "strongDependsOn": ["ugnPå"]
+    },
+    {
       "taskId": "inUgn",
-      "dependsOn": ["hällForm"]
+      "dependsOn": ["hällForm", "ugnVärms"]
     },
     {
       "taskId": "gräddas",

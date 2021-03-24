@@ -1,5 +1,5 @@
 import { StyleSheet, View, Pressable, Image, SafeAreaView } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 
@@ -7,6 +7,7 @@ import { RootStackParamList } from "../navigation";
 import { UserFastSwitcher, TaskCard, TaskConfirm } from "../components";
 import { User } from "../data";
 import { unsafeFind } from "../utils";
+import { createBasicScheduler, Scheduler } from "../scheduler";
 
 type CookingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -33,8 +34,44 @@ export function Cooking({ navigation, route }: Props) {
 
   const [activeUser, setActiveUser] = useState(users[0].id); //id på aktiv användare
   const [userNotifications, setUserNotifications] = useState<string[]>([]); //lista med användarid som är notifierade
-  const [assignedTasks, setAssignedTasks] = useState<AssignedTask[]>([]); //lista med användarid och dess taskid
   const [passiveTasks, setPassiveTasks] = useState<string[]>([]); //lista med passiva task som är frikopplade från användare
+
+  // Varje userid har en associerad task
+  //
+  // HACK: När man ska ändra ett värde i setAssignedTasks måste man skriva
+  // `setAssignedTasks(new Map(assignedTasks.set(key, new_value)));`
+  // för att värdet ska uppdateras i react-trädet.
+  // Source: https://medium.com/swlh/using-es6-map-with-react-state-hooks-800b91eedd5f
+  const [assignedTasks, setAssignedTasks] = useState<
+    Map<string, string | undefined>
+  >(new Map());
+
+  const [scheduler, setScheduler] = useState<Scheduler>();
+  useEffect(() => {
+    const taskAssignedSubscriber = (task: string | undefined, cook: string) => {
+      console.log("task assigned " + task + " to " + cook);
+      setAssignedTasks((assigned) => new Map(assigned.set(cook, task)));
+    };
+
+    const passiveTaskStartedSubscriber = (task: string, finish: Date) => {
+      // TODO: Hur hanteras passiva tasks?
+      
+    };
+    let cooks = users.map((u) => u.id);
+    let ssss: Scheduler = createBasicScheduler(recipe, cooks);
+    const taskAssignedUnsubscribe = ssss.subscribeTaskAssigned(
+      taskAssignedSubscriber
+    );
+    const passiveTaskUnsubscribe = ssss.subscribePassiveTaskStarted(
+      passiveTaskStartedSubscriber
+    );
+    setAssignedTasks(ssss.getTasks());
+    setScheduler(ssss);
+    return () => {
+      taskAssignedUnsubscribe();
+      passiveTaskUnsubscribe();
+    };
+  }, []);
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -44,7 +81,9 @@ export function Cooking({ navigation, route }: Props) {
             users={users}
             activeUser={activeUser}
             userNotifications={userNotifications}
-            onActiveUserSwitch={(userId: string) => setActiveUser(userId)}
+            onActiveUserSwitch={(userId: string) => {
+              setActiveUser(userId);
+            }}
           />
         </View>
         <View style={styles.topBarRightMenu}>
@@ -56,7 +95,7 @@ export function Cooking({ navigation, route }: Props) {
           </Pressable>
           <Pressable>
             <Image
-              source={require("../../assets/image/icon.png")} //Placeholder tills ikon finns
+              source={require("../../assets/image/icon.png")} // TODO: Placeholder tills ikon finns
               style={styles.topBarRightMenuIcon}
             />
           </Pressable>
@@ -64,8 +103,7 @@ export function Cooking({ navigation, route }: Props) {
       </View>
       <View style={styles.contentContainer}>
         <TaskCard
-          taskId={recipe.tasks[1].id} //Exempel kod, då användare inte än kan få tasks
-          //taskId={unsafeFind(assignedTasks, (o: AssignedTask) => o.userId == activeUser)}
+          taskId={assignedTasks.get(activeUser)}
           recipe={recipe}
           userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
           userColor={unsafeFind(users, (u: User) => u.id == activeUser).color}
@@ -75,7 +113,19 @@ export function Cooking({ navigation, route }: Props) {
         <TaskConfirm //Exempel kod för att visa knappar
           confirmType={"extendOrFinish"}
           onExtendPress={() => null}
-          onFinishPress={() => null}
+          onFinishPress={() => {
+            let a = activeUser;
+            let t = assignedTasks.get(a);
+            setAssignedTasks((assigned) => {
+              assigned.delete(a);
+              return new Map(assigned);
+            });
+
+            if (t) {
+              // TODO: Says scheduler may be undefined... but it is initialized in useEffect.
+              scheduler.finishTask(t, a);
+            }
+          }}
         />
       </View>
     </SafeAreaView>

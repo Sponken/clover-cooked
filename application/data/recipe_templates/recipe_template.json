@@ -2,8 +2,8 @@
   "name": "template",
   "description": "A simple template for creating a recipe",
   "portions": 1,
-  "ingredients": [{ "id": "id", "name": "name", "unit": "st" }],
-  "resources": [{ "id": "id", "name": "name" }],
+  "ingredients": [{ "id": "ingredient", "name": "name", "unit": "st" }],
+  "resources": [{ "id": "resource", "name": "name" }],
   "tasks": [
     {
       "id": "id",
@@ -12,9 +12,17 @@
       "passive": false,
       "nonInterruptable": false,
       "initalTask": false,
-      "finalTask": false,
+      "finalTask": true,
       "estimatedTime": 999,
-      "ingredients": [{ "ingredientId": "id", "amount": 99 }],
+      "ingredients": [{ "ingredientId": "ingredient", "amount": 99 }],
+      "resources": [{ "resourceId": "resource", "amount": 99 }]
+    },
+    {
+      "id": "otherID",
+      "name": "otherName",
+      "instructions": "More instructions",
+      "estimatedTime": 999,
+      "ingredients": [{ "ingredientId": "ingredient", "amount": 99 }],
       "resources": [{ "resourceId": "resource", "amount": 99 }]
     }
   ],

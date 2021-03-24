@@ -82,6 +82,5 @@ const styles = StyleSheet.create({
   },
   recepiesContainer: {
     flex: 1,
-    padding: 5,
   },
 });

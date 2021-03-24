@@ -1,5 +1,5 @@
 import { StyleSheet, View, Pressable, Image, SafeAreaView } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 
@@ -7,6 +7,7 @@ import { RootStackParamList } from "../navigation";
 import { UserFastSwitcher, TaskCard, TaskConfirm } from "../components";
 import { User } from "../data";
 import { unsafeFind } from "../utils";
+import { createBasicScheduler, Scheduler } from "../scheduler";
 
 type CookingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -30,11 +31,46 @@ type AssignedTask = {
  */
 export function Cooking({ navigation, route }: Props) {
   const { recipe, users } = route.params;
+  console.log("HUEHUE3");
 
   const [activeUser, setActiveUser] = useState(users[0].id); //id på aktiv användare
   const [userNotifications, setUserNotifications] = useState<string[]>([]); //lista med användarid som är notifierade
-  const [assignedTasks, setAssignedTasks] = useState<AssignedTask[]>([]); //lista med användarid och dess taskid
   const [passiveTasks, setPassiveTasks] = useState<string[]>([]); //lista med passiva task som är frikopplade från användare
+
+  // Varje userid har en associerad task
+  //
+  // HACK: När man ska ändra ett värde i setAssignedTasks måste man skriva
+  // `setAssignedTasks(new Map(assignedTasks.set(key, new_value)));`
+  // för att värdet ska uppdateras i react-trädet.
+  // Source: https://medium.com/swlh/using-es6-map-with-react-state-hooks-800b91eedd5f
+  const [assignedTasks, setAssignedTasks] = useState<Map<string, string>>(
+    new Map()
+  );
+
+  const [scheduler, setScheduler] = useState<Scheduler>();
+  useEffect(() => {
+    const taskAssignedListener = (task: string, cook: string) => {
+      console.log("task assigned " + task + " to " + cook);
+      setAssignedTasks(new Map(assignedTasks.set(cook, task)));
+    };
+
+    const passiveTaskStartedListener = (task: string, duration: number) => {
+      console.log("HUEHUE2");
+      // TODO: Hur hanteras passiva tasks?
+    };
+    console.log("DEN SKAPADES");
+    let cooks = users.map((u) => u.id);
+    let ssss: Scheduler = createBasicScheduler(
+      recipe,
+      cooks,
+      taskAssignedListener,
+      passiveTaskStartedListener
+    );
+    setScheduler(ssss);
+  }, []);
+
+  let first = assignedTasks.get(users[0].id);
+  console.log(first);
 
   return (
     <SafeAreaView style={styles.screenContainer}>
@@ -44,7 +80,9 @@ export function Cooking({ navigation, route }: Props) {
             users={users}
             activeUser={activeUser}
             userNotifications={userNotifications}
-            onActiveUserSwitch={(userId: string) => setActiveUser(userId)}
+            onActiveUserSwitch={(userId: string) => {
+              setActiveUser(userId);
+            }}
           />
         </View>
         <View style={styles.topBarRightMenu}>
@@ -64,8 +102,7 @@ export function Cooking({ navigation, route }: Props) {
       </View>
       <View style={styles.contentContainer}>
         <TaskCard
-          taskId={recipe.tasks[1].id} //Exempel kod, då användare inte än kan få tasks
-          //taskId={unsafeFind(assignedTasks, (o: AssignedTask) => o.userId == activeUser)}
+          taskId={assignedTasks.get(activeUser)} //Exempel kod, då användare inte än kan få tasks
           recipe={recipe}
           userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
           userColor={unsafeFind(users, (u: User) => u.id == activeUser).color}
@@ -75,7 +112,16 @@ export function Cooking({ navigation, route }: Props) {
         <TaskConfirm //Exempel kod för att visa knappar
           confirmType={"extendOrFinish"}
           onExtendPress={() => null}
-          onFinishPress={() => null}
+          onFinishPress={() => {
+            let a = activeUser;
+            let t = assignedTasks.get(a);
+            assignedTasks.delete(a);
+            setAssignedTasks(new Map(assignedTasks));
+            if (t) {
+              // TODO: Says scheduler may be undefined... but it is initialized in useEffect.
+              scheduler.finishTask(t, a);
+            }
+          }}
         />
       </View>
     </SafeAreaView>

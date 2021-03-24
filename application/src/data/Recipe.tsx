@@ -38,6 +38,7 @@ export type Task = {
   passive?: boolean;
   ingredients: IngredientUsage[];
   resources: ResourceUsage[];
+  estimatedTime: number;
 };
 
 export type TaskDependency = {

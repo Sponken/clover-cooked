@@ -43,7 +43,7 @@ const example_users = [
     id: "1",
     name: "Test User",
     color: "#EB4F40",
-    icon: null //require("../../assets/image/icon.png"),
+    icon: require("../../assets/image/icon.png"),
   }
 ];
 

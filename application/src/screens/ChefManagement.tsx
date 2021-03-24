@@ -75,7 +75,7 @@ export function ChefManagement({ navigation, route }: Props) {
               id: Date.now().toString(),
               name: "New User",
               color: "#5884E0", // TODO: randomize color from e.g. 8 ones, or always take the 4 ones that work best first
-              icon: null
+              icon: require("../../assets/image/icon.png")
             },
           ]);
         }}

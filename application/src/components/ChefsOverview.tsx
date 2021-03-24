@@ -125,12 +125,12 @@ const ListRow = ({ chef }: ListRowProps) => {
     </TouchableOpacity>
   );
 
-  let userCircleView;
-  if (chef.icon != undefined) {
+  let userCircleView = defaultImage;
+  /*if (chef.icon != undefined) {
     userCircleView = userImage;
   } else {
     userCircleView = defaultImage;
-  }
+  }*/
 
   return (
     <View style={styles.row}>

@@ -19,7 +19,7 @@ export type RootStackParamList = {
   RecipeOverview: { recipe: Recipe };
   Cooking: { recipe: Recipe; users: User[] };
   SessionStart: { recipe: Recipe; users: User[] };
-  ChefManagement: { users: User[] };
+  ChefManagement: { recipe?: Recipe; users: User[] };
 };
 
 const Drawer = createDrawerNavigator();

@@ -55,7 +55,6 @@ export function Cooking({ navigation, route }: Props) {
 
     const passiveTaskStartedSubscriber = (task: string, finish: Date) => {
       // TODO: Hur hanteras passiva tasks?
-      
     };
     let cooks = users.map((u) => u.id);
     let ssss: Scheduler = createBasicScheduler(recipe, cooks);

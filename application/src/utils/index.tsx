@@ -1,1 +1,1 @@
-export { unsafeFind } from "./Utils";
+export { unsafeFind, includesAll, removeElement } from "./Utils";

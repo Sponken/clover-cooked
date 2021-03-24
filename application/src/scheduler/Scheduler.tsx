@@ -13,6 +13,7 @@ export type TaskAssignedSubscriber = (
  * Enbart metoderna bör användas. Ändra inte i de övriga fälten
  */
 export interface Scheduler {
+  readonly extended: Map<TaskID, [number, number]>;
   readonly cooks: CookID[];
   readonly recipe: Recipe;
   readonly completedTasks: TaskID[];
@@ -57,7 +58,7 @@ export interface Scheduler {
   /**
    * Hämtar nuvarande tasks
    */
-  getTasks: () => Map<CookID, TaskID>
+  getTasks: () => Map<CookID, TaskID>;
 
   // Subscription listor med alla subsribe funktioner
   readonly passiveTaskSubscribers: PassiveTaskSubscriber[];

@@ -35,6 +35,7 @@ export type Task = {
   id: string;
   name: string;
   instructions: string;
+  passive?: boolean;
   ingredients: IngredientUsage[];
   resources: ResourceUsage[];
 };

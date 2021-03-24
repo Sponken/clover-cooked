@@ -20,7 +20,6 @@ const users = [
     color: "blue",
     icon: require("../../assets/image/icon.png"),
   },
-
 ];
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;

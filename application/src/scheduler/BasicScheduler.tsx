@@ -34,7 +34,7 @@ export function createBasicScheduler(recipe: Recipe,
     finishTask: function (task: TaskID, cook: CookID) {
       this.completedTasks.push(task);
       this.currentTasks.delete(cook);
-      assignNewTask(cook, this)
+      assignTasks(scheduler, cook);
     },
     subscribeTaskAssigned: getSubscribeFunction(taskAssignedSubscribers),
     subscribePassiveTaskStarted: getSubscribeFunction(passiveTaskSubscribers),
@@ -78,7 +78,7 @@ export function createBasicScheduler(recipe: Recipe,
     },
     addCook: function(cook: CookID){
       cooks.includes(cook) ? "" : cooks.push(cook)
-      assignNewTask(cook, this)
+      assignTasks(this, cook);
 
     },
     removeCook: function(cook: CookID){
@@ -94,11 +94,7 @@ export function createBasicScheduler(recipe: Recipe,
   };
 
 
-
-  scheduler.cooks.forEach(cook => {
-    assignNewTask(cook, scheduler)
-  });
-  
+  assignTasks(scheduler);
   
   return scheduler;
 }
@@ -120,70 +116,13 @@ function startPassiveTask(timeLeft: number, scheduler: Scheduler, task: TaskID) 
           scheduler.currentPassiveTasks.delete(task);
           
           // När en passiv task är klar kan nya tasks bli tillgängliga. Fördela dem.
-          scheduler.cooks.filter((cook) => !scheduler.currentTasks.has(cook)).forEach(cook => {
-            assignNewTask(cook, scheduler)
-          });
+          assignTasks(scheduler);
         } else {
           let new_values: [number, number] = [ext[0] + 1, ext[1]];
           scheduler.extended.set(task, new_values);
         }
       }
   });
-}
-
-
-function assignNewTask(cook: CookID, scheduler: Scheduler): TaskID | undefined {
-  if (scheduler.currentTasks.get(cook)) {
-    return undefined
-  }
-  // Försöker hitta en task att ge till `cook`, tar hand om alla passiva först.
-  while (true) {
-      const task = getNextTask(scheduler.recipe, scheduler.completedTasks, scheduler.currentTasks, scheduler.currentPassiveTasks);
-      if (task) {
-        let real_task = getTask(scheduler.recipe, task);
-        if (real_task.passive) {
-          scheduler.extended.set(task, [0, 0]);
-          startPassiveTask(real_task.estimatedTime, scheduler, task);
-          scheduler.passiveTaskSubscribers.forEach((fn) => fn(task, new Date));
-          scheduler.currentPassiveTasks.set(task, new Date());
-          continue;
-        }
-        scheduler.currentTasks.set(cook, task);
-        scheduler.taskAssignedSubscribers.forEach((fn) => fn(task, cook));
-      }
-      return task;
-  }
-}
-
-
-// Returnerar en giltig task. Returner undefined om det inte finns någon giltig task.
-function getNextTask(recipe: Recipe, completedTasks: TaskID[], currentTasks: Map<CookID, TaskID>, currentPassiveTasks: Map<TaskID, Date>): TaskID | undefined {
-  let task: TaskID | undefined = basicFindTask(recipe, completedTasks, Array.from(currentTasks.values()), currentPassiveTasks)
-
-  return task;
-}
-
-
-// En funktion som hittar någon task att tilldela. Prioriteringen är: passiv > strongDependency > vanlig
-function basicFindTask(recipe: Recipe, completedTasks: TaskID[], currentTasks: TaskID[], currentPassiveTasks: Map<TaskID, Date>): TaskID | undefined {
-
-  let eligible: TaskID | undefined;
-  let [depMap, strongDepMap] = getDependencyMaps(recipe);
-
-  for (const task of recipe.tasks) {
-    if (completedTasks.includes(task.id) || currentTasks.includes(task.id) || currentPassiveTasks.has(task.id)) {
-      continue
-    }
-    if (!(includesAll(completedTasks, depMap.get(task.id) ?? []) && includesAll(completedTasks, strongDepMap.get(task.id) ?? []))) {
-      continue
-    }
-    if (strongDepMap.get(task.id) != []) {
-      return task.id
-    }
-    eligible = task.id;
-  }
-
-  return eligible;
 }
 
 let getDependencyMaps = (recipe: Recipe): [Map<TaskID, TaskID[]>, Map<TaskID, TaskID[]>] => {
@@ -211,6 +150,7 @@ function getTask(recipe: Recipe, taskID: TaskID): Task{
   }
   throw "getTask: Task not found"
 }
+
 /**
  * Skapar subscription function till en given array med subscribers
  * @param subList array där subscribers sparas
@@ -223,4 +163,145 @@ function getSubscribeFunction<FunctionType>(subList: FunctionType[]) {
     return _unsubscribe;
   }
   return _subscribe;
+}
+
+/**
+ * Hittar alla tasks som är möjliga att utföra
+ */
+function getEligibleTasks(
+  scheduler: Scheduler): [TaskID[], TaskID[]] {
+  let recipe: Recipe = scheduler.recipe
+  let completedTasks: TaskID[] = scheduler.completedTasks
+  let currentTasks: TaskID[] = Array.from(scheduler.currentTasks.values())
+  let currentPassiveTasks: Map<TaskID, Date> = scheduler.currentPassiveTasks
+    
+  let eligibleTasks: TaskID[] = [];
+  let strongEligibleTasks: TaskID[] = [];
+  let passiveEligibleTasks: TaskID[] = []
+  let [depMap, strongDepMap] = getDependencyMaps(recipe);
+
+  for (const task of recipe.tasks) {
+    if (completedTasks.includes(task.id) || currentTasks.includes(task.id) || currentPassiveTasks.has(task.id)) {
+      continue
+    }
+    if (!(includesAll(completedTasks, depMap.get(task.id) ?? []) && includesAll(completedTasks, strongDepMap.get(task.id) ?? []))) {
+      continue
+    }
+    if (task.passive){
+      passiveEligibleTasks.push(task.id)
+      continue;
+    }
+    if (strongDepMap.get(task.id) != []) {
+      strongEligibleTasks.push(task.id)
+      continue
+    }
+    eligibleTasks.push(task.id);
+  }
+  return [passiveEligibleTasks,(strongEligibleTasks.length > 0 ? strongEligibleTasks : eligibleTasks)]
+}
+
+
+// Om det går att fortsätta på samma "branch" som den senaste avslutade tasken, gör det
+// Annars ta första möjliga uppgiften på den mest kritiska pathen 
+function assignTasks(scheduler: Scheduler, cook?: CookID) {
+
+  let [depMap, strongDepMap] = getDependencyMaps(scheduler.recipe);
+  let [passiveTasks, eligibleTasks] = getEligibleTasks(scheduler);
+
+  // Starta alla passiva tasks som är möjliga
+  for (const passiveTask of passiveTasks) {
+    let real_task = getTask(scheduler.recipe, passiveTask);
+    scheduler.extended.set(passiveTask, [0, 0]);
+    startPassiveTask(real_task.estimatedTime, scheduler, passiveTask);
+    scheduler.passiveTaskSubscribers.forEach((fn) => fn(passiveTask, new Date));
+    scheduler.currentPassiveTasks.set(passiveTask, new Date());
+  }
+  
+  // Kolla om några möjliga tasks har dependencies som precis avslutades
+  let lastCompletedTask: TaskID = scheduler.completedTasks[scheduler.completedTasks.length-1]
+  let cond = (eTask: TaskID) => strongDepMap.get(eTask)?.includes(lastCompletedTask) || depMap.get(eTask)?.includes(lastCompletedTask)
+  let dependers = eligibleTasks.filter(cond)
+
+  assignGivenTasks(scheduler, dependers, cook);
+
+  let rest = eligibleTasks.filter(eTask => !cond(eTask))
+  let paths = findCriticalPathTasks(scheduler.recipe, rest);
+  assignGivenTasks(scheduler, paths, cook);
+
+}
+
+function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], priorityCook?: CookID) {
+  let cooks = vacantCooks(scheduler);
+  if (priorityCook) {
+    cooks = cooks.filter(c => c != priorityCook)
+    cooks.push(priorityCook)
+  }
+
+  for (const task of tasksToAssign) {
+    const cook = cooks.pop()
+    if (cook) {
+      scheduler.currentTasks.set(cook, task);
+      scheduler.taskAssignedSubscribers.forEach((fn) => fn(task, cook))
+    } else {
+      break
+    }
+  }
+}
+
+
+function vacantCooks(scheduler: Scheduler): CookID[] {
+  return scheduler.cooks.filter(cook => !scheduler.currentTasks.has(cook))
+}
+
+
+function findCriticalPathTasks(recipe: Recipe, availableTasks: TaskID[]): TaskID[] {
+  if (availableTasks.length == 0) { return [] }
+  let graph = makeDepGraph(recipe);
+  let res: [TaskID, number][] = availableTasks.map((task) => [task, longestPath(task, graph)]);
+
+  // Sort the list from largest path to smallest.
+  res.sort( (a, b) => b[1] - a[1])
+  return res.map( (a) => a[0]);
+}
+
+function makeDepGraph(recipe: Recipe): Map<TaskID, [number, TaskID[]]> {
+  let graph: Map<TaskID, [number, TaskID[]]> = new Map();
+  for (const task of recipe.tasks) {
+    graph.set(task.id, [task.estimatedTime, []]);
+  }
+  for (const dep of recipe.taskDependencies) {
+    let to_id = dep.taskId;
+    let deps = dep.dependsOn;
+    let depsStrong = dep.strongDependsOn;
+    if (deps) {
+      for (const from_id of deps) {
+        let el = graph.get(from_id) ?? [0, []];
+        el[1].push(to_id);
+      }
+    }
+    if (depsStrong) {
+      for (const from_id of depsStrong) {
+        let el = graph.get(from_id) ?? [0, []];
+        el[1].push(to_id);
+      }
+    }
+  }
+  return graph
+}
+
+// Assumes loopless graph
+function longestPath(start: TaskID, graph: Map<TaskID, [number, TaskID[]]>): number {
+  let things = graph.get(start);
+  if (things) {
+    let [value, neighbours] = things;
+    if (neighbours.length == 0) {
+      return value;
+    }
+    let values = [];
+    for (const nb of neighbours) {
+      values.push(longestPath(nb, graph));
+    }
+    return value + Math.max(...values);
+  }
+  throw "longestPath failed, node not in graph"
 }

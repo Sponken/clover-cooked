@@ -22,6 +22,7 @@ import { DrawerActions } from "@react-navigation/routers";
 
 import { getRecipeThumbnail } from "../data";
 import { ScreenContainer } from "react-native-screens";
+import { receiveMessageOnPort } from "node:worker_threads";
 
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
 type ChefManagementScreenNavigationProp = StackNavigationProp<
@@ -55,7 +56,6 @@ export function SessionStart({ navigation, route }: Props) {
 
   let recipe: Recipe;
   let users: User[];
-  let recipeActivated: boolean;
 
   //Initiera users och recipe om de inte finns
   if(route.params?.users === undefined){
@@ -118,7 +118,6 @@ export function SessionStart({ navigation, route }: Props) {
         <Pressable
           style={styles.deleteSession}
           onPress={() =>{{
-            recipeActivated = true,
             navigation.setParams({ recipe: undefined }),
             navigation.navigate("RecipeLibrary", {
               screen: "RecipeLibrary"
@@ -152,13 +151,9 @@ export function SessionStart({ navigation, route }: Props) {
       <Pressable disabled={startButtonSessionCheck()} 
         style={startButtonSessionCheck() ? styles.cannotBePressed : styles.canBePressed} 
         onPress={() =>{
-          
-          if(recipeActivated){
-            navigation.navigate("Cooking", )}
-          else{
-            recipeActivated = true;
-            navigation.navigate("Cooking", {recipe,users})}
-          } }
+              {navigation.navigate("Cooking", {recipe,users})}
+          }
+        }
       >
         <Image
           style={{height: 32, width: 24, margin: 15, marginLeft: 63}}

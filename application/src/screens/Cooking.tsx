@@ -86,7 +86,12 @@ export function Cooking({ navigation, route }: Props) {
           />
         </View>
         <View style={styles.topBarRightMenu}>
-          <Pressable onPress={() => navigation.navigate("SessionStart")}>
+          <Pressable
+            onPress={() => {
+              let recipe = undefined;
+              navigation.navigate("SessionStart", { recipe });
+            }}
+          >
             <Image
               source={require("../../assets/image/editChef.png")} //Placeholder tills ikon finns
               style={styles.topBarRightMenuIcon}

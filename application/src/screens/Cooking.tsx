@@ -7,7 +7,13 @@ import { RootStackParamList } from "../navigation";
 import { UserFastSwitcher, TaskCard, TaskConfirm } from "../components";
 import { User } from "../data";
 import { unsafeFind } from "../utils";
-import { createBasicScheduler, Scheduler } from "../scheduler";
+import {
+  createBasicScheduler,
+  Scheduler,
+  PassiveTaskSubscriber,
+  TaskAssignedSubscriber,
+  RecipeFinishedSubscriber,
+} from "../scheduler";
 
 type CookingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -47,15 +53,30 @@ export function Cooking({ navigation, route }: Props) {
   >(new Map());
 
   const [scheduler, setScheduler] = useState<Scheduler>();
+  /**
+   * när cooking skapas kommer useeffect kallas en gång
+   * om avslutas kommer useeffect göra unsubscribe
+   */
   useEffect(() => {
-    const taskAssignedSubscriber = (task: string | undefined, cook: string) => {
+    const taskAssignedSubscriber: TaskAssignedSubscriber = (
+      task: string | undefined,
+      cook: string
+    ) => {
       console.log("task assigned " + task + " to " + cook);
       setAssignedTasks((assigned) => new Map(assigned.set(cook, task)));
     };
 
-    const passiveTaskStartedSubscriber = (task: string, finish: Date) => {
+    const passiveTaskStartedSubscriber: PassiveTaskSubscriber = (
+      task: string,
+      finish: Date
+    ) => {
       // TODO: Hur hanteras passiva tasks?
     };
+
+    const recipeFinishedSubscriber: RecipeFinishedSubscriber = () => {
+      console.log("recipe finished");
+    };
+
     let cooks = users.map((u) => u.id);
     let ssss: Scheduler = createBasicScheduler(recipe, cooks);
     const taskAssignedUnsubscribe = ssss.subscribeTaskAssigned(
@@ -64,11 +85,15 @@ export function Cooking({ navigation, route }: Props) {
     const passiveTaskUnsubscribe = ssss.subscribePassiveTaskStarted(
       passiveTaskStartedSubscriber
     );
+    const recipeFinishedUnsubscribe = ssss.subscribeRecipeFinished(
+      recipeFinishedSubscriber
+    );
     setAssignedTasks(ssss.getTasks());
     setScheduler(ssss);
     return () => {
       taskAssignedUnsubscribe();
       passiveTaskUnsubscribe();
+      recipeFinishedUnsubscribe();
     };
   }, []);
 

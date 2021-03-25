@@ -1,5 +1,5 @@
 import { Recipe, Task } from "../data";
-import {Scheduler, CookID, PassiveTaskSubscriber, TaskAssignedSubscriber} from "./Scheduler"
+import {Scheduler, CookID, PassiveTaskSubscriber, TaskAssignedSubscriber, RecipeFinishedSubscriber} from "./Scheduler"
 import {includesAll, removeElement} from "../utils"
 
 type TaskID = string
@@ -16,10 +16,11 @@ export function createBasicScheduler(recipe: Recipe,
   ): Scheduler {
   const taskAssignedSubscribers: TaskAssignedSubscriber[] = [];
   const passiveTaskSubscribers: PassiveTaskSubscriber[] = [];
+  const recipeFinishedSubscribers: RecipeFinishedSubscriber[] =[];
   let scheduler: Scheduler = {
     taskAssignedSubscribers: taskAssignedSubscribers,
     passiveTaskSubscribers: passiveTaskSubscribers,
-
+    recipeFinishedSubscribers: recipeFinishedSubscribers,
     // Detta fältet representerar hur många gånger en task har blivit förlängd.
     // I `[number, number]` är det första värdet hur många gånger den blivit
     // "klar" och det andra värdet är hur många gånger den förlängts och en ny
@@ -34,11 +35,15 @@ export function createBasicScheduler(recipe: Recipe,
     finishTask: function (task: TaskID, cook: CookID) {
       this.completedTasks.push(task);
       this.currentTasks.delete(cook);
-      assignNewTask(cook, this)
+      if(isRecipeFinished(this)){
+        this.recipeFinishedSubscribers.forEach((fn) => fn());
+        return;
+      }
+      assignNewTask(cook, this);
     },
     subscribeTaskAssigned: getSubscribeFunction(taskAssignedSubscribers),
     subscribePassiveTaskStarted: getSubscribeFunction(passiveTaskSubscribers),
-
+    subscribeRecipeFinished: getSubscribeFunction(recipeFinishedSubscribers),
     // TODO: Testa så det här funkar.
     // TODO: När vi förlänger tiden av en task beter vi oss som om vi startar
     // samma task igen men att den börjar senare i tiden. Är det rätt sätt att
@@ -139,6 +144,7 @@ function assignNewTask(cook: CookID, scheduler: Scheduler): TaskID | undefined {
   // Försöker hitta en task att ge till `cook`, tar hand om alla passiva först.
   while (true) {
       const task = getNextTask(scheduler.recipe, scheduler.completedTasks, scheduler.currentTasks, scheduler.currentPassiveTasks);
+      //om det finns en nästa task för the cook
       if (task) {
         let real_task = getTask(scheduler.recipe, task);
         if (real_task.passive) {
@@ -155,6 +161,9 @@ function assignNewTask(cook: CookID, scheduler: Scheduler): TaskID | undefined {
   }
 }
 
+function isRecipeFinished(scheduler: Scheduler): boolean{
+  return (scheduler.completedTasks.length == scheduler.recipe.tasks.length);
+}
 
 // Returnerar en giltig task. Returner undefined om det inte finns någon giltig task.
 function getNextTask(recipe: Recipe, completedTasks: TaskID[], currentTasks: Map<CookID, TaskID>, currentPassiveTasks: Map<TaskID, Date>): TaskID | undefined {

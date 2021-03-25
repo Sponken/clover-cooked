@@ -8,6 +8,7 @@ export type TaskAssignedSubscriber = (
   task: TaskID | undefined,
   cook: CookID
 ) => void;
+export type RecipeFinishedSubscriber = () => void;
 
 /** Detta representerar en schemaläggare som har koll på och delar ut tasks.
  * Enbart metoderna bör användas. Ändra inte i de övriga fälten
@@ -31,6 +32,10 @@ export interface Scheduler {
    * Metod som kallas på när en ny passiv task är startad
    */
   subscribePassiveTaskStarted: (f: PassiveTaskSubscriber) => () => void;
+  /**
+   * Metod som kallas på när alla task är avklarade
+   */
+  subscribeRecipeFinished: (f: RecipeFinishedSubscriber) => () => void;
   /**
    * Utöker tiden på en pågående passiv task
    */
@@ -60,7 +65,8 @@ export interface Scheduler {
    */
   getTasks: () => Map<CookID, TaskID>;
 
-  // Subscription listor med alla subsribe funktioner
+  // Subscription listor med alla subscribe funktioner
   readonly passiveTaskSubscribers: PassiveTaskSubscriber[];
   readonly taskAssignedSubscribers: TaskAssignedSubscriber[];
+  readonly recipeFinishedSubscribers: RecipeFinishedSubscriber[];
 }

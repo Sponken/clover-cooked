@@ -10,6 +10,7 @@ import {
   Cooking,
   ChefManagement,
   SessionStart,
+  RecipeFinished,
 } from "../screens";
 import { Recipe, User } from "../data";
 
@@ -17,6 +18,7 @@ export type RootStackParamList = {
   Home: undefined;
   RecipeLibrary: undefined;
   RecipeOverview: { recipe: Recipe };
+  RecipeFinished: undefined;
   Cooking: { recipe: Recipe; users: User[] };
   SessionStart: { recipe: Recipe; users: User[] };
   ChefManagement: { recipe?: Recipe; users: User[] };
@@ -73,6 +75,11 @@ const Session = () => (
     <Stack.Screen
       name="Cooking"
       component={Cooking}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="RecipeFinished"
+      component={RecipeFinished}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>

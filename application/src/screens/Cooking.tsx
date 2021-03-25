@@ -75,6 +75,7 @@ export function Cooking({ navigation, route }: Props) {
 
     const recipeFinishedSubscriber: RecipeFinishedSubscriber = () => {
       console.log("recipe finished");
+      navigation.navigate("RecipeFinished");
     };
 
     let cooks = users.map((u) => u.id);

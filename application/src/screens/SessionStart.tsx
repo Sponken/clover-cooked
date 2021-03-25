@@ -55,6 +55,7 @@ export function SessionStart({ navigation, route }: Props) {
 
   let recipe: Recipe;
   let users: User[];
+  let recipeActivated: boolean;
 
   //Initiera users och recipe om de inte finns
   if(route.params?.users === undefined){
@@ -117,11 +118,13 @@ export function SessionStart({ navigation, route }: Props) {
         <Pressable
           style={styles.deleteSession}
           onPress={() =>{{
-            navigation.setParams({ recipe: undefined })
+            recipeActivated = true,
+            navigation.setParams({ recipe: undefined }),
             navigation.navigate("RecipeLibrary", {
               screen: "RecipeLibrary"
               })
             }} 
+            
           }>
           <Text style={{color: "white", fontWeight: "bold"}}>Delete Session</Text>
         </Pressable>
@@ -148,7 +151,14 @@ export function SessionStart({ navigation, route }: Props) {
       
       <Pressable disabled={startButtonSessionCheck()} 
         style={startButtonSessionCheck() ? styles.cannotBePressed : styles.canBePressed} 
-        onPress={() =>{navigation.navigate("Cooking", {recipe,users})} }
+        onPress={() =>{
+          
+          if(recipeActivated){
+            navigation.navigate("Cooking", )}
+          else{
+            recipeActivated = true;
+            navigation.navigate("Cooking", {recipe,users})}
+          } }
       >
         <Image
           style={{height: 32, width: 24, margin: 15, marginLeft: 63}}

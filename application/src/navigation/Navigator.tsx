@@ -46,7 +46,7 @@ export function Navigator() {
         <Drawer.Screen
           name="Current Session"
           component={Session}
-          options={{ title: "Current Session" }}
+          options={{ title: "Current Session", swipeEnabled: false }}
         />
         <Drawer.Screen
           name="RecipeLibrary"
@@ -73,7 +73,7 @@ const Session = () => (
     <Stack.Screen
       name="Cooking"
       component={Cooking}
-      options={{ headerShown: false }}
+      options={{ headerShown: false, gestureEnabled: false }}
     />
   </Stack.Navigator>
 );
@@ -93,7 +93,7 @@ const RecipeLibraryNav = () => (
     <Stack.Screen
       name="RecipeOverview"
       component={RecipeOverview}
-      options={{ headerShown: false }}
+      options={{ headerShown: false, gestureEnabled: true }}
     />
   </Stack.Navigator>
 );

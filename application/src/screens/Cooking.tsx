@@ -30,7 +30,7 @@ type AssignedTask = {
  * Cooking, skärmen som visas under tiden matlagningen sker
  */
 export function Cooking({ navigation, route }: Props) {
-  const { recipe, users } = route.params;
+  const { recipe, users, initScheduler } = route.params;
 
   const [activeUser, setActiveUser] = useState(users[0].id); //id på aktiv användare
   const [userNotifications, setUserNotifications] = useState<string[]>([]); //lista med användarid som är notifierade
@@ -47,6 +47,7 @@ export function Cooking({ navigation, route }: Props) {
   >(new Map());
 
   const [scheduler, setScheduler] = useState<Scheduler>();
+
   useEffect(() => {
     const taskAssignedSubscriber = (task: string | undefined, cook: string) => {
       console.log("task assigned " + task + " to " + cook);
@@ -57,7 +58,14 @@ export function Cooking({ navigation, route }: Props) {
       // TODO: Hur hanteras passiva tasks?
     };
     let cooks = users.map((u) => u.id);
-    let ssss: Scheduler = createBasicScheduler(recipe, cooks);
+
+    let ssss: Scheduler; /*= createBasicScheduler(recipe, cooks);*/
+    if (initScheduler == undefined) {
+      ssss = createBasicScheduler(recipe, cooks);
+    } else {
+      ssss = initScheduler;
+    }
+
     const taskAssignedUnsubscribe = ssss.subscribeTaskAssigned(
       taskAssignedSubscriber
     );
@@ -88,8 +96,7 @@ export function Cooking({ navigation, route }: Props) {
         <View style={styles.topBarRightMenu}>
           <Pressable
             onPress={() => {
-              let recipe = undefined;
-              navigation.navigate("SessionStart", { recipe });
+              navigation.navigate("SessionStart", { initScheduler: scheduler });
             }}
           >
             <Image

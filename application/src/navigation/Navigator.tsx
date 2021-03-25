@@ -2,6 +2,7 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import { Scheduler } from "../scheduler";
 
 import {
   Home,
@@ -17,8 +18,8 @@ export type RootStackParamList = {
   Home: undefined;
   RecipeLibrary: undefined;
   RecipeOverview: { recipe: Recipe };
-  Cooking: { recipe: Recipe; users: User[] };
-  SessionStart: { recipe: Recipe; users: User[] };
+  Cooking: { recipe: Recipe; users: User[]; initScheduler?: Scheduler };
+  SessionStart: { recipe: Recipe; users: User[]; initScheduler?: Scheduler };
   ChefManagement: { recipe?: Recipe; users: User[] };
 };
 

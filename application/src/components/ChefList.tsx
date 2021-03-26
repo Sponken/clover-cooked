@@ -91,7 +91,7 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
       colIndex = 0;
     }
 
-    let tempChef = {
+    let tempChef: User = {
       id: chef.id,
       name: chef.name,
       color: color[colIndex],

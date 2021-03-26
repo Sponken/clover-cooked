@@ -7,6 +7,8 @@ import {
   TouchableHighlight,
 } from "react-native";
 
+import { StandardButton } from "../components";
+
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation";
 
@@ -27,23 +29,30 @@ export function RecipeFinished({ navigation }: Props) {
       <View style={styles.textContainer}>
         <Text style={styles.textStyle}>Smaklig måltid!</Text>
       </View>
-      <View style={styles.pressableContainer}>
-        <TouchableHighlight
-          onPress={() => {
-            navigation.setParams({ recipe: undefined });
-            navigation.navigate("RecipeLibrary", {
-              screen: "RecipeLibrary",
-            });
-          }}
-          style={styles.touchableHighLight}
-        >
-          <View style={styles.pressable}>
-            <Text style={styles.pressableText}>
-              Okej, ta mig tillbaka till receptbibliotek
-            </Text>
-          </View>
-        </TouchableHighlight>
-      </View>
+      <TouchableHighlight
+        onPress={() => {
+          navigation.setParams({ recipe: undefined });
+          navigation.navigate("RecipeLibrary", {
+            screen: "RecipeLibrary",
+          });
+        }}
+        style={styles.touchableHighLight}
+      >
+        <View style={styles.pressable}>
+          <Text style={styles.pressableText}>
+            Okej, ta mig tillbaka till receptbibliotek
+          </Text>
+        </View>
+      </TouchableHighlight>
+      <StandardButton
+        onPress={() => {
+          navigation.setParams({ recipe: undefined });
+          navigation.navigate("RecipeLibrary", {
+            screen: "RecipeLibrary",
+          });
+        }}
+        buttonText={"Okej"}
+      />
     </SafeAreaView>
   );
 }
@@ -65,8 +74,6 @@ const styles = StyleSheet.create({
   },
   touchableHighLight: {
     borderRadius: 5,
-  },
-  pressableContainer: {
     margin: 10,
   },
   pressable: {

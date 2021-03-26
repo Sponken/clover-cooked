@@ -273,7 +273,7 @@
 
     {
       "id": "lager1",
-      "name": "name",
+      "name": "Gör ett lager",
       "instructions": "Lägg en tårtbotten på ett fat. Bred på hälften av jordgubbsfyllningen och hälften av vaniljkrämen.",
       "estimatedTime": 5,
       "ingredients": [],

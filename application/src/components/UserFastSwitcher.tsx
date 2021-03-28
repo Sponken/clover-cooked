@@ -10,8 +10,10 @@ import {
   Image,
 } from "react-native";
 
-const activeUserBubbleSize = 65;
-const inActiveUserBubbleSize = 45;
+const ACTIVE_USER_BUBBLE_SIZE = 65;
+const INACTIVE_USER_BUBBLE_SIZE = 45;
+const ACTIVE_USER_NOTIFICATION_SIZE = ACTIVE_USER_BUBBLE_SIZE / 3;
+const INACTIVE_USER_NOTIFICATION_SIZE = INACTIVE_USER_BUBBLE_SIZE / 3;
 
 /**
  * alla användare, activeUser och ifall någon annan än activeUser som är viktig att klicka på
@@ -19,7 +21,7 @@ const inActiveUserBubbleSize = 45;
 type SwitcherProps = {
   users: User[];
   activeUser: string;
-  userNotifications: string[];
+  userNotifications: Map<string, boolean>;
   onActiveUserSwitch: (userId: string) => void;
 };
 
@@ -62,7 +64,9 @@ export const UserFastSwitcher = ({
           <UserBubble
             user={item}
             isActiveUser={item.id == state.activeUser}
-            isNotified={state.userNotifications.includes(item.id)}
+            isNotified={
+              state.userNotifications.get(item.id) //'!!new Boolean()' castar 'undefined' till 'false' (om användaren inte finns i userNotifications)
+            }
             onBubblePress={(userId: string) => {
               onActiveUserSwitch(userId);
               setActiveUser(userId);
@@ -95,27 +99,60 @@ const UserBubble = ({
       style={
         isActiveUser
           ? styles.activeBubbleContainer
-          : styles.inActiveBubbleContainer
+          : styles.inactiveBubbleContainer
       }
     >
       <Pressable onPress={() => onBubblePress(user.id)}>
         <Image
           style={[
-            isActiveUser ? styles.activeUserIcon : styles.inActiveUserIcon,
+            isActiveUser ? styles.activeUserIcon : styles.inactiveUserIcon,
             { borderColor: user.color, backgroundColor: user.color },
           ]}
           source={user.icon}
         />
+        <View
+          style={
+            isActiveUser
+              ? styles.activeUserNotificationContainer
+              : styles.inactiveUserNotificationContainer
+          }
+        >
+          <UserNotification
+            isNotified={isNotified}
+            isActiveUser={isActiveUser}
+          />
+        </View>
       </Pressable>
       <Text
         numberOfLines={1}
         style={
-          isActiveUser ? styles.activeBubbleText : styles.inActiveBubbleText
+          isActiveUser ? styles.activeBubbleText : styles.inactiveBubbleText
         }
       >
         {user.name}
       </Text>
     </View>
+  );
+};
+
+type UserNotificationProps = {
+  isNotified: boolean;
+  isActiveUser: boolean;
+};
+
+const UserNotification = ({
+  isNotified,
+  isActiveUser,
+}: UserNotificationProps) => {
+  if (!isNotified) return <></>;
+  return (
+    <View
+      style={
+        isActiveUser
+          ? styles.activeUserNotification
+          : styles.inactiveUserNotification
+      }
+    />
   );
 };
 
@@ -127,29 +164,29 @@ const styles = StyleSheet.create({
   },
 
   activeBubbleContainer: {
-    width: activeUserBubbleSize,
+    width: ACTIVE_USER_BUBBLE_SIZE,
     marginLeft: 7,
   },
-  inActiveBubbleContainer: {
-    width: inActiveUserBubbleSize,
+  inactiveBubbleContainer: {
+    width: INACTIVE_USER_BUBBLE_SIZE,
     marginLeft: 7,
     overflow: "hidden",
   },
   activeUserIcon: {
-    width: activeUserBubbleSize,
-    height: activeUserBubbleSize,
-    borderRadius: activeUserBubbleSize / 2,
+    width: ACTIVE_USER_BUBBLE_SIZE,
+    height: ACTIVE_USER_BUBBLE_SIZE,
+    borderRadius: ACTIVE_USER_BUBBLE_SIZE / 2,
     overflow: "hidden",
     borderWidth: 3,
   },
-  inActiveUserIcon: {
-    width: inActiveUserBubbleSize,
-    height: inActiveUserBubbleSize,
-    borderRadius: inActiveUserBubbleSize / 2,
+  inactiveUserIcon: {
+    width: INACTIVE_USER_BUBBLE_SIZE,
+    height: INACTIVE_USER_BUBBLE_SIZE,
+    borderRadius: INACTIVE_USER_BUBBLE_SIZE / 2,
     overflow: "hidden",
     borderWidth: 3,
   },
-  inActiveBubbleText: {
+  inactiveBubbleText: {
     alignSelf: "center",
     fontSize: 10,
     flex: 1,
@@ -158,5 +195,29 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontSize: 10,
     fontWeight: "bold",
+  },
+  activeUserNotification: {
+    overflow: "hidden",
+    backgroundColor: "red",
+    width: ACTIVE_USER_NOTIFICATION_SIZE,
+    height: ACTIVE_USER_NOTIFICATION_SIZE,
+    borderRadius: ACTIVE_USER_NOTIFICATION_SIZE / 2,
+  },
+  inactiveUserNotification: {
+    overflow: "hidden",
+    backgroundColor: "red",
+    width: INACTIVE_USER_NOTIFICATION_SIZE,
+    height: INACTIVE_USER_NOTIFICATION_SIZE,
+    borderRadius: INACTIVE_USER_NOTIFICATION_SIZE / 2,
+  },
+  activeUserNotificationContainer: {
+    position: "absolute",
+    right: 0,
+    top: 0,
+  },
+  inactiveUserNotificationContainer: {
+    position: "absolute",
+    right: 0,
+    top: 0,
   },
 });

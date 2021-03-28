@@ -1,1 +1,9 @@
-export { unsafeFind, includesAll, removeElement } from "./Utils";
+export {
+  unsafeFind,
+  includesAll,
+  removeElement,
+  getMinutesTo,
+  getSecondsTo,
+  clearIntervalOrUndefined,
+  clearTimeoutOrUndefined,
+} from "./Utils";

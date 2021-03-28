@@ -4,7 +4,12 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 
 import { RootStackParamList } from "../navigation";
-import { UserFastSwitcher, TaskCard, TaskConfirm } from "../components";
+import {
+  UserFastSwitcher,
+  TaskCard,
+  TaskConfirm,
+  CookingTimer,
+} from "../components";
 import { User } from "../data";
 import { unsafeFind } from "../utils";
 import { createBasicScheduler, Scheduler } from "../scheduler";
@@ -101,6 +106,13 @@ export function Cooking({ navigation, route }: Props) {
         </View>
       </View>
       <View style={styles.contentContainer}>
+        <View style={styles.timerContainer}>
+          <CookingTimer
+            onPress={() => null}
+            finish={new Date(Date.now() + 80000)}
+            displayRemainingTime={"hidden"}
+          />
+        </View>
         <TaskCard
           taskId={assignedTasks.get(activeUser)}
           recipe={recipe}
@@ -153,6 +165,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  timerContainer: {
+    position: "absolute",
+    top: 5,
+    right: 5,
   },
   buttonContainer: {
     height: 100,

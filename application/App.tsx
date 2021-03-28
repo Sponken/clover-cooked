@@ -6,6 +6,10 @@ import "react-native-gesture-handler";
 import React from "react";
 
 import { Navigator } from "./src/navigation";
+import { LogBox } from "react-native";
+
+//
+LogBox.ignoreLogs(["Setting a timer"]);
 
 export default function App() {
   return <Navigator />;

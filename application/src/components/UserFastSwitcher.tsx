@@ -102,7 +102,7 @@ const UserBubble = ({
         <Image
           style={[
             isActiveUser ? styles.activeUserIcon : styles.inActiveUserIcon,
-            { borderColor: user.color },
+            { borderColor: user.color, backgroundColor: user.color },
           ]}
           source={user.icon}
         />

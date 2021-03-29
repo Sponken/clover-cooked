@@ -9,6 +9,7 @@ import {
   Pressable,
   Image,
 } from "react-native";
+import { undefinedToBoolean } from "../utils";
 
 const ACTIVE_USER_BUBBLE_SIZE = 65;
 const INACTIVE_USER_BUBBLE_SIZE = 45;
@@ -39,33 +40,21 @@ export const UserFastSwitcher = ({
   userNotifications,
   onActiveUserSwitch,
 }: SwitcherProps) => {
-  const [state, setState] = useState({
-    users: users,
-    activeUser: activeUser,
-    userNotifications: userNotifications,
-  });
-
-  const setActiveUser = (user: string) => {
-    setState({
-      users: state.users,
-      activeUser: user,
-      userNotifications: state.userNotifications,
-    });
-  };
+  const [currentActiveUser, setActiveUser] = useState(activeUser);
 
   return (
     <View style={styles.container}>
       <FlatList
         showsHorizontalScrollIndicator={false}
         horizontal={true}
-        data={state.users}
+        data={users}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <UserBubble
             user={item}
-            isActiveUser={item.id == state.activeUser}
+            isActiveUser={item.id == currentActiveUser}
             isNotified={
-              state.userNotifications.get(item.id) //'!!new Boolean()' castar 'undefined' till 'false' (om användaren inte finns i userNotifications)
+              undefinedToBoolean(userNotifications.get(item.id)) //undefinedToBoolean castar 'undefined' till 'false' (om användaren inte finns i userNotifications)
             }
             onBubblePress={(userId: string) => {
               onActiveUserSwitch(userId);
@@ -140,6 +129,9 @@ type UserNotificationProps = {
   isActiveUser: boolean;
 };
 
+/**
+ * notisbricka för UserBubble, om isNotified är false returneras tom komponent
+ */
 const UserNotification = ({
   isNotified,
   isActiveUser,

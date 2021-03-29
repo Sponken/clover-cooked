@@ -7,7 +7,7 @@ import {
   TouchableHighlight,
 } from "react-native";
 
-import { StandardButton } from "../components";
+import { StandardButton, StandardText } from "../components";
 
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation";
@@ -27,23 +27,8 @@ export function RecipeFinished({ navigation }: Props) {
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.textContainer}>
-        <Text style={styles.textStyle}>Smaklig måltid!</Text>
+        <StandardText size="large" color="primary" text="Smaklig måltid!" />
       </View>
-      <TouchableHighlight
-        onPress={() => {
-          navigation.setParams({ recipe: undefined });
-          navigation.navigate("RecipeLibrary", {
-            screen: "RecipeLibrary",
-          });
-        }}
-        style={styles.touchableHighLight}
-      >
-        <View style={styles.pressable}>
-          <Text style={styles.pressableText}>
-            Okej, ta mig tillbaka till receptbibliotek
-          </Text>
-        </View>
-      </TouchableHighlight>
       <StandardButton
         onPress={() => {
           navigation.setParams({ recipe: undefined });
@@ -51,7 +36,8 @@ export function RecipeFinished({ navigation }: Props) {
             screen: "RecipeLibrary",
           });
         }}
-        buttonText={"Okej"}
+        buttonText="Klar"
+        textProps={{ color: "secondary", textWeight: "bold" }}
       />
     </SafeAreaView>
   );
@@ -67,23 +53,5 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 3,
     justifyContent: "center",
-  },
-  textStyle: {
-    color: "hotpink",
-    fontSize: 40,
-  },
-  touchableHighLight: {
-    borderRadius: 5,
-    margin: 10,
-  },
-  pressable: {
-    alignSelf: "flex-end",
-    padding: 10,
-    backgroundColor: "hotpink",
-    borderRadius: 4,
-  },
-  pressableText: {
-    color: "white",
-    fontSize: 22,
   },
 });

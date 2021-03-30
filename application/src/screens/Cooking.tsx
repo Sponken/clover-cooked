@@ -1,4 +1,12 @@
-import { StyleSheet, View, Pressable, Image, SafeAreaView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Pressable,
+  Image,
+  SafeAreaView,
+  Modal,
+  Text,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
@@ -9,10 +17,12 @@ import {
   TaskCard,
   TaskConfirm,
   CookingTimer,
+  CookingTimerOverview,
 } from "../components";
 import { User } from "../data";
 import { unsafeFind } from "../utils";
 import { createBasicScheduler, Scheduler } from "../scheduler";
+import { finishTimeText } from "../components/CookingTimer";
 
 type CookingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -39,7 +49,14 @@ export function Cooking({ navigation, route }: Props) {
 
   const [activeUser, setActiveUser] = useState(users[0].id); //id på aktiv användare
   const [userNotifications, setUserNotifications] = useState<string[]>([]); //lista med användarid som är notifierade
-  const [passiveTasks, setPassiveTasks] = useState<string[]>([]); //lista med passiva task som är frikopplade från användare
+  const [passiveTasks, setPassiveTasks] = useState<Map<string, Date>>(
+    new Map()
+  ); //lista med passiva task som är frikopplade från användare
+
+  const [timerModalVisible, setTimerModalVisible] = useState(false);
+  const [earliestTimer, setEarliestTimer] = useState<Date | undefined>(
+    undefined
+  ); //date för nästa passiv task, undefined om inga finns
 
   // Varje userid har en associerad task
   //
@@ -50,97 +67,149 @@ export function Cooking({ navigation, route }: Props) {
   const [assignedTasks, setAssignedTasks] = useState<
     Map<string, string | undefined>
   >(new Map());
-
   const [scheduler, setScheduler] = useState<Scheduler>();
+
+  const updateEarliestTimer = (passiveTasks: Map<string, Date>) => {
+    let _earliestTimer: undefined | Date = undefined;
+    passiveTasks.forEach((finish) => {
+      if (_earliestTimer) {
+        if (finish.getTime() < _earliestTimer.getTime()) {
+          _earliestTimer = new Date(finish);
+        }
+      } else {
+        _earliestTimer = new Date(finish);
+      }
+    });
+    setEarliestTimer(_earliestTimer);
+  };
+
   useEffect(() => {
     const taskAssignedSubscriber = (task: string | undefined, cook: string) => {
       console.log("task assigned " + task + " to " + cook);
       setAssignedTasks((assigned) => new Map(assigned.set(cook, task)));
     };
-
     const passiveTaskStartedSubscriber = (task: string, finish: Date) => {
-      // TODO: Hur hanteras passiva tasks?
+      setPassiveTasks((tasks) => {
+        tasks.set(task, finish);
+        updateEarliestTimer(tasks);
+        return new Map(tasks);
+      });
     };
+    const passiveTaskFinishedSubscriber = (task: string) => {
+      setPassiveTasks((tasks) => {
+        tasks.delete(task);
+        updateEarliestTimer(tasks);
+        return new Map(tasks);
+      });
+    };
+
     let cooks = users.map((u) => u.id);
     let ssss: Scheduler = createBasicScheduler(recipe, cooks);
     const taskAssignedUnsubscribe = ssss.subscribeTaskAssigned(
       taskAssignedSubscriber
     );
-    const passiveTaskUnsubscribe = ssss.subscribePassiveTaskStarted(
+    const passiveTaskStartedUnsubscribe = ssss.subscribePassiveTaskStarted(
       passiveTaskStartedSubscriber
+    );
+    const passiveTaskFinishedUnsubscribe = ssss.subscribePassiveTaskFinished(
+      passiveTaskFinishedSubscriber
     );
     setAssignedTasks(ssss.getTasks());
     setScheduler(ssss);
     return () => {
       taskAssignedUnsubscribe();
-      passiveTaskUnsubscribe();
+      passiveTaskStartedUnsubscribe();
+      passiveTaskFinishedUnsubscribe();
     };
   }, []);
 
-  return (
-    <SafeAreaView style={styles.screenContainer}>
-      <View style={styles.topBarContainer}>
-        <View style={{ flex: 1, flexDirection: "column-reverse" }}>
-          <UserFastSwitcher
-            users={users}
-            activeUser={activeUser}
-            userNotifications={userNotifications}
-            onActiveUserSwitch={(userId: string) => {
-              setActiveUser(userId);
+  if (scheduler) {
+    return (
+      <SafeAreaView style={styles.screenContainer}>
+        <Modal
+          visible={timerModalVisible}
+          animationType="fade"
+          onRequestClose={() => setTimerModalVisible(false)}
+          transparent={true}
+          statusBarTranslucent={true}
+        >
+          <Pressable
+            style={styles.modalScreenContainer}
+            onPress={() => setTimerModalVisible(!timerModalVisible)}
+          >
+            <Pressable style={styles.timerModalContainer} onPress={() => null}>
+              <CookingTimerOverview
+                passiveTasks={passiveTasks}
+                recipe={recipe}
+                onPress={(taskId: string) => setTimerModalVisible(false)}
+              />
+            </Pressable>
+          </Pressable>
+        </Modal>
+        <View style={styles.topBarContainer}>
+          <View style={{ flex: 1, flexDirection: "column-reverse" }}>
+            <UserFastSwitcher
+              users={users}
+              activeUser={activeUser}
+              userNotifications={userNotifications}
+              onActiveUserSwitch={(userId: string) => {
+                setActiveUser(userId);
+              }}
+            />
+          </View>
+          <View style={styles.topBarRightMenu}>
+            <Pressable onPress={() => navigation.navigate("SessionStart")}>
+              <Image
+                source={require("../../assets/image/editChef.png")} //Placeholder tills ikon finns
+                style={styles.topBarRightMenuIcon}
+              />
+            </Pressable>
+            <Pressable>
+              <Image
+                source={require("../../assets/image/icon.png")} // TODO: Placeholder tills ikon finns
+                style={styles.topBarRightMenuIcon}
+              />
+            </Pressable>
+          </View>
+        </View>
+        <View style={styles.contentContainer}>
+          <View style={styles.timerContainer}>
+            <CookingTimer
+              onPress={() => setTimerModalVisible(true)}
+              finish={earliestTimer}
+              displayRemainingTime={"hiddenUntilLow"}
+            />
+          </View>
+          <TaskCard
+            taskId={assignedTasks.get(activeUser)}
+            recipe={recipe}
+            userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
+            userColor={unsafeFind(users, (u: User) => u.id == activeUser).color}
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <TaskConfirm //Exempel kod för att visa knappar
+            confirmType={"extendOrFinish"}
+            onExtendPress={() => null}
+            onFinishPress={() => {
+              let a = activeUser;
+              let t = assignedTasks.get(a);
+              setAssignedTasks((assigned) => {
+                assigned.delete(a);
+                return new Map(assigned);
+              });
+
+              if (t) {
+                // TODO: Says scheduler may be undefined... but it is initialized in useEffect.
+                scheduler.finishTask(t, a);
+              }
             }}
           />
         </View>
-        <View style={styles.topBarRightMenu}>
-          <Pressable onPress={() => navigation.navigate("SessionStart")}>
-            <Image
-              source={require("../../assets/image/editChef.png")} //Placeholder tills ikon finns
-              style={styles.topBarRightMenuIcon}
-            />
-          </Pressable>
-          <Pressable>
-            <Image
-              source={require("../../assets/image/icon.png")} // TODO: Placeholder tills ikon finns
-              style={styles.topBarRightMenuIcon}
-            />
-          </Pressable>
-        </View>
-      </View>
-      <View style={styles.contentContainer}>
-        <View style={styles.timerContainer}>
-          <CookingTimer
-            onPress={() => null}
-            finish={new Date(Date.now() + 80000)}
-            displayRemainingTime={"hidden"}
-          />
-        </View>
-        <TaskCard
-          taskId={assignedTasks.get(activeUser)}
-          recipe={recipe}
-          userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
-          userColor={unsafeFind(users, (u: User) => u.id == activeUser).color}
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <TaskConfirm //Exempel kod för att visa knappar
-          confirmType={"extendOrFinish"}
-          onExtendPress={() => null}
-          onFinishPress={() => {
-            let a = activeUser;
-            let t = assignedTasks.get(a);
-            setAssignedTasks((assigned) => {
-              assigned.delete(a);
-              return new Map(assigned);
-            });
-
-            if (t) {
-              // TODO: Says scheduler may be undefined... but it is initialized in useEffect.
-              scheduler.finishTask(t, a);
-            }
-          }}
-        />
-      </View>
-    </SafeAreaView>
-  );
+      </SafeAreaView>
+    );
+  }
+  return <></>;
 }
 
 const styles = StyleSheet.create({
@@ -148,6 +217,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     flexDirection: "column",
+  },
+  modalScreenContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(160, 160, 160, 0.5)",
+  },
+  timerModalContainer: {
+    height: "40%",
+    width: "85%",
   },
   topBarContainer: {
     flexDirection: "row",

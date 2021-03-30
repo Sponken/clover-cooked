@@ -3,7 +3,8 @@ import { Recipe, Task } from "../data";
 export type CookID = string;
 export type TaskID = string;
 
-export type PassiveTaskSubscriber = (task: TaskID, finish: Date) => void;
+export type PassiveTaskStartedSubscriber = (task: TaskID, finish: Date) => void;
+export type PassiveTaskFinishedSubscriber = (task: TaskID) => void;
 export type TaskAssignedSubscriber = (
   task: TaskID | undefined,
   cook: CookID
@@ -20,29 +21,39 @@ export interface Scheduler {
   readonly currentTasks: Map<CookID, TaskID>;
   readonly currentPassiveTasks: Map<TaskID, Date>;
   /**
-   * Avslutar en given task för en användare. Kan även användas för passiva tasks
+   * Avslutar en given, ej passiv, task för en användare.
    */
   finishTask: (task: TaskID, cook: CookID) => void;
+  /**
+   * Avslutar ett passivt task
+   */
+  finishPassiveTask: (task: TaskID) => void;
   /**
    * Metod som kallas på när en task är tilldelad
    */
   subscribeTaskAssigned: (f: TaskAssignedSubscriber) => () => void;
   /**
-   * Metod som kallas på när en ny passiv task är startad
+   * Metod som kallas på när ny passiv task är startad
    */
-  subscribePassiveTaskStarted: (f: PassiveTaskSubscriber) => () => void;
+  subscribePassiveTaskStarted: (f: PassiveTaskStartedSubscriber) => () => void;
+  /**
+   * Metod som kallas på när en passiv task är avslutad
+   */
+  subscribePassiveTaskFinished: (
+    f: PassiveTaskFinishedSubscriber
+  ) => () => void;
   /**
    * Utöker tiden på en pågående passiv task
    */
   extendPassive: (task: TaskID, add: number) => void;
   /**
-   * Returnerar alla pågående passiva tasks, tillsammans med hur lång tid som är kvar i minuter
+   * Returnerar alla pågående passiva tasks, tillsammans med Date för när de är slut
    */
-  getPassiveTasks: () => Map<TaskID, number>;
+  getPassiveTasks: () => Map<TaskID, Date>;
   /**
-   * Returnerar hur lång tid det är kvar i minuter för en given task. Returnerar undefined om tasken inte är pågående
+   * Returnerar Date för när passivt task är slut. Returnerar undefined om tasken inte är pågående
    */
-  getPassiveTask: (task: TaskID) => number | undefined;
+  getPassiveTask: (task: TaskID) => Date | undefined;
   /**
    * Lägg till en kock med dens ID.
    */
@@ -61,6 +72,7 @@ export interface Scheduler {
   getTasks: () => Map<CookID, TaskID>;
 
   // Subscription listor med alla subsribe funktioner
-  readonly passiveTaskSubscribers: PassiveTaskSubscriber[];
+  readonly passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[];
+  readonly passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[];
   readonly taskAssignedSubscribers: TaskAssignedSubscriber[];
 }

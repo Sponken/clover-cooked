@@ -6,3 +6,4 @@ export { TaskCard } from "./TaskCard";
 export { TaskConfirm } from "./TaskConfirm";
 export { IngredientList } from "./IngredientList";
 export { CookingTimer } from "./CookingTimer";
+export { CookingTimerOverview } from "./CookingTimerOverview";

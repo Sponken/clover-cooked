@@ -68,7 +68,7 @@ export function SessionStart({ navigation, route }: Props) {
     if(recipe === undefined){
       return(
         <View style={{height: 155}}>
-        <Text style={{fontSize: 20, margin: 50, justifyContent: "center",}}> No recipe chosen </Text>
+        <Text style={{fontSize: 20, margin: 50, justifyContent: "center",}}> Inget recept valt </Text>
         </View>
       )
     }
@@ -123,7 +123,7 @@ export function SessionStart({ navigation, route }: Props) {
               })
             }} 
           }>
-          <Text style={{color: "white", fontWeight: "bold"}}>Delete Session</Text>
+          <Text style={{color: "white", fontWeight: "bold"}}>Avbryt</Text>
         </Pressable>
 
         {/*Vien under är fulhack för att centrera texten på hela skärmen*/}

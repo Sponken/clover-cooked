@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Pressable,
-  TouchableHighlight,
-} from "react-native";
+import { View, StyleSheet } from "react-native";
 
 import { StandardButton, StandardText } from "../components";
 

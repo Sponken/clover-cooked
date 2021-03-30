@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 import { StandardText, StandardTextProps } from "./StandardText";
-import { primaryColor, primaryColorVariant, secondaryColor } from "./Colors";
+import { primaryColor, primaryColorVariant } from "./Colors";
 
 type StandardButtonProps = {
   onPress: () => void;

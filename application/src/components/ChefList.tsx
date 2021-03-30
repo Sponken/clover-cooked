@@ -75,7 +75,7 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
       "#00FF00",
       "#FFF000",
       "#FF7F00",
-      "#FF0000",
+      //"#FF0000", //Ej kompatibel med färgen på notis för användare
     ];
 
     function checkColor(col: ColorValue) {

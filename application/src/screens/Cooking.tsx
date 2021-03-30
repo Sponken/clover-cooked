@@ -6,7 +6,7 @@ import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation";
 import { UserFastSwitcher, TaskCard, TaskConfirm } from "../components";
 import { User } from "../data";
-import { unsafeFind } from "../utils";
+import { unsafeFind, undefinedToBoolean } from "../utils";
 import { createBasicScheduler, Scheduler } from "../scheduler";
 
 type CookingScreenNavigationProp = StackNavigationProp<
@@ -21,11 +21,6 @@ type Props = {
   route: CookingRouteProp;
 };
 
-type AssignedTask = {
-  userId: string;
-  taskId: string;
-};
-
 /**
  * Cooking, skärmen som visas under tiden matlagningen sker
  */
@@ -33,7 +28,9 @@ export function Cooking({ navigation, route }: Props) {
   const { recipe, users } = route.params;
 
   const [activeUser, setActiveUser] = useState(users[0].id); //id på aktiv användare
-  const [userNotifications, setUserNotifications] = useState<string[]>([]); //lista med användarid som är notifierade
+  const [userNotifications, setUserNotifications] = useState<
+    Map<string, boolean>
+  >(new Map()); //lista med användarid som är notifierade
   const [passiveTasks, setPassiveTasks] = useState<string[]>([]); //lista med passiva task som är frikopplade från användare
 
   // Varje userid har en associerad task
@@ -47,17 +44,32 @@ export function Cooking({ navigation, route }: Props) {
   >(new Map());
 
   const [scheduler, setScheduler] = useState<Scheduler>();
-  useEffect(() => {
-    const taskAssignedSubscriber = (task: string | undefined, cook: string) => {
-      console.log("task assigned " + task + " to " + cook);
-      setAssignedTasks((assigned) => new Map(assigned.set(cook, task)));
-    };
 
-    const passiveTaskStartedSubscriber = (task: string, finish: Date) => {
-      // TODO: Hur hanteras passiva tasks?
-    };
-    let cooks = users.map((u) => u.id);
-    let ssss: Scheduler = createBasicScheduler(recipe, cooks);
+  const taskAssignedSubscriber = (task: string | undefined, cook: string) => {
+    console.log("task assigned " + task + " to " + cook);
+
+    setAssignedTasks((assigned) => new Map(assigned.set(cook, task)));
+    if (task !== undefined) {
+      setUserNotifications(
+        (notifications) => new Map(notifications.set(cook, true))
+      );
+    }
+  };
+
+  const passiveTaskStartedSubscriber = (task: string, finish: Date) => {
+    // TODO: Hur hanteras passiva tasks?
+  };
+
+  // Fixar så det inte står en notis på den aktiva användaren
+  if (undefinedToBoolean(userNotifications.get(activeUser))) {
+    setUserNotifications(
+      (notifications) => new Map(notifications.set(activeUser, false))
+    );
+  }
+
+  useEffect(() => {
+    let userIds = users.map((u) => u.id);
+    let ssss: Scheduler = createBasicScheduler(recipe, userIds);
     const taskAssignedUnsubscribe = ssss.subscribeTaskAssigned(
       taskAssignedSubscriber
     );
@@ -65,7 +77,16 @@ export function Cooking({ navigation, route }: Props) {
       passiveTaskStartedSubscriber
     );
     setAssignedTasks(ssss.getTasks());
+
+    let _userNotifications = new Map<string, boolean>();
+    ssss
+      .getTasks()
+      .forEach((task, user) =>
+        _userNotifications.set(user, task !== undefined && user !== activeUser)
+      );
+    setUserNotifications(new Map(_userNotifications));
     setScheduler(ssss);
+
     return () => {
       taskAssignedUnsubscribe();
       passiveTaskUnsubscribe();
@@ -79,8 +100,11 @@ export function Cooking({ navigation, route }: Props) {
           <UserFastSwitcher
             users={users}
             activeUser={activeUser}
-            userNotifications={userNotifications}
+            userNotifications={new Map(userNotifications)}
             onActiveUserSwitch={(userId: string) => {
+              setUserNotifications(
+                (notifications) => new Map(notifications.set(userId, false))
+              );
               setActiveUser(userId);
             }}
           />
@@ -110,7 +134,7 @@ export function Cooking({ navigation, route }: Props) {
       </View>
       <View style={styles.buttonContainer}>
         <TaskConfirm //Exempel kod för att visa knappar
-          confirmType={"extendOrFinish"}
+          confirmType={"finish"}
           onExtendPress={() => null}
           onFinishPress={() => {
             let a = activeUser;

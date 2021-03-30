@@ -158,7 +158,7 @@ function getTask(recipe: Recipe, taskID: TaskID): Task{
  */
 function getSubscribeFunction<FunctionType>(subList: FunctionType[]) {
   const _subscribe = (subscribedFunction: FunctionType) => {
-    const _unsubscribe = () => subList.filter((value) => value !== subscribedFunction);
+    const _unsubscribe = () => {subList = subList.filter((value) => value !== subscribedFunction)};
     subList.push(subscribedFunction);
     return _unsubscribe;
   }

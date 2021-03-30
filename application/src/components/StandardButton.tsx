@@ -1,7 +1,7 @@
-import { useLinkProps } from "@react-navigation/native";
 import React from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import { StandardText, StandardTextProps } from "./StandardText";
+import { primaryColor, primaryColorVariant, secondaryColor } from "./Colors";
 
 type StandardButtonProps = {
   onPress: () => void;
@@ -15,8 +15,8 @@ export function StandardButton({ ...props }: StandardButtonProps) {
       <Pressable onPress={props.onPress}>
         {({ pressed }) => {
           let buttonColor = pressed
-            ? { backgroundColor: "#b376ab" }
-            : { backgroundColor: "hotpink" };
+            ? { backgroundColor: primaryColorVariant }
+            : { backgroundColor: primaryColor };
           return (
             <View style={[styles.buttonStyle, buttonColor]}>
               <StandardText
@@ -34,19 +34,20 @@ export function StandardButton({ ...props }: StandardButtonProps) {
 }
 
 const styles = StyleSheet.create({
-  touchableHighlight: {
-    borderRadius: 5,
-    margin: 10,
-  },
-  buttonPressed: {
-    backgroundColor: "#b376ab",
-  },
-  buttonNotPressed: {
-    backgroundColor: "hotpink",
-  },
   buttonStyle: {
-    alignSelf: "flex-end",
     padding: 10,
-    borderRadius: 4,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    // Android shadow
+    elevation: 4,
   },
 });

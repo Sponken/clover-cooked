@@ -27,7 +27,7 @@ export function RecipeFinished({ navigation }: Props) {
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.textContainer}>
-        <StandardText size="large" color="primary" text="Smaklig måltid!" />
+        <StandardText size="large" color="secondary" text="Smaklig måltid!" />
       </View>
       <StandardButton
         onPress={() => {
@@ -37,7 +37,6 @@ export function RecipeFinished({ navigation }: Props) {
           });
         }}
         buttonText="Klar"
-        textProps={{ color: "secondary", textWeight: "bold" }}
       />
     </SafeAreaView>
   );
@@ -49,6 +48,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "column",
     flex: 1,
+    padding: 10,
   },
   textContainer: {
     flex: 3,

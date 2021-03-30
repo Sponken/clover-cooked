@@ -4,6 +4,7 @@ import {
   StyleSheet,
   ColorValue
 } from "react-native";
+import {primaryColor, secondaryColor} from "./Colors"
 
 
 
@@ -34,10 +35,10 @@ export function StandardText({ ...props }: StandardTextProps) {
     if (!props.colorValue){
     switch(props.color ?? "black"){
       case "primary":
-        colorStyle = {color: "hotpink"};
+        colorStyle = {color: primaryColor};
         break;
       case "secondary":
-        colorStyle = {color: "lime"}
+        colorStyle = {color: secondaryColor}
         break;
       case "white":
         colorStyle = {color: "white"}

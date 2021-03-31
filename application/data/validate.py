@@ -2,9 +2,20 @@ import json
 import sys
 
 if (len(sys.argv) == 1 or sys.argv[1] == "-h" or sys.argv[1] == "--help"):
-  print("Validerar ett recept")
-  print("usage: validate.py FILE [-v]")
-  print("       Lägg till -v i slutet för att skriva ut mer")
+  s = """Usage: validate.py FILE [-v]
+Detta program validerar ett recept.
+
+Den kollar så att:
+- Alla ingredienser som nämns finns i listan av ingredienser
+- Alla resurser som nämns finns i listan av resurser
+- Alla ingredienser och resurser högst upp i filen nämns i någon task
+- Varje task "leder" till en final task. (Alltså att det inte kan finnas
+  andra tasks kvar när alla finaltasks är klara. Det kan finnas flera final
+  tasks.)
+
+Om "-v" läggs till som argument skriver programmet ut information om vilken
+tid som tasks tar och hur många ingredienser som används."""
+  print(s)
   sys.exit(0)
 
 with open(sys.argv[1], encoding="utf-8") as f:

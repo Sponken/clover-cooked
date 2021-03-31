@@ -20,7 +20,7 @@ import {
   CookingTimerOverview,
 } from "../components";
 import { User } from "../data";
-import { unsafeFind } from "../utils";
+import { unsafeFind, undefinedToBoolean } from "../utils";
 import { createBasicScheduler, Scheduler } from "../scheduler";
 import { finishTimeText } from "../components/CookingTimer";
 
@@ -36,11 +36,6 @@ type Props = {
   route: CookingRouteProp;
 };
 
-type AssignedTask = {
-  userId: string;
-  taskId: string;
-};
-
 /**
  * Cooking, skärmen som visas under tiden matlagningen sker
  */
@@ -48,7 +43,9 @@ export function Cooking({ navigation, route }: Props) {
   const { recipe, users } = route.params;
 
   const [activeUser, setActiveUser] = useState(users[0].id); //id på aktiv användare
-  const [userNotifications, setUserNotifications] = useState<string[]>([]); //lista med användarid som är notifierade
+  const [userNotifications, setUserNotifications] = useState<
+    Map<string, boolean>
+  >(new Map()); //lista med användarid som är notifierade
   const [passiveTasks, setPassiveTasks] = useState<Map<string, Date>>(
     new Map()
   ); //lista med passiva task som är frikopplade från användare
@@ -83,28 +80,35 @@ export function Cooking({ navigation, route }: Props) {
     setEarliestTimer(_earliestTimer);
   };
 
-  useEffect(() => {
-    const taskAssignedSubscriber = (task: string | undefined, cook: string) => {
-      console.log("task assigned " + task + " to " + cook);
-      setAssignedTasks((assigned) => new Map(assigned.set(cook, task)));
-    };
-    const passiveTaskStartedSubscriber = (task: string, finish: Date) => {
-      setPassiveTasks((tasks) => {
-        tasks.set(task, finish);
-        updateEarliestTimer(tasks);
-        return new Map(tasks);
-      });
-    };
-    const passiveTaskFinishedSubscriber = (task: string) => {
-      setPassiveTasks((tasks) => {
-        tasks.delete(task);
-        updateEarliestTimer(tasks);
-        return new Map(tasks);
-      });
-    };
+  const taskAssignedSubscriber = (task: string | undefined, cook: string) => {
+    console.log("task assigned " + task + " to " + cook);
+    setAssignedTasks((assigned) => new Map(assigned.set(cook, task)));
+    if (task !== undefined) {
+      setUserNotifications(
+        (notifications) => new Map(notifications.set(cook, true))
+      );
+    }
+  };
 
-    let cooks = users.map((u) => u.id);
-    let ssss: Scheduler = createBasicScheduler(recipe, cooks);
+  const passiveTaskStartedSubscriber = (task: string, finish: Date) => {
+    setPassiveTasks((tasks) => {
+      tasks.set(task, finish);
+      updateEarliestTimer(tasks);
+      return new Map(tasks);
+    });
+  };
+
+  const passiveTaskFinishedSubscriber = (task: string) => {
+    setPassiveTasks((tasks) => {
+      tasks.delete(task);
+      updateEarliestTimer(tasks);
+      return new Map(tasks);
+    });
+  };
+
+  useEffect(() => {
+    let userIds = users.map((u) => u.id);
+    let ssss: Scheduler = createBasicScheduler(recipe, userIds);
     const taskAssignedUnsubscribe = ssss.subscribeTaskAssigned(
       taskAssignedSubscriber
     );
@@ -115,13 +119,29 @@ export function Cooking({ navigation, route }: Props) {
       passiveTaskFinishedSubscriber
     );
     setAssignedTasks(ssss.getTasks());
+
+    let _userNotifications = new Map<string, boolean>();
+    ssss
+      .getTasks()
+      .forEach((task, user) =>
+        _userNotifications.set(user, task !== undefined && user !== activeUser)
+      );
+    setUserNotifications(new Map(_userNotifications));
     setScheduler(ssss);
+
     return () => {
       taskAssignedUnsubscribe();
       passiveTaskStartedUnsubscribe();
       passiveTaskFinishedUnsubscribe();
     };
   }, []);
+
+  // Fixar så det inte står en notis på den aktiva användaren
+  if (undefinedToBoolean(userNotifications.get(activeUser))) {
+    setUserNotifications(
+      (notifications) => new Map(notifications.set(activeUser, false))
+    );
+  }
 
   if (scheduler) {
     return (
@@ -188,9 +208,8 @@ export function Cooking({ navigation, route }: Props) {
           />
         </View>
         <View style={styles.buttonContainer}>
-          <TaskConfirm //Exempel kod för att visa knappar
-            confirmType={"extendOrFinish"}
-            onExtendPress={() => null}
+          <TaskConfirm
+            confirmType={"finish"}
             onFinishPress={() => {
               let a = activeUser;
               let t = assignedTasks.get(a);
@@ -198,9 +217,7 @@ export function Cooking({ navigation, route }: Props) {
                 assigned.delete(a);
                 return new Map(assigned);
               });
-
               if (t) {
-                // TODO: Says scheduler may be undefined... but it is initialized in useEffect.
                 scheduler.finishTask(t, a);
               }
             }}

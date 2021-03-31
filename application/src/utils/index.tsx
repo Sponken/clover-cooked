@@ -2,6 +2,7 @@ export {
   unsafeFind,
   includesAll,
   removeElement,
+  undefinedToBoolean,
   getMinutesTo,
   getSecondsTo,
   clearIntervalOrUndefined,

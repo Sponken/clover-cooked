@@ -78,7 +78,7 @@ export function ChefsOverview({ users, nav }: ChefListProps) {
                         fontSize: 18,
                       }}
                     >
-                      Edit Chefs
+                      Redigera kockar
                     </Text>
                   </View>
                 </View>

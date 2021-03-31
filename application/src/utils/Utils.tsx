@@ -26,6 +26,14 @@ export function removeElement<T>(array: T[], element: T): boolean {
 }
 
 /**
+ * castar undefined till false, om argumentet är boolean så returneras argumentet
+ */
+export function undefinedToBoolean(value: undefined | boolean) {
+  if (value === undefined) return false;
+  return value;
+}
+
+/**
  * Få reda på hur många hela minuter det är tills ett Date
  */
 export function getMinutesTo(date: Date): number {

@@ -32,8 +32,8 @@ export const TaskCard = ({
   } else {
     task = {
       id: "__FÄRDIG__",
-      name: "Nu är du klar",
-      instructions: "Vila :)",
+      name: "Det finns inget att göra just nu",
+      instructions: "Diska om det går, vila annars!",
       ingredients: [],
       resources: [],
       estimatedTime: 9999,

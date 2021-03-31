@@ -218,10 +218,10 @@ function getTask(recipe: Recipe, taskID: TaskID): Task{
  * @returns subscription function till subList som returnerar unsub function
  */
 function getSubscribeFunction<FunctionType>(subList: FunctionType[]) {
-  const _subscribe = (subscribedFunction: FunctionType) => {
-    const _unsubscribe = () => subList.filter((value) => value !== subscribedFunction);
+  const subscribe = (subscribedFunction: FunctionType) => {
+    const unsubscribe = () => subList.filter((value) => value !== subscribedFunction);
     subList.push(subscribedFunction);
-    return _unsubscribe;
+    return unsubscribe;
   }
-  return _subscribe;
+  return subscribe;
 }

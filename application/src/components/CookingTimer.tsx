@@ -18,18 +18,32 @@ type Props = {
 };
 
 export const CookingTimer = ({
-  onPress,
-  finish,
-  displayRemainingTime,
+  onPress: onPressArg,
+  finish: finishArg,
+  displayRemainingTime: displayRemainingTimeArg,
 }: Props) => {
-  if (finish) {
+  if (finishArg) {
+    const [onPress, setOnPress] = useState(() => onPressArg);
+    const [finish, setFinish] = useState(finishArg);
+    const [displayRemainingTime, setDisplayRemainingTime] = useState(
+      displayRemainingTimeArg
+    );
+
+    // Uppdaterar värdena om argumenten förändrass från parent komponent
+    useEffect(() => setOnPress(() => onPressArg), [onPressArg]);
+    useEffect(() => setFinish(finishArg), [finishArg]);
+    useEffect(() => setDisplayRemainingTime(displayRemainingTimeArg), [
+      displayRemainingTimeArg,
+    ]);
+
     const [timeText, setTimeText] = useState("");
     const [timerFinished, setTimerFinished] = useState(false);
 
+    // Uppdaterar timer värden om finish, setDisplayRemainingTime förändras
     useEffect(() => {
       let timeTextUpdateInterval: NodeJS.Timeout | undefined,
         startTimeTextUpdateTimeout: NodeJS.Timeout | undefined = undefined;
-      // när timern är klar kommer timern fatta att det genom att sätta timerFinished
+      // När timern är klar kommer notis visas genom att sätta timerFinished
       const timerFinishedTimeout = setTimeout(() => {
         clearIntervalOrUndefined(timeTextUpdateInterval);
         if (displayRemainingTime !== "hidden") {
@@ -37,6 +51,11 @@ export const CookingTimer = ({
         }
         setTimerFinished(true);
       }, finish.getTime() - Date.now());
+      // Om det finns en timer som inte är klar kommer röda notisen inte visas, genom att sätta timerFinished
+      if (finish.getTime() > Date.now()) {
+        setTimerFinished(false);
+      }
+
       let timeUntilDisplayTimeText = 0; // i ms
       switch (displayRemainingTime) {
         case "hiddenUntilLow":
@@ -63,7 +82,7 @@ export const CookingTimer = ({
         clearIntervalOrUndefined(timeTextUpdateInterval);
         clearTimeout(timerFinishedTimeout);
       };
-    }, []);
+    }, [finish, setDisplayRemainingTime]);
 
     return (
       <Pressable onPress={onPress} style={styles.container}>

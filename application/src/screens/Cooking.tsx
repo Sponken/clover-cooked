@@ -22,7 +22,6 @@ import {
 import { User } from "../data";
 import { unsafeFind, undefinedToBoolean } from "../utils";
 import { createBasicScheduler, Scheduler } from "../scheduler";
-import { finishTimeText } from "../components/CookingTimer";
 
 type CookingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

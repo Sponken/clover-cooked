@@ -161,7 +161,7 @@ function getTask(recipe: Recipe, taskID: TaskID): Task{
  */
 function getSubscribeFunction<FunctionType>(subList: FunctionType[]) {
   const subscribe = (subscribedFunction: FunctionType) => {
-    const _unsubscribe = () => {subList = subList.filter((value) => value !== subscribedFunction)};
+    const unsubscribe = () => {subList = subList.filter((value) => value !== subscribedFunction)};
     subList.push(subscribedFunction);
     return unsubscribe;
   }
@@ -216,8 +216,6 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
     let real_task = getTask(scheduler.recipe, passiveTask);
     scheduler.extended.set(passiveTask, [0, 0]);
     startPassiveTask(real_task.estimatedTime, scheduler, passiveTask);
-    scheduler.passiveTaskSubscribers.forEach((fn) => fn(passiveTask, new Date));
-    scheduler.currentPassiveTasks.set(passiveTask, new Date());
   }
   
   // Kolla om några möjliga tasks har dependencies som precis avslutades

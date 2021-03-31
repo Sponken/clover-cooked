@@ -18,8 +18,8 @@ export type RootStackParamList = {
   Home: undefined;
   RecipeLibrary: undefined;
   RecipeOverview: { recipe: Recipe };
-  Cooking: { recipe: Recipe; users: User[]; initScheduler?: Scheduler };
-  SessionStart: { recipe: Recipe; users: User[]; initScheduler?: Scheduler };
+  Cooking: { recipe: Recipe; users: User[] /*initScheduler?: Scheduler */ };
+  SessionStart: { recipe: Recipe; users: User[]; initScheduler?: Boolean };
   ChefManagement: { recipe?: Recipe; users: User[] };
 };
 

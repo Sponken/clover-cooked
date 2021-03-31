@@ -56,8 +56,9 @@ const example_users = [
 
 export function SessionStart({ navigation, route }: Props) {
 
-  let initScheduler: Scheduler;
+  let initScheduler: Boolean;
 
+  //Kolla om vi har en scheduler, i nuläget testar den bara om vi startat recept
   if(route.params?.initScheduler === undefined){
   } else {initScheduler = route.params?.initScheduler}
 
@@ -102,7 +103,7 @@ export function SessionStart({ navigation, route }: Props) {
   }
 
   function startButtonSessionCheck() {
-    if(route.params?.recipe === undefined){
+    if(route.params?.recipe === undefined || users.length == 0){
       return true;
     }
     else {
@@ -167,7 +168,7 @@ export function SessionStart({ navigation, route }: Props) {
         onPress={() =>{
           //fortsätter
           if(recipeActivated){
-            {navigation.navigate("Cooking", {recipe,users, initScheduler})}
+            {navigation.navigate("Cooking", {recipe,users /*, initScheduler*/})}
           }
           //initierar en ny cooking och session
           else{

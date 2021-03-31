@@ -1,6 +1,6 @@
 {
-  "name": "template",
-  "description": "A simple template for creating a recipe",
+  "name": "Chokladbiskvier",
+  "description": "Goda chokladbiskvier för hela familjen",
   "portions": 1,
   "ingredients": [
     { "id": "ägg", "name": "ägg", "unit": "st" },
@@ -33,7 +33,7 @@
     {
       "id": "sepÄgg",
       "name": "Separera äggen",
-      "instructions": "Knäck äggen och separera äggulorna från vitan genom att låta äggvitan rinna av genom dina fingrar. Spara all vita och 2/3 gula",
+      "instructions": "Knäck äggen och separera äggulorna från vitan genom att låta äggvitan rinna av genom dina fingrar. Spara både vitan och gulan",
       "estimatedTime": 5,
       "nonInterruptable": true,
       "ingredients": [{ "ingredientId": "ägg", "amount": 3 }],
@@ -118,7 +118,7 @@
       "instructions": "Ställ fram smöret i rumstemperatur",
       "estimatedTime": 1,
       "initalTask": true,
-      "ingredients": [{ "ingredientId": "smör", "amount": 400 }],
+      "ingredients": [{ "ingredientId": "smör", "amount": 600 }],
       "resources": []
     },
     {
@@ -127,8 +127,8 @@
       "instructions": "Häll det rumsvarma smöret, florsocker, kakao och äggulorna i en bunke. Rör till en jämn smet.",
       "estimatedTime": 1,
       "ingredients": [
-        { "ingredientId": "kakao", "amount": 4 },
-        { "ingredientId": "florsocker", "amount": 5 }
+        { "ingredientId": "kakao", "amount": 6 },
+        { "ingredientId": "florsocker", "amount": 7.5 }
       ],
       "resources": []
     },
@@ -161,6 +161,7 @@
       "name": "Värm chokladen",
       "instructions": "Lägg chokladen i en värmetålig tallrik som du sedan lägger på kastrullen med vatten. Rör runt tills chokladen smällt. När vattnet kokar, sänk värmen.",
       "estimatedTime": 5,
+      "ingredients": [],
       "resources": []
     },
     {
@@ -176,6 +177,7 @@
       "name": "Förvara svalt",
       "instructions": "Om biskvierna inte ska ätas direkt, förvara dem svalt",
       "estimatedTime": 1,
+      "finalTask": true,
       "ingredients": [],
       "resources": []
     }

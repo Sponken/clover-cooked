@@ -2,11 +2,13 @@
 import gräddtårta from "../../data/recipes/gräddtårta.json";
 import ikeaköttbullar_med_snabbmakaroner from "../../data/recipes/ikeaköttbullar_med_snabbmakaroner.json";
 import ugnspannkaka from "../../data/recipes/ugnspannkaka.json";
+import chokladbiskvier from "../../data/recipes/chokladbiskvier.json";
 
 export const recipes = [
   gräddtårta,
   ikeaköttbullar_med_snabbmakaroner,
   ugnspannkaka,
+  chokladbiskvier,
 ];
 
 export type IngredientDecl = {

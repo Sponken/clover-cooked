@@ -1,9 +1,43 @@
 {
-  "name": "template",
+  "name": "Auberginelasagne",
   "description": "A simple template for creating a recipe",
   "portions": 1,
-  "ingredients": [{ "id": "id", "name": "name", "unit": "st" }],
-  "resources": [{ "id": "id", "name": "name" }],
+  "ingredients": [
+    { "id": "lök", "name": "lök", "unit": "st" },
+    { "id": "aubergine", "name": "aubergine", "unit": "st" },
+    { "id": "paprika", "name": "paprika", "unit": "st" },
+    { "id": "olivolja", "name": "olivolja", "unit": "msk" },
+    { "id": "rosmarin", "name": "rosmarin", "unit": "kruka" },
+    { "id": "vitlök", "name": "vitlök", "unit": "klyftor" },
+    { "id": "tomatpure", "name": "tomatpure", "unit": "msk" },
+    { "id": "chiliflakes", "name": "chili flakes", "unit": "krm" },
+    { "id": "kanel", "name": "kanel", "unit": "krm" },
+    {
+      "id": "konserveradeTomater",
+      "name": "konserverade tomater",
+      "unit": "burk"
+    },
+    { "id": "vatten", "name": "vatten", "unit": "dl" },
+    { "id": "rödaLinser", "name": "röda linser", "unit": "förpackning" },
+    { "id": "salt", "name": "salt", "unit": "krm" },
+    { "id": "formaggioDivinoi", "name": "formaggio divinoi", "unit": "bit" },
+    { "id": "smör", "name": "smör", "unit": "msk" },
+    { "id": "vetemjöl", "name": "vetemjöl", "unit": "msk" },
+    { "id": "mjölk", "name": "mjölk", "unit": "dl" },
+    { "id": "grönsaksbuljong", "name": "grönsaksbuljong", "unit": "tärning" },
+    { "id": "lasagneplattor", "name": "lasagneplattor", "unit": "paket" },
+    { "id": "rödlök", "name": "rödlök", "unit": "st" },
+    {
+      "id": "gulaKörsbärstomater",
+      "name": "gula körsbärstomater",
+      "unit": "ask"
+    },
+    { "id": "basilika", "name": "basilika", "unit": "kruka" },
+    { "id": "peppar", "name": "peppar", "unit": "krm" },
+    { "id": "balsamvinäger", "name": "balsamvinäger", "unit": "msk" }
+  ],
+
+  "resources": [{ "id": "ugn", "name": "ugn" }],
   "tasks": [
     {
       "id": "id",
@@ -16,13 +50,303 @@
       "estimatedTime": 999,
       "ingredients": [{ "ingredientId": "id", "amount": 99 }],
       "resources": [{ "resourceId": "resource", "amount": 99 }]
+    },
+    {
+      "id": "ugn",
+      "name": "Sätt på ugn",
+      "instructions": "Sätt ugnen på 225 grader",
+      "initalTask": true,
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
+      "id": "hackaLök",
+      "name": "Skiva löken",
+      "instructions": "Skiva löken",
+      "estimatedTime": 5,
+      "ingredients": [{ "ingredientId": "lök", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "tärnaAubergine",
+      "name": "Tärna aubergine",
+      "instructions": "Tärna aubergine",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "aubergine", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "tärnaPaprika",
+      "name": "Tärna paprika",
+      "instructions": "Tärna paprika",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "paprika", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "finhackaRosmarin",
+      "name": "Finhacka Rosmarin",
+      "instructions": "Finhacka Rosmarin",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "rosmarin", "amount": 0.5 }],
+      "resources": []
+    },
+    {
+      "id": "pressaVitlöksklyftor",
+      "name": "Pressa vitlöksklyftor",
+      "instructions": "Pressa vitlökslyftor",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "vitlök", "amount": 3 }],
+      "resources": []
+    },
+    {
+      "id": "hettaPanna",
+      "name": "Värm upp stekpannan",
+      "instructions": "Häll upp olivolja i en stekpanna på medelhög värme",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "olivolja", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "brynaAubergine",
+      "name": "Bryn Aubergine",
+      "instructions": "Lägg den hackade auberginen i stekpannan. Bryn i 5-6 minuter, tills den fått fin färg",
+      "estimatedTime": 7,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "hettaStekgryta",
+      "name": "Värm upp stekgryta",
+      "instructions": "Häll upp olivolja i en stekgryta på medelhög värme",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "olivolja", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "fräsStekgryta",
+      "name": "Fräs i stekgryta",
+      "instructions": "Lägg löken, paprikan, vitlöken, rosmarin och nedstående i en stekgryta och fräs i 4-5 minuter: ",
+      "estimatedTime": 6,
+      "ingredients": [
+        { "ingredientId": "tomatpure", "amount": 2 },
+        { "ingredientId": "chiliflakes", "amount": 2 },
+        { "ingredientId": "kanel", "amount": 1 }
+      ],
+      "resources": []
+    },
+    {
+      "id": "sköljRödaLinser",
+      "name": "Skölj röda linser",
+      "instructions": "Skölj röda linser över en sil",
+      "estimatedTime": 2,
+      "ingredients": [{ "ingredientId": "rödaLinser", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "tillsättStekgryta",
+      "name": "Tillsätt till stekgryta",
+      "instructions": "Tillsätt till stekgrytan aubergine, röda linser och nedstående och låt sjuda i 6-8 minuter: ",
+      "estimatedTime": 9,
+      "ingredients": [
+        { "ingredientId": "konserveradeTomater", "amount": 1 },
+        { "ingredientId": "vatten", "amount": 2 },
+        { "ingredientId": "salt", "amount": 1 }
+      ],
+      "resources": []
+    },
+    {
+      "id": "grovrivFD",
+      "name": "Grovriv formaggio divinoi",
+      "instructions": "Grovriv formaggio divinoi",
+      "estimatedTime": 5,
+      "ingredients": [{ "ingredientId": "formaggioDivinoi", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "hettaKastrull",
+      "name": "Värm upp kastrull",
+      "instructions": "Häll upp smör i en kastrull på medelhög värme",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "smör", "amount": 2 }],
+      "resources": []
+    },
+    {
+      "id": "pudraVetemjöl",
+      "name": "Pudra över vetemjöl",
+      "instructions": "Pudra över vetemjöl",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "vetemjöl", "amount": 2 }],
+      "resources": []
+    },
+    {
+      "id": "rörNerMjölk",
+      "name": "Rör ner mjölk",
+      "instructions": "Rör ner mjölk (lite i taget)",
+      "estimatedTime": 4,
+      "ingredients": [{ "ingredientId": "mjölk", "amount": 5 }],
+      "resources": []
+    },
+    {
+      "id": "smulaTärning",
+      "name": "Smula ner tärning",
+      "instructions": "Smula ner tärning grönsaksbuljong och låt sjuda i 4-5 minuter",
+      "estimatedTime": 6,
+      "ingredients": [{ "ingredientId": "grönsaksbuljong", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "rörNerOst",
+      "name": "Rör ner ost",
+      "instructions": "Rör ner hälften av den rivna osten",
+      "estimatedTime": 3,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "smörjForm",
+      "name": "Smörj en ugnssäker form",
+      "instructions": "Smörj en ugnssäker form",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "smör", "amount": 0.5 }],
+      "resources": []
+    },
+    {
+      "id": "täckBotten",
+      "name": "Täck botten med lasagneplattor",
+      "instructions": "Täck botten med lasagneplattor och lite ostsås",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "lasagneplattor", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "avslutaBygge",
+      "name": "Häll över resterande ostsås och den rivna osten",
+      "instructions": "Häll över resterande ostsås och den rivna osten",
+      "estimatedTime": 3,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "varva",
+      "name": "Varva lager med plattor, ostsås och grönsakssås",
+      "instructions": "Varva lager med plattor, ostsås och grönsakssås",
+      "estimatedTime": 5,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "ställInIUgn",
+      "name": "Ställ in lasagnen i ugn",
+      "instructions": "Ställ in lasagnen mitt i ugnen",
+      "estimatedTime": 2,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "tillagaLasagne",
+      "name": "Låt stå i ugn tills gyllenbrun",
+      "instructions": "Låt stå i ugn tills gyllenbrun",
+      "passive": true,
+      "estimatedTime": 26,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "finhackRödlök",
+      "name": "Finhacka rödlök",
+      "instructions": "Finhacka rödlök",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "rödlök", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "läggPåFat",
+      "name": "Lägg på fat",
+      "instructions": "Lägg rödlöken på ett fat med körsbärstomater och strö över bladen från basilika, olivolja, balsamvinäger, salt och peppar",
+      "estimatedTime": 5,
+      "ingredients": [
+        { "ingredientId": "gulaKörsbärstomater", "amount": 0.5 },
+        { "ingredientId": "basilika", "amount": 1 },
+        { "ingredientId": "olivolja", "amount": 1 },
+        { "ingredientId": "balsamvinäger", "amount": 1 },
+        { "ingredientId": "salt", "amount": 1 },
+        { "ingredientId": "peppar", "amount": 1 }
+      ],
+      "resources": []
     }
   ],
   "taskDependencies": [
     {
-      "taskId": "id",
-      "dependsOn": ["otherID"],
-      "strongDependsOn": ["thirdID"]
+      "taskId": "brynaAubergine",
+      "dependsOn": ["tärnaAubergine"],
+      "strongDependsOn": ["hettaPanna"]
+    },
+    {
+      "taskId": "fräsStekgryta",
+      "dependsOn": [
+        "hackaLök",
+        "tärnaPaprika",
+        "pressaVitlöksklyftor",
+        "finhackaRosmarin"
+      ],
+      "strongDependsOn": ["hettaStekgryta"]
+    },
+    {
+      "taskId": "tillsättStekgryta",
+      "dependsOn": ["brynaAubergine", "fräsStekgryta", "sköljRödaLinser"],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "pudraVetemjöl",
+      "dependsOn": ["hettaKastrull"],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "rörNerMjölk",
+      "dependsOn": ["pudraVetemjöl"],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "smulaTärning",
+      "dependsOn": ["rörNerMjölk"],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "rörNerOst",
+      "dependsOn": ["smulaTärning"],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "täckBotten",
+      "dependsOn": ["smörjForm", "rörNerOst"],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "varva",
+      "dependsOn": ["täckBotten", "tillsättStekgryta"],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "avslutaBygge",
+      "dependsOn": ["varva"],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "ställInIUgn",
+      "dependsOn": ["avslutaBygge"],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "tillagaLasagne",
+      "dependsOn": [],
+      "strongDependsOn": ["ställInIUgn"]
+    },
+    {
+      "taskId": "läggPåFat",
+      "dependsOn": ["finhackRödlök"],
+      "strongDependsOn": []
     }
   ]
 }

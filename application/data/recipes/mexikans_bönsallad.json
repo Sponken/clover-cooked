@@ -9,8 +9,8 @@
     { "id": "olivolja", "name": "olivolja", "unit": "msk" },
     { "id": "chili", "name": "chili flakes", "unit": "tsk" },
     { "id": "vitlök", "name": "vitlök", "unit": "klyftor" },
-    { "id": "vatten", "name": "vatten", "unit": "tsk" },
-    { "id": "buljon", "name": "grönsaksbuljong", "unit": "tärningar" },
+    { "id": "vatten", "name": "vatten", "unit": "dl" },
+    { "id": "buljong", "name": "grönsaksbuljong", "unit": "tärningar" },
     { "id": "bröd", "name": "tunnbröd", "unit": "påse" },
     { "id": "salt", "name": "salt", "unit": "tsk" },
     { "id": "majs", "name": "majs", "unit": "burk" },
@@ -19,20 +19,8 @@
     { "id": "mynta", "name": "mynta", "unit": "förp" },
     { "id": "lime", "name": "lime", "unit": "st" }
   ],
-  "resources": [{ "id": "id", "name": "name" }],
+  "resources": [{ "id": "ugn", "name": "ugn" }],
   "tasks": [
-    {
-      "id": "id",
-      "name": "name",
-      "instructions": "instructions",
-      "passive": false,
-      "nonInterruptable": false,
-      "initalTask": false,
-      "finalTask": false,
-      "estimatedTime": 999,
-      "ingredients": [{ "ingredientId": "id", "amount": 99 }],
-      "resources": [{ "resourceId": "resource", "amount": 99 }]
-    },
     {
       "id": "ugn",
       "name": "Sätt på ugn",
@@ -143,8 +131,8 @@
     },
     {
       "id": "kokaUpp",
-      "name": "Låt vattnet koka upp",
-      "instructions": "Låt vattnet i kastrullen koka upp",
+      "name": "Låt soppan koka upp",
+      "instructions": "Låt soppan i kastrullen koka upp",
       "passive": true,
       "estimatedTime": 5,
       "ingredients": [],
@@ -289,6 +277,7 @@
       "id": "dressaSallad",
       "name": "Dressa salladen",
       "instructions": "Tillsätt olivolja och blanda",
+      "finalTask": true,
       "estimatedTime": 2,
       "ingredients": [{ "ingredientId": "olivolja", "amount": 1 }],
       "resources": []
@@ -314,7 +303,7 @@
   "taskDependencies": [
     {
       "taskId": "fräsLök",
-      "strongDependsOn": ["hettaKastrull"]
+      "strongDependsOn": ["hettaKastrull", "hackaLök"]
     },
     {
       "taskId": "fräsChili",
@@ -345,8 +334,12 @@
       "strongDependsOn": ["tillsättBuljong"]
     },
     {
-      "taskId": "sänkTemp",
+      "taskId": "kokaUpp",
       "strongDependsOn": ["börjaKoka"]
+    },
+    {
+      "taskId": "sänkTemp",
+      "strongDependsOn": ["kokaUpp"]
     },
     {
       "taskId": "låtSjuda",
@@ -357,8 +350,8 @@
       "strongDependsOn": ["låtSjuda"]
     },
     {
-      "taskId": "mixaSoppan",
-      "dependsOn": ["ställAv"]
+      "taskId": "mixaSoppa",
+      "dependsOn": ["pressaLime"]
     },
     {
       "taskId": "strimlaBröd",
@@ -386,11 +379,11 @@
     },
     {
       "taskId": "blandaSallad",
-      "dependsOn": ["hällMajs", "tärnaPaprika", "hackaMynta"]
+      "dependsOn": ["hällMajs", "tärnaPaprika", "hackaMynta", "tärnaFeta"]
     },
     {
       "taskId": "rivLime",
-      "dependsOn": ["hällMajs", "tärnaPaprika", "hackaMynta"]
+      "dependsOn": ["blandaSallad"]
     },
     {
       "taskId": "dressaSallad",
@@ -398,7 +391,7 @@
     },
     {
       "taskId": "pressaLime",
-      "dependsOn": ["rivLime"]
+      "dependsOn": ["rivLime", "ställAv"]
     }
   ]
 }

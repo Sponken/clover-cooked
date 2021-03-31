@@ -40,18 +40,6 @@
   "resources": [{ "id": "ugn", "name": "ugn" }],
   "tasks": [
     {
-      "id": "id",
-      "name": "name",
-      "instructions": "instructions",
-      "passive": false,
-      "nonInterruptable": false,
-      "initalTask": false,
-      "finalTask": false,
-      "estimatedTime": 999,
-      "ingredients": [{ "ingredientId": "id", "amount": 99 }],
-      "resources": [{ "resourceId": "resource", "amount": 99 }]
-    },
-    {
       "id": "ugn",
       "name": "Sätt på ugn",
       "instructions": "Sätt ugnen på 225 grader",
@@ -175,7 +163,7 @@
     {
       "id": "pudraVetemjöl",
       "name": "Pudra över vetemjöl",
-      "instructions": "Pudra över vetemjöl",
+      "instructions": "Pudra vetemjöl över smöret i kastrullen",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "vetemjöl", "amount": 2 }],
       "resources": []
@@ -254,6 +242,14 @@
       "resources": []
     },
     {
+      "id": "taUtLasagne",
+      "name": "Ta ut lasagnen ur ugnen",
+      "instructions": "Ta ut lasagnen ur ugnen",
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": []
+    },
+    {
       "id": "finhackRödlök",
       "name": "Finhacka rödlök",
       "instructions": "Finhacka rödlök",
@@ -274,6 +270,15 @@
         { "ingredientId": "salt", "amount": 1 },
         { "ingredientId": "peppar", "amount": 1 }
       ],
+      "resources": []
+    },
+    {
+      "id": "servera",
+      "name": "Servera",
+      "instructions": "Servera lasagnen med tillhörande tomatsallad!",
+      "estimatedTime": 1,
+      "finalTask": true,
+      "ingredients": [],
       "resources": []
     }
   ],
@@ -315,7 +320,7 @@
     },
     {
       "taskId": "rörNerOst",
-      "dependsOn": ["smulaTärning"],
+      "dependsOn": ["smulaTärning", "grovrivFD"],
       "strongDependsOn": []
     },
     {
@@ -335,7 +340,7 @@
     },
     {
       "taskId": "ställInIUgn",
-      "dependsOn": ["avslutaBygge"],
+      "dependsOn": ["avslutaBygge", "ugn"],
       "strongDependsOn": []
     },
     {
@@ -346,6 +351,16 @@
     {
       "taskId": "läggPåFat",
       "dependsOn": ["finhackRödlök"],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "taUtLasagne",
+      "dependsOn": [],
+      "strongDependsOn": ["tillagaLasagne"]
+    },
+    {
+      "taskId": "servera",
+      "dependsOn": ["läggPåFat", "taUtLasagne"],
       "strongDependsOn": []
     }
   ]

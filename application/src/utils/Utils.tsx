@@ -24,3 +24,11 @@ export function removeElement<T>(array: T[], element: T): boolean {
   }
   return false;
 }
+
+/**
+ * castar undefined till false, om argumentet är boolean så returneras argumentet
+ */
+export function undefinedToBoolean(value: undefined | boolean) {
+  if (value === undefined) return false;
+  return value;
+}

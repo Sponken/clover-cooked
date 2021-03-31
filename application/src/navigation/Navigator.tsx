@@ -42,17 +42,17 @@ export function Navigator() {
         <Drawer.Screen
           name="Home"
           component={Home}
-          options={{ title: "Home" }}
+          options={{ title: "Hem" }}
         />
         <Drawer.Screen
           name="Current Session"
           component={Session}
-          options={{ title: "Current Session", swipeEnabled: false }}
+          options={{ title: "Matlagning", swipeEnabled: false }}
         />
         <Drawer.Screen
           name="RecipeLibrary"
           component={RecipeLibraryNav}
-          options={{ title: "Recipe Library" }}
+          options={{ title: "Receptbibliotek" }}
         />
       </Drawer.Navigator>
     </NavigationContainer>

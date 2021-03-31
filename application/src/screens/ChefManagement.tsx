@@ -73,9 +73,9 @@ export function ChefManagement({ navigation, route }: Props) {
             ...users,
             {
               id: Date.now().toString(),
-              name: "New User",
+              name: "Ny kock",
               color: "#5884E0", // TODO: randomize color from e.g. 8 ones, or always take the 4 ones that work best first
-              icon: require("../../assets/image/icon.png")
+              icon: require("../../assets/image/chefHatSmall.png")
             },
           ]);
         }}
@@ -87,7 +87,7 @@ export function ChefManagement({ navigation, route }: Props) {
             source={require("../../assets/image/Add_chef_icon.png")} //TODO: chef.image
             // check chef.color to decide color of border
           />
-          <Text style={{fontSize: 24}}>Add New Chef</Text>
+          <Text style={{fontSize: 24}}>Lägg till kock</Text>
         </TouchableOpacity>
 
       </View>

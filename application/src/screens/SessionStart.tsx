@@ -45,8 +45,8 @@ const example_users = [
   {
     id: "1",
     name: "Test User",
-    color: "#EB4F40",
-    icon: require("../../assets/image/icon.png"),
+    color: "blue",
+    icon: require("../../assets/image/chefHatSmall.png"),
   }
 ];
 
@@ -83,8 +83,8 @@ export function SessionStart({ navigation, route }: Props) {
   const EmptyRecipeCheck = () => {
     if(recipe === undefined){
       return(
-        <View style={{height: 155, justifyContent: "center", alignItems: "center"}}>
-        <Text style={{fontSize: 20, margin: 60, justifyContent: "center", alignItems: "center"}}> No recipe chosen </Text>
+        <View style={{height: 155}}>
+        <Text style={{fontSize: 20, margin: 50, justifyContent: "center",}}> Inget recept valt </Text>
         </View>
       )
     }
@@ -140,7 +140,7 @@ export function SessionStart({ navigation, route }: Props) {
               })
             }} 
           }>
-          <Text style={{color: "white", fontWeight: "bold"}}>Delete Session</Text>
+          <Text style={{color: "white", fontWeight: "bold"}}>Avbryt</Text>
         </Pressable>
 
         {/*Vien under är fulhack för att centrera texten på hela skärmen*/}

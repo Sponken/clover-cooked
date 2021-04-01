@@ -25,7 +25,7 @@ type Props = {
  * Cooking, skärmen som visas under tiden matlagningen sker
  */
 export function Cooking({ navigation, route }: Props) {
-  const { recipe, users } = route.params;
+  const { recipe, users /*initScheduler*/ } = route.params;
 
   const [activeUser, setActiveUser] = useState(users[0].id); //id på aktiv användare
   const [userNotifications, setUserNotifications] = useState<
@@ -110,7 +110,11 @@ export function Cooking({ navigation, route }: Props) {
           />
         </View>
         <View style={styles.topBarRightMenu}>
-          <Pressable onPress={() => navigation.navigate("SessionStart")}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate("SessionStart", { initScheduler: true });
+            }}
+          >
             <Image
               source={require("../../assets/image/editChef.png")} //Placeholder tills ikon finns
               style={styles.topBarRightMenuIcon}

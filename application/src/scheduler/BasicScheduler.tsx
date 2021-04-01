@@ -172,6 +172,8 @@ function getSubscribeFunction<FunctionType>(subList: FunctionType[]) {
 
 /**
  * Hittar alla tasks som är möjliga att utföra
+ * Returnerar två listor. Den första listan innehållar alla passiva tasks som bör påbörjas,
+ * den andra innehåller alla vanliga tasks som bör fördelas
  */
 function getEligibleTasks(
   scheduler: Scheduler): [TaskID[], TaskID[]] {
@@ -182,7 +184,8 @@ function getEligibleTasks(
     
   let eligibleTasks: TaskID[] = [];
   let strongEligibleTasks: TaskID[] = [];
-  let passiveEligibleTasks: TaskID[] = []
+  let passiveEligibleTasks: TaskID[] = [];
+  let initialEligibleTasks: TaskID[] = []; //De initiala tasksen ska fördelas först och behöver därför hållas koll på separat
   let [depMap, strongDepMap] = getDependencyMaps(recipe);
 
   for (const task of recipe.tasks) {
@@ -196,13 +199,29 @@ function getEligibleTasks(
       passiveEligibleTasks.push(task.id)
       continue;
     }
+    if (task.initalTask){
+      initialEligibleTasks.push(task.id)
+      continue
+    }
     if (strongDepMap.get(task.id) != []) {
       strongEligibleTasks.push(task.id)
       continue
     }
     eligibleTasks.push(task.id);
   }
-  return [passiveEligibleTasks,(strongEligibleTasks.length > 0 ? strongEligibleTasks : eligibleTasks)]
+
+  // Ordnar vanliga tasks i ordningen de ska fördelas. strongDependecies
+  let standardTasks: TaskID[]
+  if(initialEligibleTasks.length > 0){
+    standardTasks = initialEligibleTasks
+  }else if (strongEligibleTasks.length > 0){
+    standardTasks = strongEligibleTasks
+  }else {
+    standardTasks = eligibleTasks
+  }
+
+
+  return [passiveEligibleTasks, standardTasks]
 }
 
 

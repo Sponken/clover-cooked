@@ -8,10 +8,10 @@
     { "id": "lingon", "name": "Färska lingon", "unit": "dl" },
     { "id": "socker", "name": "Strösocker", "unit": "dl" },
     { "id": "matfett", "name": "Matfett", "unit": "tsk" },
-    { "id": "vetemjöl", "name": "Vetemjöl", "unit": "dl"},
-    { "id": "ägg", "name": "Ägg", "unit": "st"},
-    { "id": "salt", "name": "Salt", "unit": "tsk"},
-    { "id": "mjölk", "name": "Mjölk", "unit": "dl"}
+    { "id": "vetemjöl", "name": "Vetemjöl", "unit": "dl" },
+    { "id": "ägg", "name": "Ägg", "unit": "st" },
+    { "id": "salt", "name": "Salt", "unit": "tsk" },
+    { "id": "mjölk", "name": "Mjölk", "unit": "dl" }
   ],
   "resources": [
     { "id": "platta", "name": "Spisplatta" },
@@ -41,16 +41,8 @@
       "instructions": "Häll av baconfettet ur stekpannan. Kan sparas att steka annat i!",
       "estimatedTime": 1,
       "ingredients": [],
-      "resources": []
-    },
-    {
-      "id": "hällAv",
-      "name": "Häll av pastavattnet",
-      "instructions": "Häll av pastavattnet med hjälp av ett lock eller durkslag",
-      "passive": false,
-      "estimatedTime": 0.5,
-      "ingredients": [],
-      "resources": []
+      "resources": [],
+      "finalTask": true
     },
     {
       "id": "hällUppLingon",
@@ -239,7 +231,7 @@
     },
     {
       "taskId": "baconSmet",
-      "dependsOn": ["svällSmet"]
+      "dependsOn": ["svällSmet", "stekBacon"]
     },
     {
       "taskId": "hällSmet",

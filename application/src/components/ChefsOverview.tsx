@@ -12,6 +12,7 @@ import { User } from "../data";
 type ChefListProps = {
   users: User[];
   nav: any;
+  recipeActivated: boolean;
 };
 
 /**
@@ -19,7 +20,7 @@ type ChefListProps = {
  *
  */
 
-export function ChefsOverview({ users, nav }: ChefListProps) {
+export function ChefsOverview({ users, nav, recipeActivated }: ChefListProps) {
   //TODO, store chefs somewhere? History? Like Smash Bros
 
   return (
@@ -28,7 +29,7 @@ export function ChefsOverview({ users, nav }: ChefListProps) {
         data={[...users, { id: "editChef" }]}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
-          if (item.id === "editChef") {
+          if (item.id === "editChef" && !recipeActivated) {
             return (
               <TouchableOpacity
                 style={styles.editChefsButton}
@@ -78,7 +79,7 @@ export function ChefsOverview({ users, nav }: ChefListProps) {
                         fontSize: 18,
                       }}
                     >
-                      Edit Chefs
+                      Redigera kockar
                     </Text>
                   </View>
                 </View>

@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
-import React from "react";
+import React, { useState } from "react";
 
 import { ChefsOverview } from "../components";
 
@@ -22,6 +22,9 @@ import { DrawerActions } from "@react-navigation/routers";
 
 import { getRecipeThumbnail } from "../data";
 import { ScreenContainer } from "react-native-screens";
+import { receiveMessageOnPort } from "node:worker_threads";
+
+import { Scheduler } from "../scheduler";
 
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
 type ChefManagementScreenNavigationProp = StackNavigationProp<
@@ -53,8 +56,17 @@ const example_users = [
 
 export function SessionStart({ navigation, route }: Props) {
 
+  let initScheduler: Boolean;
+
+  //Kolla om vi har en scheduler, i nuläget testar den bara om vi startat recept
+  if(route.params?.initScheduler === undefined){
+  } else {initScheduler = route.params?.initScheduler}
+
+  
   let recipe: Recipe;
+  const [recipeInSession, setRecipeInSession] = useState<Recipe>()
   let users: User[];
+  const [recipeActivated, setRecipeActivated] = useState(false);
 
   //Initiera users och recipe om de inte finns
   if(route.params?.users === undefined){
@@ -62,13 +74,17 @@ export function SessionStart({ navigation, route }: Props) {
   } else {users = route.params?.users}
 
   if(route.params?.recipe === undefined){
-  } else {recipe = route.params?.recipe}
+  }
+  else if(recipeActivated){
+    recipe = recipeInSession;
+  }
+  else {recipe = route.params?.recipe}
 
   const EmptyRecipeCheck = () => {
     if(recipe === undefined){
       return(
         <View style={{height: 155}}>
-        <Text style={{fontSize: 20, margin: 50, justifyContent: "center",}}> No recipe chosen </Text>
+        <Text style={{fontSize: 20, margin: 50, justifyContent: "center",}}> Inget recept valt </Text>
         </View>
       )
     }
@@ -87,7 +103,7 @@ export function SessionStart({ navigation, route }: Props) {
   }
 
   function startButtonSessionCheck() {
-    if(route.params?.recipe === undefined){
+    if(route.params?.recipe === undefined || users.length == 0){
       return true;
     }
     else {
@@ -117,13 +133,14 @@ export function SessionStart({ navigation, route }: Props) {
         <Pressable
           style={styles.deleteSession}
           onPress={() =>{{
-            navigation.setParams({ recipe: undefined })
+            setRecipeActivated(false);
+            navigation.setParams({ recipe: undefined }),
             navigation.navigate("RecipeLibrary", {
               screen: "RecipeLibrary"
               })
             }} 
           }>
-          <Text style={{color: "white", fontWeight: "bold"}}>Delete Session</Text>
+          <Text style={{color: "white", fontWeight: "bold"}}>Avbryt</Text>
         </Pressable>
 
         {/*Vien under är fulhack för att centrera texten på hela skärmen*/}
@@ -139,7 +156,7 @@ export function SessionStart({ navigation, route }: Props) {
 
       {/* example_recipe.icon */}
       <View style={{ flex: 10, justifyContent: "center" }}>
-        <ChefsOverview users={users} nav={navigation}/>
+        <ChefsOverview users={users} nav={navigation} recipeActivated={recipeActivated}/>
       </View>      
 
       {/* Conditional: ska visa "Fortsätt" om det redan är startat */}
@@ -148,14 +165,25 @@ export function SessionStart({ navigation, route }: Props) {
       
       <Pressable disabled={startButtonSessionCheck()} 
         style={startButtonSessionCheck() ? styles.cannotBePressed : styles.canBePressed} 
-        onPress={() =>{navigation.navigate("Cooking", {recipe,users})} }
+        onPress={() =>{
+          //fortsätter
+          if(recipeActivated){
+            {navigation.navigate("Cooking", {recipe,users /*, initScheduler*/})}
+          }
+          //initierar en ny cooking och session
+          else{
+            setRecipeActivated(true);
+            setRecipeInSession(recipe);
+            {navigation.navigate("Cooking", {recipe, users})}};
+          }
+        }
       >
         <Image
           style={{height: 32, width: 24, margin: 15, marginLeft: 63}}
           source={require("../../assets/image/play-button.png")} //TODO: chef.image
           // check chef.color to decide color of border
         />
-        <Text style={{color: "white", fontSize: 32}}>Starta</Text>
+        <Text style={{color: "white", fontSize: 32}}>{recipeActivated ? "Fortsätt" : "Starta"}</Text>
       </Pressable>
       </View>
 

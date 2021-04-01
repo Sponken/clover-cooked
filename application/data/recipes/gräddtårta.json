@@ -252,7 +252,7 @@
       "instructions": "Lägg grädden i spritspåsen",
       "estimatedTime": 1,
       "ingredients": [],
-      "resources": [{ "resourceId": "sprits", "amount": 1 }]
+      "resources": [{ "resourceId": "spritspåse", "amount": 1 }]
     },
     {
       "id": "sköljJordgubbar",
@@ -273,7 +273,7 @@
 
     {
       "id": "lager1",
-      "name": "Gör ett lager",
+      "name": "Gör det första lagret",
       "instructions": "Lägg en tårtbotten på ett fat. Bred på hälften av jordgubbsfyllningen och hälften av vaniljkrämen.",
       "estimatedTime": 5,
       "ingredients": [],
@@ -307,11 +307,6 @@
   ],
   "taskDependencies": [
     {
-      "taskId": "id",
-      "dependsOn": ["otherID"],
-      "strongDependsOn": ["thirdID"]
-    },
-    {
       "taskId": "vispaÄggSocker",
       "dependsOn": ["äggSocker"]
     },
@@ -321,7 +316,7 @@
     },
     {
       "taskId": "hällForm",
-      "dependsOn": ["sikta"]
+      "dependsOn": ["sikta", "förberedForm"]
     },
     {
       "taskId": "ugnVärms",
@@ -344,7 +339,7 @@
       "strongDependsOn": ["taUt"]
     },
     {
-      "taskId": "dela",
+      "taskId": "delaBotten",
       "dependsOn": ["svalna"]
     },
     {

@@ -1,12 +1,13 @@
 import React from "react";
 import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 
+export type TaskConfirmType = "finish" | "extendOrFinish" | "finishOrContinue";
+
 type TaskConfirmProps = {
   onFinishPress?: () => void;
   onExtendPress?: () => void;
-  onInterruptPress?: () => void;
   onContinuePress?: () => void;
-  confirmType: "finish" | "extendOrFinish" | "interruptOrContiue";
+  confirmType: TaskConfirmType;
 };
 
 /**
@@ -34,13 +35,13 @@ export const TaskConfirm = ({ confirmType, ...props }: TaskConfirmProps) => {
           <Button text="Klar" type="confirm" onPress={props.onFinishPress} />
         </View>
       );
-    case "interruptOrContiue":
+    case "finishOrContinue":
       return (
         <View style={styles.buttonContainer}>
           <Button
             text="Stäng av i förväg"
             type="deny"
-            onPress={props.onInterruptPress}
+            onPress={props.onFinishPress}
           />
           <Button
             text="Låt timer fortsätt"

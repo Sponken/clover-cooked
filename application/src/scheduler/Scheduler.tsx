@@ -5,6 +5,7 @@ export type TaskID = string;
 
 export type PassiveTaskStartedSubscriber = (task: TaskID, finish: Date) => void;
 export type PassiveTaskFinishedSubscriber = (task: TaskID) => void;
+export type PassiveTaskCheckFinishedSubscriber = PassiveTaskFinishedSubscriber;
 export type TaskAssignedSubscriber = (
   task: TaskID | undefined,
   cook: CookID
@@ -19,7 +20,10 @@ export interface Scheduler {
   readonly recipe: Recipe;
   readonly completedTasks: TaskID[];
   readonly currentTasks: Map<CookID, TaskID>;
-  readonly currentPassiveTasks: Map<TaskID, Date>;
+  readonly currentPassiveTasks: Map<
+    TaskID,
+    { finish: Date; timeout: NodeJS.Timeout }
+  >;
   /**
    * Avslutar en given, ej passiv, task för en användare.
    */
@@ -28,6 +32,10 @@ export interface Scheduler {
    * Avslutar ett passivt task
    */
   finishPassiveTask: (task: TaskID) => void;
+  /**
+   * Signalerar till frontend att passivt task ska kollas om det är klart
+   */
+  checkPassiveTaskFinished: (task: TaskID) => void;
   /**
    * Metod som kallas på när en task är tilldelad
    */
@@ -43,9 +51,15 @@ export interface Scheduler {
     f: PassiveTaskFinishedSubscriber
   ) => () => void;
   /**
+   * Metod som kallas för att kolla att det passiva tasket är helt avslutat av användaren
+   */
+  subscribePassiveTaskCheckFinished: (
+    f: PassiveTaskCheckFinishedSubscriber
+  ) => () => void;
+  /**
    * Utöker tiden på en pågående passiv task
    */
-  extendPassive: (task: TaskID, add: number) => void;
+  extendPassive: (task: TaskID, add?: number) => void;
   /**
    * Returnerar alla pågående passiva tasks, tillsammans med Date för när de är slut
    */
@@ -72,7 +86,8 @@ export interface Scheduler {
   getTasks: () => Map<CookID, TaskID>;
 
   // Subscription listor med alla subsribe funktioner
-  readonly passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[];
-  readonly passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[];
-  readonly taskAssignedSubscribers: TaskAssignedSubscriber[];
+  passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[];
+  passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[];
+  passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[];
+  taskAssignedSubscribers: TaskAssignedSubscriber[];
 }

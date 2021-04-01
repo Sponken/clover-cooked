@@ -18,10 +18,12 @@ import {
   TaskConfirm,
   CookingTimer,
   CookingTimerOverview,
+  TaskConfirmType,
 } from "../components";
 import { User } from "../data";
 import { unsafeFind, undefinedToBoolean } from "../utils";
 import { createBasicScheduler, Scheduler } from "../scheduler";
+import { FlatList } from "react-native-gesture-handler";
 
 type CookingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -65,6 +67,17 @@ export function Cooking({ navigation, route }: Props) {
   >(new Map());
   const [scheduler, setScheduler] = useState<Scheduler>();
 
+  //lista med de passiva tasks som visas som taskCards
+  //(om de är klara kommer de upp för att säga ok avsluta passive task men även
+  // om man trycker via modalen för att avsluta i förtid)
+  const [visiblePassiveTasks, setVisiblePassiveTasks] = useState<string[]>([]);
+
+  //taskId för det task som visas "stort", kommer oftast vara det assignedTask men ibland ett passivt task
+  const [activeTask, setActiveTask] = useState<string>();
+  const [taskConfirmType, setTaskConfirmType] = useState<TaskConfirmType>(
+    "finish"
+  );
+
   const updateEarliestTimer = (passiveTasks: Map<string, Date>) => {
     let _earliestTimer: undefined | Date = undefined;
     passiveTasks.forEach((finish) => {
@@ -103,6 +116,18 @@ export function Cooking({ navigation, route }: Props) {
       updateEarliestTimer(tasks);
       return new Map(tasks);
     });
+    setVisiblePassiveTasks((prevVisablePassiveTasks) =>
+      prevVisablePassiveTasks.filter((t) => t !== task)
+    );
+  };
+
+  const passiveTaskCheckFinishedSubscriber = (task: string) => {
+    if (!visiblePassiveTasks.includes(task)) {
+      setVisiblePassiveTasks((prevVisablePassiveTasks) => [
+        task,
+        ...prevVisablePassiveTasks,
+      ]);
+    }
   };
 
   useEffect(() => {
@@ -117,6 +142,10 @@ export function Cooking({ navigation, route }: Props) {
     const passiveTaskFinishedUnsubscribe = ssss.subscribePassiveTaskFinished(
       passiveTaskFinishedSubscriber
     );
+    const passiveTaskCheckFinishedUnsubscribe = ssss.subscribePassiveTaskCheckFinished(
+      passiveTaskCheckFinishedSubscriber
+    );
+
     setAssignedTasks(ssss.getTasks());
 
     let _userNotifications = new Map<string, boolean>();
@@ -132,8 +161,19 @@ export function Cooking({ navigation, route }: Props) {
       taskAssignedUnsubscribe();
       passiveTaskStartedUnsubscribe();
       passiveTaskFinishedUnsubscribe();
+      passiveTaskCheckFinishedUnsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (visiblePassiveTasks) {
+      setActiveTask(visiblePassiveTasks[0]);
+      setTaskConfirmType("extendOrFinish");
+    } else {
+      setActiveTask(assignedTasks.get(activeUser));
+      setTaskConfirmType("finish");
+    }
+  }, [assignedTasks, activeUser, visiblePassiveTasks]);
 
   // Fixar så det inte står en notis på den aktiva användaren
   if (undefinedToBoolean(userNotifications.get(activeUser))) {
@@ -142,7 +182,117 @@ export function Cooking({ navigation, route }: Props) {
     );
   }
 
+  //skapar en lista av alla task (ev passiva o ev aktiva) som ska visas som minimized
+  let minimizedTasks: string[] = visiblePassiveTasks;
+  const userTask = assignedTasks.get(activeUser);
+  if (userTask) {
+    minimizedTasks.push(userTask);
+  }
+  minimizedTasks = minimizedTasks.filter((taskId) => taskId !== activeTask);
+  const minimizedTasksComponent = (
+    <FlatList
+      data={minimizedTasks}
+      keyExtractor={(item) => item}
+      renderItem={({ item }) => (
+        <Pressable
+          onPress={() => {
+            setActiveTask(item);
+            setTaskConfirmType(
+              item !== assignedTasks.get(activeUser)
+                ? "extendOrFinish"
+                : "finish"
+            );
+          }}
+        >
+          <TaskCard
+            taskId={item}
+            recipe={recipe}
+            userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
+            userColor={unsafeFind(users, (u: User) => u.id == activeUser).color}
+            minimized={true}
+          />
+        </Pressable>
+      )}
+    />
+  );
+
+  // Skapa rätt knappar
   if (scheduler) {
+    let taskConfirmButtons;
+    switch (taskConfirmType) {
+      case "finish":
+        taskConfirmButtons = (
+          <TaskConfirm
+            confirmType={taskConfirmType}
+            onFinishPress={() => {
+              let t = activeTask;
+              setAssignedTasks((assigned) => {
+                assigned.delete(activeUser);
+                return new Map(assigned);
+              });
+              if (t) {
+                scheduler.finishTask(t, activeUser);
+              }
+            }}
+          />
+        );
+        break;
+      case "extendOrFinish":
+        taskConfirmButtons = (
+          <TaskConfirm
+            confirmType={taskConfirmType}
+            onFinishPress={() => {
+              let t = activeTask;
+              setAssignedTasks((assigned) => {
+                assigned.delete(activeUser);
+                return new Map(assigned);
+              });
+              if (t) {
+                scheduler.finishTask(t, activeUser);
+              }
+            }}
+            onExtendPress={() => {
+              let t = activeTask;
+              if (t) {
+                scheduler.extendPassive(t);
+              }
+            }}
+          />
+        );
+        break;
+      case "finishOrContinue":
+        taskConfirmButtons = (
+          <TaskConfirm
+            confirmType={taskConfirmType}
+            onFinishPress={() => {
+              let t = activeTask;
+              setAssignedTasks((assigned) => {
+                assigned.delete(activeUser);
+                return new Map(assigned);
+              });
+              if (t) {
+                scheduler.finishTask(t, activeUser);
+              }
+            }}
+          />
+        );
+        break;
+    }
+
+    <TaskConfirm
+      confirmType={taskConfirmType}
+      onFinishPress={() => {
+        let t = activeTask;
+        setAssignedTasks((assigned) => {
+          assigned.delete(activeUser);
+          return new Map(assigned);
+        });
+        if (t) {
+          scheduler.finishTask(t, activeUser);
+        }
+      }}
+    />;
+
     return (
       <SafeAreaView style={styles.screenContainer}>
         <Modal
@@ -160,7 +310,11 @@ export function Cooking({ navigation, route }: Props) {
               <CookingTimerOverview
                 passiveTasks={passiveTasks}
                 recipe={recipe}
-                onPress={(taskId: string) => setTimerModalVisible(false)}
+                onPress={(taskId: string) => {
+                  setTimerModalVisible(false);
+                  setActiveTask(taskId);
+                  setTaskConfirmType("finishOrContinue");
+                }}
               />
             </Pressable>
           </Pressable>
@@ -199,29 +353,19 @@ export function Cooking({ navigation, route }: Props) {
               displayRemainingTime={"hiddenUntilLow"}
             />
           </View>
-          <TaskCard
-            taskId={assignedTasks.get(activeUser)}
-            recipe={recipe}
-            userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
-            userColor={unsafeFind(users, (u: User) => u.id == activeUser).color}
-          />
-        </View>
-        <View style={styles.buttonContainer}>
-          <TaskConfirm
-            confirmType={"finish"}
-            onFinishPress={() => {
-              let a = activeUser;
-              let t = assignedTasks.get(a);
-              setAssignedTasks((assigned) => {
-                assigned.delete(a);
-                return new Map(assigned);
-              });
-              if (t) {
-                scheduler.finishTask(t, a);
+          <View>
+            {minimizedTasksComponent}
+            <TaskCard
+              taskId={activeTask}
+              recipe={recipe}
+              userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
+              userColor={
+                unsafeFind(users, (u: User) => u.id == activeUser).color
               }
-            }}
-          />
+            />
+          </View>
         </View>
+        <View style={styles.buttonContainer}>{taskConfirmButtons}</View>
       </SafeAreaView>
     );
   }

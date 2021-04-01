@@ -7,7 +7,7 @@ import {
   getIngredientName,
   getIngredientUnit,
 } from "../data";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import { StyleSheet, Text, View, FlatList, Image } from "react-native";
 import { unsafeFind } from "../utils";
 
 type TaskCardProps = {
@@ -15,6 +15,7 @@ type TaskCardProps = {
   recipe: Recipe;
   userName: string;
   userColor: ColorValue;
+  minimized?: boolean;
 };
 
 /**
@@ -25,6 +26,7 @@ export const TaskCard = ({
   recipe,
   userName,
   userColor,
+  minimized,
 }: TaskCardProps) => {
   let task: TaskType;
   if (taskId) {
@@ -40,29 +42,72 @@ export const TaskCard = ({
     };
   }
 
+  let userIndicator: JSX.Element;
+  let userNameComponent: JSX.Element;
+  let infoComponent: JSX.Element;
+  let instructionsComponent: JSX.Element;
+  let ingredientComponent: JSX.Element;
+  if (task.passive) {
+    userIndicator = (
+      <Image
+        source={require("../../assets/image/time_icon.png")}
+        style={styles.passiveTaskIcon}
+      />
+    );
+    userNameComponent = <></>;
+  } else {
+    userIndicator = <UserColorIndicator color={userColor} />;
+    userNameComponent = (
+      <Text numberOfLines={1} style={[styles.userName, { color: userColor }]}>
+        {userName}
+      </Text>
+    );
+  }
+  if (minimized) {
+    infoComponent = (
+      <View style={styles.taskNameContainer}>
+        <Text style={styles.taskName}>{task.name}</Text>
+      </View>
+    );
+  } else {
+    instructionsComponent = (
+      <View style={styles.instructionsContainer}>
+        <Text style={styles.instructions}>{task.instructions}</Text>
+      </View>
+    );
+    if (task.passive) {
+      ingredientComponent = <></>;
+    } else {
+      ingredientComponent = (
+        <FlatList
+          style={styles.ingredientsContainer}
+          data={task.ingredients}
+          keyExtractor={(item) => item.ingredientId}
+          renderItem={({ item }) => (
+            <Ingredient ingredient={item} recipe={recipe} />
+          )}
+        />
+      );
+    }
+    infoComponent = (
+      <View>
+        {instructionsComponent}
+        {ingredientComponent}
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <UserColorIndicator color={userColor} />
+    <View
+      style={[
+        styles.container,
+        minimized ? styles.minimizedContainerColor : styles.baseContainerColor,
+      ]}
+    >
+      {userIndicator}
       <View style={styles.taskBody}>
-        <Text numberOfLines={1} style={[styles.userName, { color: userColor }]}>
-          {userName}
-        </Text>
-        <View style={styles.taskInfoContainer}>
-          <View style={styles.taskNameContainer}>
-            <Text style={styles.taskName}>{task.name}</Text>
-          </View>
-          <View style={styles.instructionsContainer}>
-            <Text style={styles.instructions}>{task.instructions}</Text>
-          </View>
-          <FlatList
-            style={styles.ingredientsContainer}
-            data={task.ingredients}
-            keyExtractor={(item) => item.ingredientId}
-            renderItem={({ item }) => (
-              <Ingredient ingredient={item} recipe={recipe} />
-            )}
-          />
-        </View>
+        {userNameComponent}
+        <View style={styles.taskInfoContainer}>{infoComponent}</View>
       </View>
     </View>
   );
@@ -107,7 +152,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 10,
     padding: 10,
-    backgroundColor: "white",
     borderRadius: 10,
 
     // iOS shadow
@@ -121,10 +165,21 @@ const styles = StyleSheet.create({
     // Android shadow
     elevation: 4,
   },
+  baseContainerColor: {
+    backgroundColor: "white",
+  },
+  minimizedContainerColor: {
+    backgroundColor: "lightgrey",
+  },
+
   userColorIndicator: {
     width: 6,
     borderRadius: 2.2,
     alignSelf: "stretch",
+  },
+  passiveTaskIcon: {
+    width: 10,
+    height: 10,
   },
   userName: {
     fontWeight: "bold",
@@ -146,7 +201,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   taskName: {
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: "bold",
   },
   instructions: {

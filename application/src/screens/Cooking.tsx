@@ -166,7 +166,7 @@ export function Cooking({ navigation, route }: Props) {
   }, []);
 
   useEffect(() => {
-    if (visiblePassiveTasks) {
+    if (visiblePassiveTasks.length) {
       setActiveTask(visiblePassiveTasks[0]);
       setTaskConfirmType("extendOrFinish");
     } else {
@@ -183,7 +183,7 @@ export function Cooking({ navigation, route }: Props) {
   }
 
   //skapar en lista av alla task (ev passiva o ev aktiva) som ska visas som minimized
-  let minimizedTasks: string[] = visiblePassiveTasks;
+  let minimizedTasks: string[] = [...visiblePassiveTasks];
   const userTask = assignedTasks.get(activeUser);
   if (userTask) {
     minimizedTasks.push(userTask);
@@ -191,6 +191,7 @@ export function Cooking({ navigation, route }: Props) {
   minimizedTasks = minimizedTasks.filter((taskId) => taskId !== activeTask);
   const minimizedTasksComponent = (
     <FlatList
+      contentContainerStyle={styles.minimizedTasksContainer}
       data={minimizedTasks}
       keyExtractor={(item) => item}
       renderItem={({ item }) => (
@@ -216,8 +217,8 @@ export function Cooking({ navigation, route }: Props) {
     />
   );
 
-  // Skapa rätt knappar
   if (scheduler) {
+    // Skapa rätt knappar
     let taskConfirmButtons;
     switch (taskConfirmType) {
       case "finish":
@@ -279,19 +280,8 @@ export function Cooking({ navigation, route }: Props) {
         break;
     }
 
-    <TaskConfirm
-      confirmType={taskConfirmType}
-      onFinishPress={() => {
-        let t = activeTask;
-        setAssignedTasks((assigned) => {
-          assigned.delete(activeUser);
-          return new Map(assigned);
-        });
-        if (t) {
-          scheduler.finishTask(t, activeUser);
-        }
-      }}
-    />;
+    console.log("activeTask:", activeTask);
+    console.log("visiblePassiveTasks:", visiblePassiveTasks);
 
     return (
       <SafeAreaView style={styles.screenContainer}>
@@ -346,22 +336,19 @@ export function Cooking({ navigation, route }: Props) {
           </View>
         </View>
         <View style={styles.contentContainer}>
+          <View style={{ width: "100%" }}>{minimizedTasksComponent}</View>
+
+          <TaskCard
+            taskId={activeTask}
+            recipe={recipe}
+            userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
+            userColor={unsafeFind(users, (u: User) => u.id == activeUser).color}
+          />
           <View style={styles.timerContainer}>
             <CookingTimer
               onPress={() => setTimerModalVisible(true)}
               finish={earliestTimer}
               displayRemainingTime={"hiddenUntilLow"}
-            />
-          </View>
-          <View>
-            {minimizedTasksComponent}
-            <TaskCard
-              taskId={activeTask}
-              recipe={recipe}
-              userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
-              userColor={
-                unsafeFind(users, (u: User) => u.id == activeUser).color
-              }
             />
           </View>
         </View>
@@ -400,10 +387,14 @@ const styles = StyleSheet.create({
     height: 44,
     margin: 3,
   },
+  minimizedTasksContainer: {
+    //width: "100%",
+  },
   contentContainer: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    //justifyContent: "center",
+    width: "100%",
   },
   timerContainer: {
     position: "absolute",

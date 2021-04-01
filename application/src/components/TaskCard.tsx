@@ -148,11 +148,10 @@ const UserColorIndicator = ({ color }: UserColorIndicatorProps) => (
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    flexShrink: 1,
     alignItems: "center",
-    margin: 10,
     padding: 10,
     borderRadius: 10,
+    width: "100%",
 
     // iOS shadow
     shadowColor: "#000",

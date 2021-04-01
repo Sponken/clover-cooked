@@ -1,5 +1,5 @@
 import React from "react";
-import { ColorValue } from "react-native";
+import { ColorValue, ImageBackground } from "react-native";
 import {
   Recipe,
   Task as TaskType,
@@ -47,37 +47,60 @@ export const TaskCard = ({
   let infoComponent: JSX.Element;
   let instructionsComponent: JSX.Element;
   let ingredientComponent: JSX.Element;
-  if (task.passive) {
-    userIndicator = (
-      <Image
-        source={require("../../assets/image/time_icon.png")}
-        style={styles.passiveTaskIcon}
-      />
-    );
+
+  /**
+   * För alla task som visas vill vi sätta userNameComponent, userIndicatorComponent
+   * och infoComponent
+   */
+  //litet task
+  if (minimized) {
     userNameComponent = <></>;
-  } else {
-    userIndicator = <UserColorIndicator color={userColor} />;
+    infoComponent = <Text style={styles.normalText}>{task.name}</Text>;
+    //litet och passivt
+    if (task.passive) {
+      userIndicator = (
+        <Image
+          source={require("../../assets/image/time_icon.png")}
+          style={styles.passiveTaskIconInactive}
+        />
+      );
+    }
+    //litet och tilldelat
+    else {
+      userIndicator = <UserColorIndicator color={userColor} />;
+    }
+  }
+  //stort task
+  else {
     userNameComponent = (
       <Text numberOfLines={1} style={[styles.userName, { color: userColor }]}>
         {userName}
       </Text>
     );
-  }
-  if (minimized) {
-    infoComponent = (
-      <View style={styles.taskNameContainer}>
-        <Text style={styles.taskName}>{task.name}</Text>
-      </View>
-    );
-  } else {
-    instructionsComponent = (
-      <View style={styles.instructionsContainer}>
-        <Text style={styles.instructions}>{task.instructions}</Text>
-      </View>
-    );
+    userIndicator = <UserColorIndicator color={userColor} />;
+    //stort och passivt
     if (task.passive) {
+      instructionsComponent = (
+        <View style={styles.instructionsContainer}>
+          <View style={styles.passiveTaskExplanationContainer}>
+            <Image
+              source={require("../../assets/image/time_icon.png")}
+              style={styles.passiveTaskIconActive}
+            />
+            <Text style={styles.normalText}>{task.instructions}</Text>
+          </View>
+          <Text style={styles.bigText}>Tycker du att det är klart?</Text>
+        </View>
+      );
       ingredientComponent = <></>;
-    } else {
+    }
+    //stort och aktivt
+    else {
+      instructionsComponent = (
+        <View style={styles.instructionsContainer}>
+          <Text style={styles.bigText}>{task.instructions}</Text>
+        </View>
+      );
       ingredientComponent = (
         <FlatList
           style={styles.ingredientsContainer}
@@ -100,7 +123,7 @@ export const TaskCard = ({
   return (
     <View
       style={[
-        styles.container,
+        styles.taskContainer,
         minimized ? styles.minimizedContainerColor : styles.baseContainerColor,
       ]}
     >
@@ -146,13 +169,13 @@ const UserColorIndicator = ({ color }: UserColorIndicatorProps) => (
 );
 
 const styles = StyleSheet.create({
-  container: {
+  taskContainer: {
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
     borderRadius: 10,
     width: "100%",
-
+    marginBottom: 10,
     // iOS shadow
     shadowColor: "#000",
     shadowOffset: {
@@ -166,23 +189,37 @@ const styles = StyleSheet.create({
   },
   baseContainerColor: {
     backgroundColor: "white",
+    paddingVertical: 20,
   },
   minimizedContainerColor: {
-    backgroundColor: "lightgrey",
+    backgroundColor: "#dedede",
+    opacity: 0.7,
   },
-
   userColorIndicator: {
     width: 6,
     borderRadius: 2.2,
     alignSelf: "stretch",
   },
-  passiveTaskIcon: {
-    width: 10,
-    height: 10,
+  passiveTaskIconInactive: {
+    width: 15,
+    height: 15,
+  },
+  passiveTaskIconActive: {
+    width: 20,
+    height: 20,
+    marginRight: 5,
+  },
+  passiveTaskExplanationContainer: {
+    flexDirection: "row",
+    borderRadius: 5,
+    backgroundColor: "#ebebeb",
+    padding: 10,
+    marginBottom: 10,
+    alignItems: "center",
   },
   userName: {
     fontWeight: "bold",
-    fontSize: 12,
+    fontSize: 15,
   },
   taskBody: {
     flex: 1,
@@ -196,15 +233,12 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginVertical: 5,
   },
-  taskNameContainer: {
-    marginBottom: 5,
+  normalText: {
+    fontSize: 15,
   },
-  taskName: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  instructions: {
-    fontSize: 20,
+  bigText: {
+    fontSize: 25,
+    fontWeight: "600",
   },
   instructionsContainer: {
     marginBottom: 5,

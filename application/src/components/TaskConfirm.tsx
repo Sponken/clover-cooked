@@ -1,7 +1,11 @@
 import React from "react";
 import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 
-export type TaskConfirmType = "finish" | "extendOrFinish" | "finishOrContinue";
+export type TaskConfirmType =
+  | "finish"
+  | "extendOrFinish"
+  | "interruptOrContinue"
+  | "unavailable";
 
 type TaskConfirmProps = {
   onFinishPress?: () => void;
@@ -35,7 +39,7 @@ export const TaskConfirm = ({ confirmType, ...props }: TaskConfirmProps) => {
           <Button text="Klar" type="confirm" onPress={props.onFinishPress} />
         </View>
       );
-    case "finishOrContinue":
+    case "interruptOrContinue":
       return (
         <View style={styles.buttonContainer}>
           <Button
@@ -44,9 +48,19 @@ export const TaskConfirm = ({ confirmType, ...props }: TaskConfirmProps) => {
             onPress={props.onFinishPress}
           />
           <Button
-            text="Låt timer fortsätt"
+            text="Låt timern fortsätta"
             type="confirm"
             onPress={props.onContinuePress}
+          />
+        </View>
+      );
+    case "unavailable":
+      return (
+        <View style={styles.buttonContainer}>
+          <Button
+            text="Klar"
+            type="notAvailable"
+            onPress={props.onFinishPress}
           />
         </View>
       );
@@ -55,7 +69,7 @@ export const TaskConfirm = ({ confirmType, ...props }: TaskConfirmProps) => {
 
 type ButtonProps = {
   text: string;
-  type: "confirm" | "deny"; //confirm användas för fet tydlig knapp, deny används för sekundär knapp
+  type: "confirm" | "deny" | "notAvailable"; //confirm användas för fet tydlig knapp, deny används för sekundär knapp
   onPress: (() => void) | undefined;
 };
 
@@ -67,19 +81,28 @@ const Button = ({ text, type, onPress }: ButtonProps) => (
     {({ pressed }) => {
       let buttonColorStyle;
       let buttonTextStyle;
-      if (type == "confirm") {
+      if (type === "confirm") {
         buttonTextStyle = styles.buttonTextConfirm;
         if (pressed) {
           buttonColorStyle = styles.buttonConfirmPressed;
         } else {
           buttonColorStyle = styles.buttonConfirm;
         }
-      } else {
+      }
+      if (type === "deny") {
         buttonTextStyle = styles.buttonTextDeny;
         if (pressed) {
           buttonColorStyle = styles.buttonDenyPressed;
         } else {
           buttonColorStyle = styles.buttonDeny;
+        }
+      }
+      if (type === "notAvailable") {
+        buttonTextStyle = styles.buttonTextConfirm;
+        if (pressed) {
+          buttonColorStyle = styles.buttonNotAvailablePressed;
+        } else {
+          buttonColorStyle = styles.buttonNotAvailable;
         }
       }
       return (
@@ -140,5 +163,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#ebebeb",
     borderWidth: 3,
     borderColor: "#1d8c25",
+  },
+  buttonNotAvailable: {
+    backgroundColor: "#bfbfbf",
+  },
+  buttonNotAvailablePressed: {
+    backgroundColor: "#a1a1a1",
   },
 });

@@ -80,7 +80,11 @@ export function createBasicScheduler(recipe: Recipe,
         if (add === undefined) {
           const taskObj = this.recipe.tasks.find((foundTask) => foundTask.id === task)
           if (taskObj) {
-            extendedTimeLeft = timeLeft + taskObj.estimatedTime * 0.1 * MINUTE;
+            extendedTimeLeft = timeLeft + taskObj.estimatedTime * 0.2 * MINUTE;
+            //förlänger med åtminstonde 20 sekunder
+            if (extendedTimeLeft < 20000){
+              extendedTimeLeft = 20000;
+            }
           } else {
             throw "extendPassive: " + task + " not found in recipe"
           }

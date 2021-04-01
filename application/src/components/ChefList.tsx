@@ -68,13 +68,15 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
     let newChefs = Array.from(chefList);
 
     let color = [
-      "#5884E0",
-      "#9400D3",
-      "#4B0082",
-      "#0000FF",
-      "#00FF00",
-      "#FFF000",
-      "#FF7F00",
+      "#B856E9",
+      "#E956CD",
+      "#E3993B",
+      "#EAD755",
+      "#95DD69",
+      "#22BC29",
+      "#4DE1E1",
+      "#4DA4E1",
+      "#4F5EED",
       //"#FF0000", //Ej kompatibel med färgen på notis för användare
     ];
 

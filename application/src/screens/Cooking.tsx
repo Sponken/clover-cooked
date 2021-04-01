@@ -67,9 +67,10 @@ export function Cooking({ navigation, route }: Props) {
   >(new Map());
   const [scheduler, setScheduler] = useState<Scheduler>();
 
-  //lista med de passiva tasks som visas som taskCards
+  //lista med de passiva tasks som visas som taskCards, både i små o stor storlek
   //(om de är klara kommer de upp för att säga ok avsluta passive task men även
   // om man trycker via modalen för att avsluta i förtid)
+  //(ett passivt task som ej är klart kommer ej läggas till här)
   const [visiblePassiveTasks, setVisiblePassiveTasks] = useState<string[]>([]);
 
   //taskId för det task som visas "stort", kommer oftast vara det assignedTask men ibland ett passivt task
@@ -171,7 +172,12 @@ export function Cooking({ navigation, route }: Props) {
       setTaskConfirmType("extendOrFinish");
     } else {
       setActiveTask(assignedTasks.get(activeUser));
-      setTaskConfirmType("finish");
+      if (assignedTasks.get(activeUser)) {
+        setTaskConfirmType("finish");
+      } else {
+        //om ett task är undefined/"du har paus", så visas en grå knapp
+        setTaskConfirmType("unavailable");
+      }
     }
   }, [assignedTasks, activeUser, visiblePassiveTasks]);
 
@@ -191,7 +197,6 @@ export function Cooking({ navigation, route }: Props) {
   minimizedTasks = minimizedTasks.filter((taskId) => taskId !== activeTask);
   const minimizedTasksComponent = (
     <FlatList
-      contentContainerStyle={styles.minimizedTasksContainer}
       data={minimizedTasks}
       keyExtractor={(item) => item}
       renderItem={({ item }) => (
@@ -244,12 +249,8 @@ export function Cooking({ navigation, route }: Props) {
             confirmType={taskConfirmType}
             onFinishPress={() => {
               let t = activeTask;
-              setAssignedTasks((assigned) => {
-                assigned.delete(activeUser);
-                return new Map(assigned);
-              });
               if (t) {
-                scheduler.finishTask(t, activeUser);
+                scheduler.finishPassiveTask(t);
               }
             }}
             onExtendPress={() => {
@@ -257,31 +258,39 @@ export function Cooking({ navigation, route }: Props) {
               if (t) {
                 scheduler.extendPassive(t);
               }
+              setVisiblePassiveTasks((prevVisablePassiveTasks) =>
+                prevVisablePassiveTasks.filter((task) => task !== t)
+              );
             }}
           />
         );
         break;
-      case "finishOrContinue":
+      case "interruptOrContinue":
         taskConfirmButtons = (
           <TaskConfirm
             confirmType={taskConfirmType}
+            //klickat på interrupt/stäng av i förväg
             onFinishPress={() => {
               let t = activeTask;
-              setAssignedTasks((assigned) => {
-                assigned.delete(activeUser);
-                return new Map(assigned);
-              });
               if (t) {
-                scheduler.finishTask(t, activeUser);
+                scheduler.finishPassiveTask(t);
               }
+            }}
+            //klickat på fortsätt/låt vara/avbryt inte
+            onContinuePress={() => {
+              //renderar om genom att kalla på något som startar useEffect
+              let t = activeTask;
+              setVisiblePassiveTasks((prevVisablePassiveTasks) =>
+                prevVisablePassiveTasks.filter((task) => task !== t)
+              );
             }}
           />
         );
         break;
+      case "unavailable":
+        taskConfirmButtons = <TaskConfirm confirmType={taskConfirmType} />;
+        break;
     }
-
-    console.log("activeTask:", activeTask);
-    console.log("visiblePassiveTasks:", visiblePassiveTasks);
 
     return (
       <SafeAreaView style={styles.screenContainer}>
@@ -303,7 +312,7 @@ export function Cooking({ navigation, route }: Props) {
                 onPress={(taskId: string) => {
                   setTimerModalVisible(false);
                   setActiveTask(taskId);
-                  setTaskConfirmType("finishOrContinue");
+                  setTaskConfirmType("interruptOrContinue");
                 }}
               />
             </Pressable>
@@ -336,14 +345,20 @@ export function Cooking({ navigation, route }: Props) {
           </View>
         </View>
         <View style={styles.contentContainer}>
-          <View style={{ width: "100%" }}>{minimizedTasksComponent}</View>
-
-          <TaskCard
-            taskId={activeTask}
-            recipe={recipe}
-            userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
-            userColor={unsafeFind(users, (u: User) => u.id == activeUser).color}
-          />
+          <View style={styles.spacingWithNoContent} />
+          <View style={styles.minimizedTasksFlatListContainer}>
+            {minimizedTasksComponent}
+          </View>
+          <View style={styles.activeTaskCardContainer}>
+            <TaskCard
+              taskId={activeTask}
+              recipe={recipe}
+              userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
+              userColor={
+                unsafeFind(users, (u: User) => u.id == activeUser).color
+              }
+            />
+          </View>
           <View style={styles.timerContainer}>
             <CookingTimer
               onPress={() => setTimerModalVisible(true)}
@@ -387,14 +402,21 @@ const styles = StyleSheet.create({
     height: 44,
     margin: 3,
   },
-  minimizedTasksContainer: {
-    //width: "100%",
-  },
   contentContainer: {
     flex: 1,
     alignItems: "center",
     //justifyContent: "center",
     width: "100%",
+  },
+  activeTaskCardContainer: {
+    width: "95%",
+  },
+  spacingWithNoContent: {
+    height: "12%",
+  },
+  minimizedTasksFlatListContainer: {
+    width: "95%",
+    height: "23%",
   },
   timerContainer: {
     position: "absolute",

@@ -7,7 +7,13 @@ import { RootStackParamList } from "../navigation";
 import { UserFastSwitcher, TaskCard, TaskConfirm } from "../components";
 import { User } from "../data";
 import { unsafeFind, undefinedToBoolean } from "../utils";
-import { createBasicScheduler, Scheduler } from "../scheduler";
+import {
+  createBasicScheduler,
+  Scheduler,
+  PassiveTaskSubscriber,
+  TaskAssignedSubscriber,
+  RecipeFinishedSubscriber,
+} from "../scheduler";
 
 type CookingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -56,6 +62,11 @@ export function Cooking({ navigation, route }: Props) {
     }
   };
 
+  const recipeFinishedSubscriber: RecipeFinishedSubscriber = () => {
+    console.log("recipe finished");
+    navigation.navigate("RecipeFinished");
+  };
+
   const passiveTaskStartedSubscriber = (task: string, finish: Date) => {
     // TODO: Hur hanteras passiva tasks?
   };
@@ -76,6 +87,9 @@ export function Cooking({ navigation, route }: Props) {
     const passiveTaskUnsubscribe = ssss.subscribePassiveTaskStarted(
       passiveTaskStartedSubscriber
     );
+    const recipeFinishedUnsubscribe = ssss.subscribeRecipeFinished(
+      recipeFinishedSubscriber
+    );
     setAssignedTasks(ssss.getTasks());
 
     let _userNotifications = new Map<string, boolean>();
@@ -90,6 +104,7 @@ export function Cooking({ navigation, route }: Props) {
     return () => {
       taskAssignedUnsubscribe();
       passiveTaskUnsubscribe();
+      recipeFinishedUnsubscribe();
     };
   }, []);
 

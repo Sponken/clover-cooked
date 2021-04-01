@@ -1,2 +1,7 @@
 export { createBasicScheduler } from "./BasicScheduler";
-export { Scheduler } from "./Scheduler";
+export {
+  Scheduler,
+  PassiveTaskSubscriber,
+  TaskAssignedSubscriber,
+  RecipeFinishedSubscriber,
+} from "./Scheduler";

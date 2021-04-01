@@ -5,3 +5,5 @@ export { UserFastSwitcher } from "./UserFastSwitcher";
 export { TaskCard } from "./TaskCard";
 export { TaskConfirm } from "./TaskConfirm";
 export { IngredientList } from "./IngredientList";
+export { StandardButton } from "./StandardButton";
+export { StandardText } from "./StandardText";

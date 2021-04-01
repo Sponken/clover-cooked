@@ -227,8 +227,6 @@ const styles = StyleSheet.create({
   },
 
   deleteSession:{
-
-    
     height: 40,
     width: 70,
     alignItems: "center",

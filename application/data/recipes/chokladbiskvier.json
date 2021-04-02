@@ -58,7 +58,7 @@
     },
     {
       "id": "delaMandelMassa",
-      "name": "Hacka mandelmassen grovt",
+      "name": "Hacka mandelmassan grovt",
       "instructions": "Hacka mandelmassan grovt för att göra den lättare att blanda i smeten sen",
       "estimatedTime": 5,
       "ingredients": [{ "ingredientId": "mandelmassa", "amount": 500 }],
@@ -162,7 +162,7 @@
       "name": "Värm chokladen",
       "instructions": "Lägg chokladen i en värmetålig tallrik som du sedan lägger på kastrullen med vatten. Rör runt tills chokladen smällt. När vattnet kokar, sänk värmen.",
       "estimatedTime": 5,
-      "ingredients": [],
+      "ingredients": [{ "ingredientId": "choklad", "amount": 400 }],
       "resources": []
     },
     {
@@ -202,7 +202,7 @@
     },
     {
       "taskId": "inUgn",
-      "dependsOn": ["klickaSmet"]
+      "dependsOn": ["klickaSmet", "ugn"]
     },
     {
       "taskId": "gräddas",

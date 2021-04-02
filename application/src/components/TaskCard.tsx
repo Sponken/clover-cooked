@@ -10,6 +10,8 @@ import {
 import { StyleSheet, Text, View, FlatList, Image } from "react-native";
 import { unsafeFind } from "../utils";
 
+const NOTIFICATTION_DOT_SIZE = 15;
+
 type TaskCardProps = {
   taskId: string | undefined;
   recipe: Recipe;
@@ -89,7 +91,7 @@ export const TaskCard = ({
             />
             <Text style={styles.normalText}>{task.instructions}</Text>
           </View>
-          <Text style={styles.bigText}>Tycker du att det är klart?</Text>
+          <Text style={styles.bigText}>Är det klart?</Text>
         </View>
       );
       ingredientComponent = <></>;
@@ -121,16 +123,23 @@ export const TaskCard = ({
   }
 
   return (
-    <View
-      style={[
-        styles.taskContainer,
-        minimized ? styles.minimizedContainerColor : styles.baseContainerColor,
-      ]}
-    >
-      {userIndicator}
-      <View style={styles.taskBody}>
-        {userNameComponent}
-        <View style={styles.taskInfoContainer}>{infoComponent}</View>
+    <View style={styles.taskCompleteContainer}>
+      <View
+        style={[
+          styles.taskContainer,
+          minimized
+            ? styles.minimizedContainerColorAndWidth
+            : styles.baseContainerColor,
+        ]}
+      >
+        {userIndicator}
+        <View style={styles.taskBody}>
+          {userNameComponent}
+          <View style={styles.taskInfoContainer}>{infoComponent}</View>
+        </View>
+      </View>
+      <View style={styles.notificationContainer}>
+        <Notification visable={task.passive && minimized} />
       </View>
     </View>
   );
@@ -168,14 +177,27 @@ const UserColorIndicator = ({ color }: UserColorIndicatorProps) => (
   <View style={[styles.userColorIndicator, { backgroundColor: color }]} />
 );
 
+type NotificationProps = {
+  visable: boolean | undefined;
+};
+const Notification = ({ visable }: NotificationProps) => (
+  <View
+    style={[
+      styles.notificationDot,
+      visable ? styles.notificationDotVisable : styles.notificationDotInvisable,
+    ]}
+  />
+);
+
 const styles = StyleSheet.create({
+  taskCompleteContainer: {
+    width: "100%",
+  },
   taskContainer: {
     flexDirection: "row",
-    alignItems: "center",
     padding: 10,
     borderRadius: 10,
-    width: "100%",
-    marginBottom: 10,
+    marginTop: NOTIFICATTION_DOT_SIZE / 2.5,
     // iOS shadow
     shadowColor: "#000",
     shadowOffset: {
@@ -191,9 +213,10 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingVertical: 20,
   },
-  minimizedContainerColor: {
+  minimizedContainerColorAndWidth: {
     backgroundColor: "#dedede",
     opacity: 0.7,
+    width: "98.7%",
   },
   userColorIndicator: {
     width: 6,
@@ -257,4 +280,20 @@ const styles = StyleSheet.create({
   ingredientAmount: {
     fontSize: 15,
   },
+  notificationContainer: {
+    elevation: 5, //för android så den ligger högst upp
+    position: "absolute",
+    right: 0,
+    top: 0,
+  },
+  notificationDot: {
+    borderRadius: NOTIFICATTION_DOT_SIZE / 2,
+    width: NOTIFICATTION_DOT_SIZE,
+    height: NOTIFICATTION_DOT_SIZE,
+    overflow: "hidden",
+  },
+  notificationDotVisable: {
+    backgroundColor: "red",
+  },
+  notificationDotInvisable: {},
 });

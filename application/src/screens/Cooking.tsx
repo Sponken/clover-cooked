@@ -25,6 +25,8 @@ import { unsafeFind, undefinedToBoolean } from "../utils";
 import { createBasicScheduler, Scheduler } from "../scheduler";
 import { FlatList } from "react-native-gesture-handler";
 
+const OK_TIME_BETWEEN_CLICK = 100;
+
 type CookingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "Cooking"
@@ -73,11 +75,20 @@ export function Cooking({ navigation, route }: Props) {
   //(ett passivt task som ej är klart kommer ej läggas till här)
   const [visiblePassiveTasks, setVisiblePassiveTasks] = useState<string[]>([]);
 
+  //passiva tasks som är igång med ännu ej är klara ska synas i modalen
+  const [passiveTasksInModal, setPassiveTasksInModal] = useState<
+    Map<string, Date>
+  >(new Map());
+
   //taskId för det task som visas "stort", kommer oftast vara det assignedTask men ibland ett passivt task
   const [activeTask, setActiveTask] = useState<string>();
   const [taskConfirmType, setTaskConfirmType] = useState<TaskConfirmType>(
     "finish"
   );
+
+  //vi använder denna variabel till att godkänna att vissa onPress är möjliga.
+  //sätts till false när en knapp pressats -> timer -> sätts tillbaka till false
+  const [okToPress, setOkToPress] = useState<Boolean>(true);
 
   const updateEarliestTimer = (passiveTasks: Map<string, Date>) => {
     let _earliestTimer: undefined | Date = undefined;
@@ -179,6 +190,21 @@ export function Cooking({ navigation, route }: Props) {
         setTaskConfirmType("unavailable");
       }
     }
+
+    //lägg in alla passiva task i modalen
+    setPassiveTasksInModal(new Map(passiveTasks));
+    passiveTasks.forEach((pDate, pTask) => {
+      //ta bort från modalen om tasket finns med i visiblepassivetasks
+      visiblePassiveTasks.forEach((vTask) => {
+        if (vTask === pTask) {
+          setPassiveTasksInModal((mTasks) => {
+            mTasks.delete(vTask);
+            updateEarliestTimer(mTasks);
+            return new Map(mTasks);
+          });
+        }
+      });
+    });
   }, [assignedTasks, activeUser, visiblePassiveTasks]);
 
   // Fixar så det inte står en notis på den aktiva användaren
@@ -191,7 +217,7 @@ export function Cooking({ navigation, route }: Props) {
   //skapar en lista av alla task (ev passiva o ev aktiva) som ska visas som minimized
   let minimizedTasks: string[] = [...visiblePassiveTasks];
   const userTask = assignedTasks.get(activeUser);
-  if (userTask) {
+  if (userTask && visiblePassiveTasks.length > 0) {
     minimizedTasks.push(userTask);
   }
   minimizedTasks = minimizedTasks.filter((taskId) => taskId !== activeTask);
@@ -231,13 +257,17 @@ export function Cooking({ navigation, route }: Props) {
           <TaskConfirm
             confirmType={taskConfirmType}
             onFinishPress={() => {
-              let t = activeTask;
-              setAssignedTasks((assigned) => {
-                assigned.delete(activeUser);
-                return new Map(assigned);
-              });
-              if (t) {
-                scheduler.finishTask(t, activeUser);
+              if (okToPress) {
+                let t = activeTask;
+                setAssignedTasks((assigned) => {
+                  assigned.delete(activeUser);
+                  return new Map(assigned);
+                });
+                if (t) {
+                  scheduler.finishTask(t, activeUser);
+                }
+                setOkToPress(false);
+                setTimeout(() => setOkToPress(true), OK_TIME_BETWEEN_CLICK);
               }
             }}
           />
@@ -248,19 +278,27 @@ export function Cooking({ navigation, route }: Props) {
           <TaskConfirm
             confirmType={taskConfirmType}
             onFinishPress={() => {
-              let t = activeTask;
-              if (t) {
-                scheduler.finishPassiveTask(t);
+              if (okToPress) {
+                let t = activeTask;
+                if (t) {
+                  scheduler.finishPassiveTask(t);
+                }
+                setOkToPress(false);
+                setTimeout(() => setOkToPress(true), OK_TIME_BETWEEN_CLICK);
               }
             }}
             onExtendPress={() => {
-              let t = activeTask;
-              if (t) {
-                scheduler.extendPassive(t);
+              if (okToPress) {
+                let t = activeTask;
+                if (t) {
+                  scheduler.extendPassive(t);
+                }
+                setVisiblePassiveTasks((prevVisablePassiveTasks) =>
+                  prevVisablePassiveTasks.filter((task) => task !== t)
+                );
+                setOkToPress(false);
+                setTimeout(() => setOkToPress(true), OK_TIME_BETWEEN_CLICK);
               }
-              setVisiblePassiveTasks((prevVisablePassiveTasks) =>
-                prevVisablePassiveTasks.filter((task) => task !== t)
-              );
             }}
           />
         );
@@ -271,18 +309,26 @@ export function Cooking({ navigation, route }: Props) {
             confirmType={taskConfirmType}
             //klickat på interrupt/stäng av i förväg
             onFinishPress={() => {
-              let t = activeTask;
-              if (t) {
-                scheduler.finishPassiveTask(t);
+              if (okToPress) {
+                let t = activeTask;
+                if (t) {
+                  scheduler.finishPassiveTask(t);
+                }
+                setOkToPress(false);
+                setTimeout(() => setOkToPress(true), OK_TIME_BETWEEN_CLICK);
               }
             }}
             //klickat på fortsätt/låt vara/avbryt inte
             onContinuePress={() => {
-              //renderar om genom att kalla på något som startar useEffect
-              let t = activeTask;
-              setVisiblePassiveTasks((prevVisablePassiveTasks) =>
-                prevVisablePassiveTasks.filter((task) => task !== t)
-              );
+              if (okToPress) {
+                //renderar om genom att kalla på något som startar useEffect
+                let t = activeTask;
+                setVisiblePassiveTasks((prevVisablePassiveTasks) =>
+                  prevVisablePassiveTasks.filter((task) => task !== t)
+                );
+                setOkToPress(false);
+                setTimeout(() => setOkToPress(true), OK_TIME_BETWEEN_CLICK);
+              }
             }}
           />
         );
@@ -307,7 +353,7 @@ export function Cooking({ navigation, route }: Props) {
           >
             <Pressable style={styles.timerModalContainer} onPress={() => null}>
               <CookingTimerOverview
-                passiveTasks={passiveTasks}
+                passiveTasks={passiveTasksInModal}
                 recipe={recipe}
                 onPress={(taskId: string) => {
                   setTimerModalVisible(false);
@@ -405,7 +451,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     alignItems: "center",
-    //justifyContent: "center",
     width: "100%",
   },
   activeTaskCardContainer: {

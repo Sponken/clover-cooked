@@ -36,17 +36,17 @@ export function Navigator() {
     <NavigationContainer>
       <Drawer.Navigator
         initialRouteName="RecipeLibrary"
-        drawerStyle={{ backgroundColor: "#f5f5f5", width: 190 }}
+        drawerStyle={{ backgroundColor: "#f5f5f5", width: 200 }}
       >
-        <Drawer.Screen
+        {/*<Drawer.Screen
           name="Home"
           component={Home}
           options={{ title: "Hem" }}
-        />
+        />*/}
         <Drawer.Screen
           name="Current Session"
           component={Session}
-          options={{ title: "Matlagning" }}
+          options={{ title: "Aktuell matlagning" }}
         />
         <Drawer.Screen
           name="RecipeLibrary"

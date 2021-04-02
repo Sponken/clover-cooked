@@ -251,7 +251,7 @@
     },
     {
       "id": "hackaMynta",
-      "name": "Grovhacka mynten",
+      "name": "Grovhacka myntan",
       "instructions": "",
       "estimatedTime": 4,
       "ingredients": [{ "ingredientId": "mynta", "amount": 0.5 }],

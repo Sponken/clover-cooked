@@ -188,7 +188,6 @@ export function Cooking({ navigation, route }: Props) {
       passiveTaskFinishedUnsubscribe();
       passiveTaskCheckFinishedUnsubscribe();
       recipeFinishedUnsubscribe();
-      //passiveTaskUnsubscribe(); //ALEX TROR EJ SKA VARA MED, VAR M I RESTOREMAIN,VET INTE
     };
   }, []);
 

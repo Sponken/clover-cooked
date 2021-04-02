@@ -2,6 +2,7 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import { Scheduler } from "../scheduler";
 
 import {
   Home,
@@ -10,6 +11,7 @@ import {
   Cooking,
   ChefManagement,
   SessionStart,
+  RecipeFinished,
 } from "../screens";
 import { Recipe, User } from "../data";
 
@@ -17,8 +19,9 @@ export type RootStackParamList = {
   Home: undefined;
   RecipeLibrary: undefined;
   RecipeOverview: { recipe: Recipe };
-  Cooking: { recipe: Recipe; users: User[] };
-  SessionStart: { recipe: Recipe; users: User[] };
+  Cooking: { recipe: Recipe; users: User[] /*initScheduler?: Scheduler */ };
+  SessionStart: { recipe: Recipe; users: User[]; initScheduler?: Boolean };
+  RecipeFinished: undefined;
   ChefManagement: { recipe?: Recipe; users: User[] };
 };
 
@@ -46,7 +49,7 @@ export function Navigator() {
         <Drawer.Screen
           name="Current Session"
           component={Session}
-          options={{ title: "Aktuell matlagning" }}
+          options={{ title: "Aktuell matlagning", swipeEnabled: false }}
         />
         <Drawer.Screen
           name="RecipeLibrary"
@@ -73,6 +76,11 @@ const Session = () => (
     <Stack.Screen
       name="Cooking"
       component={Cooking}
+      options={{ headerShown: false, gestureEnabled: false }}
+    />
+    <Stack.Screen
+      name="RecipeFinished"
+      component={RecipeFinished}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>
@@ -93,7 +101,7 @@ const RecipeLibraryNav = () => (
     <Stack.Screen
       name="RecipeOverview"
       component={RecipeOverview}
-      options={{ headerShown: false }}
+      options={{ headerShown: false, gestureEnabled: true }}
     />
   </Stack.Navigator>
 );

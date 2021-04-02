@@ -41,7 +41,8 @@
       "instructions": "Häll av baconfettet ur stekpannan. Kan sparas att steka annat i!",
       "estimatedTime": 1,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "finalTask": true
     },
     {
       "id": "hällUppLingon",
@@ -230,7 +231,7 @@
     },
     {
       "taskId": "baconSmet",
-      "dependsOn": ["svällSmet"]
+      "dependsOn": ["svällSmet", "stekBacon"]
     },
     {
       "taskId": "hällSmet",

@@ -1,5 +1,5 @@
 import { Recipe, Task } from "../data";
-import {Scheduler, CookID, PassiveTaskStartedSubscriber, PassiveTaskFinishedSubscriber, PassiveTaskCheckFinishedSubscriber, TaskAssignedSubscriber} from "./Scheduler"
+import {Scheduler, CookID, PassiveTaskStartedSubscriber, PassiveTaskFinishedSubscriber, PassiveTaskCheckFinishedSubscriber, TaskAssignedSubscriber,RecipeFinishedSubscriber} from "./Scheduler"
 import {includesAll, removeElement} from "../utils"
 
 type TaskID = string
@@ -20,11 +20,13 @@ export function createBasicScheduler(recipe: Recipe,
   const passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[] = [];
   const passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[] = [];
   const passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[] = [];
+  const recipeFinishedSubscribers: RecipeFinishedSubscriber[] =[];
   let scheduler: Scheduler = {
     taskAssignedSubscribers: taskAssignedSubscribers,
     passiveTaskStartedSubscribers: passiveTaskStartedSubscribers,
     passiveTaskFinishedSubscribers: passiveTaskFinishedSubscribers,
     passiveTaskCheckFinishedSubscribers: passiveTaskCheckFinishedSubscribers,
+    recipeFinishedSubscribers: recipeFinishedSubscribers,
 
     // Detta fältet representerar hur många gånger en task har blivit förlängd.
     // I `[number, number]` är det första värdet hur många gånger den blivit
@@ -40,6 +42,10 @@ export function createBasicScheduler(recipe: Recipe,
     finishTask: function (task: TaskID, cook: CookID) {
       this.completedTasks.push(task);
       this.currentTasks.delete(cook);
+      if(isRecipeFinished(this)){
+        this.recipeFinishedSubscribers.forEach((fn) => fn());
+        return;
+      }
       assignTasks(scheduler, cook);
     },
     finishPassiveTask: function (task: TaskID) {
@@ -62,6 +68,7 @@ export function createBasicScheduler(recipe: Recipe,
     subscribePassiveTaskStarted: getSubscribeFunction(passiveTaskStartedSubscribers),
     subscribePassiveTaskFinished: getSubscribeFunction(passiveTaskFinishedSubscribers),
     subscribePassiveTaskCheckFinished: getSubscribeFunction(passiveTaskCheckFinishedSubscribers),
+    subscribeRecipeFinished: getSubscribeFunction(recipeFinishedSubscribers),
 
     /**
      * Startar om ett passivt task med updaterat färdig-datum och timeout
@@ -279,6 +286,10 @@ function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], priorit
       break
     }
   }
+}
+
+function isRecipeFinished(scheduler: Scheduler): boolean{
+  return (scheduler.completedTasks.length == scheduler.recipe.tasks.length);
 }
 
 

@@ -7,3 +7,5 @@ export { TaskConfirm, TaskConfirmType } from "./TaskConfirm";
 export { IngredientList } from "./IngredientList";
 export { CookingTimer } from "./CookingTimer";
 export { CookingTimerOverview } from "./CookingTimerOverview";
+export { StandardButton } from "./StandardButton";
+export { StandardText } from "./StandardText";

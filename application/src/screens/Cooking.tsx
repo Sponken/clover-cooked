@@ -22,7 +22,13 @@ import {
 } from "../components";
 import { User } from "../data";
 import { unsafeFind, undefinedToBoolean } from "../utils";
-import { createBasicScheduler, Scheduler } from "../scheduler";
+import {
+  createBasicScheduler,
+  Scheduler,
+  PassiveTaskSubscriber,
+  TaskAssignedSubscriber,
+  RecipeFinishedSubscriber,
+} from "../scheduler";
 import { FlatList } from "react-native-gesture-handler";
 
 const OK_TIME_BETWEEN_CLICK = 700;
@@ -43,7 +49,7 @@ type Props = {
  * Cooking, skärmen som visas under tiden matlagningen sker
  */
 export function Cooking({ navigation, route }: Props) {
-  const { recipe, users } = route.params;
+  const { recipe, users /*initScheduler*/ } = route.params;
 
   const [activeUser, setActiveUser] = useState(users[0].id); //id på aktiv användare
   const [userNotifications, setUserNotifications] = useState<
@@ -114,6 +120,11 @@ export function Cooking({ navigation, route }: Props) {
     }
   };
 
+  const recipeFinishedSubscriber: RecipeFinishedSubscriber = () => {
+    console.log("recipe finished");
+    navigation.navigate("RecipeFinished");
+  };
+
   const passiveTaskStartedSubscriber = (task: string, finish: Date) => {
     setPassiveTasks((tasks) => {
       tasks.set(task, finish);
@@ -157,7 +168,9 @@ export function Cooking({ navigation, route }: Props) {
     const passiveTaskCheckFinishedUnsubscribe = ssss.subscribePassiveTaskCheckFinished(
       passiveTaskCheckFinishedSubscriber
     );
-
+    const recipeFinishedUnsubscribe = ssss.subscribeRecipeFinished(
+      recipeFinishedSubscriber
+    );
     setAssignedTasks(ssss.getTasks());
 
     let _userNotifications = new Map<string, boolean>();
@@ -174,6 +187,8 @@ export function Cooking({ navigation, route }: Props) {
       passiveTaskStartedUnsubscribe();
       passiveTaskFinishedUnsubscribe();
       passiveTaskCheckFinishedUnsubscribe();
+      recipeFinishedUnsubscribe();
+      //passiveTaskUnsubscribe(); //ALEX TROR EJ SKA VARA MED, VAR M I RESTOREMAIN,VET INTE
     };
   }, []);
 

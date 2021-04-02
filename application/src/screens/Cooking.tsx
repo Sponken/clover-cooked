@@ -25,7 +25,7 @@ import { unsafeFind, undefinedToBoolean } from "../utils";
 import { createBasicScheduler, Scheduler } from "../scheduler";
 import { FlatList } from "react-native-gesture-handler";
 
-const OK_TIME_BETWEEN_CLICK = 100;
+const OK_TIME_BETWEEN_CLICK = 700;
 
 type CookingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

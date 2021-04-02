@@ -1,7 +1,7 @@
 {
   "id": "gräddtårta",
   "name": "Gräddtårta",
-  "description": "A simple template for creating a recipe",
+  "description": "En gräddtårta med jordgubbar på",
   "portions": 10,
   "ingredients": [
     { "id": "vaniljstång", "name": "Vaniljstång", "unit": "st" },

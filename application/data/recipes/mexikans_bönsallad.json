@@ -1,7 +1,7 @@
 {
   "id": "bönsallad",
   "name": "Mexikansk bönsallad",
-  "description": "A simple template for creating a recipe",
+  "description": "En Mexikansk bönsallad med en blandning av ingredienser",
   "portions": 4,
   "ingredients": [
     { "id": "lök", "name": "lök", "unit": "st" },

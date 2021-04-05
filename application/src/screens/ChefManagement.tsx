@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ChefList } from "../components";
 
@@ -36,10 +37,7 @@ export function ChefManagement({ navigation, route }: Props) {
   const [users, setUsers] = useState<User[]>(route.params?.users);
 
   return (
-    <View style={styles.container}>
-      <View style={{flex: 1}}>
-        {/* TODO: not sure why content outside of screen */}
-      </View>
+    <SafeAreaView style={styles.container}>
       <View style={{flex: 1, justifyContent: "flex-start", flexDirection: 'row', paddingLeft: 10}}>
         
         <Pressable style={styles.doneContainer} onPress={() => {   
@@ -93,7 +91,7 @@ export function ChefManagement({ navigation, route }: Props) {
       </View>
 
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 

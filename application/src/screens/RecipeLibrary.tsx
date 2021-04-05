@@ -1,19 +1,12 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  SafeAreaView,
-  Pressable,
-  Image,
-} from "react-native";
+import { StyleSheet, View, Text, Pressable, Image } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { DrawerActions } from "@react-navigation/routers";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 import { RecipeList } from "../components";
-
-import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation";
-import { DrawerActions } from "@react-navigation/routers";
 
 type RecipeLibraryScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

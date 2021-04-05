@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Button } from "react-native";
 import React from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { RootStackParamList } from "../navigation";
 import { recipes } from "../data";
@@ -35,7 +36,7 @@ type Props = {
  */
 export function Home({ navigation }: Props) {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text>Fortsätt sessionen</Text>
       <Button
         title="Receptbibliotek"
@@ -53,7 +54,7 @@ export function Home({ navigation }: Props) {
           })
         }
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

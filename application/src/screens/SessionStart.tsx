@@ -85,8 +85,7 @@ export function SessionStart({ navigation, route }: Props) {
         <Text style={{fontSize: 20, margin: 50, justifyContent: "center",}}> Inget recept valt </Text>
         </View>
       )
-    }
-    else{
+    } else {
       return (
         <View style={{alignItems: "center", justifyContent: "space-between"}}>
         <Text style={{fontSize: 20, margin: 10}}>{recipe.name}</Text>

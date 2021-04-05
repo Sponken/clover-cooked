@@ -1,8 +1,11 @@
 import { Recipe, Task } from "../data";
-import {Scheduler, CookID, PassiveTaskSubscriber, TaskAssignedSubscriber, RecipeFinishedSubscriber} from "./Scheduler"
+import {Scheduler, CookID, PassiveTaskStartedSubscriber, PassiveTaskFinishedSubscriber, PassiveTaskCheckFinishedSubscriber, TaskAssignedSubscriber,RecipeFinishedSubscriber} from "./Scheduler"
 import {includesAll, removeElement} from "../utils"
 
 type TaskID = string
+
+// Bestämmer hur lång en minut är. Sätt till "1000" i dev så blir 1 minut lika lång som 1 sekund
+const MINUTE = 60000;
 
 // Funktion för att skapa en ny scheduler. Den ska användas genom
 // ```
@@ -15,12 +18,17 @@ export function createBasicScheduler(recipe: Recipe,
   cooks: CookID[], 
   ): Scheduler {
   const taskAssignedSubscribers: TaskAssignedSubscriber[] = [];
-  const passiveTaskSubscribers: PassiveTaskSubscriber[] = [];
+  const passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[] = [];
+  const passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[] = [];
+  const passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[] = [];
   const recipeFinishedSubscribers: RecipeFinishedSubscriber[] =[];
   let scheduler: Scheduler = {
     taskAssignedSubscribers: taskAssignedSubscribers,
-    passiveTaskSubscribers: passiveTaskSubscribers,
+    passiveTaskStartedSubscribers: passiveTaskStartedSubscribers,
+    passiveTaskFinishedSubscribers: passiveTaskFinishedSubscribers,
+    passiveTaskCheckFinishedSubscribers: passiveTaskCheckFinishedSubscribers,
     recipeFinishedSubscribers: recipeFinishedSubscribers,
+
     // Detta fältet representerar hur många gånger en task har blivit förlängd.
     // I `[number, number]` är det första värdet hur många gånger den blivit
     // "klar" och det andra värdet är hur många gånger den förlängts och en ny
@@ -31,7 +39,7 @@ export function createBasicScheduler(recipe: Recipe,
     recipe: recipe,
     completedTasks: [],
     currentTasks: new Map<CookID, TaskID>(),
-    currentPassiveTasks: new Map<TaskID, Date>(),
+    currentPassiveTasks: new Map<TaskID, {finish: Date, timeout: NodeJS.Timeout}>(),
     finishTask: function (task: TaskID, cook: CookID) {
       this.completedTasks.push(task);
       this.currentTasks.delete(cook);
@@ -41,42 +49,64 @@ export function createBasicScheduler(recipe: Recipe,
       }
       assignTasks(scheduler, cook);
     },
+    finishPassiveTask: function (task: TaskID) {
+      const taskProps = this.currentPassiveTasks.get(task)
+      if (taskProps) {
+        clearTimeout(taskProps.timeout);
+        console.log("COMPLETED PASSIVE TASK: " + task);
+        this.completedTasks.push(task);
+        
+        this.currentPassiveTasks.delete(task);
+        this.passiveTaskFinishedSubscribers.forEach((fn) => fn(task));
+        // När en passiv task är klar kan nya tasks bli tillgängliga. Fördela dem.
+        assignTasks(this);
+      }
+    },
+    checkPassiveTaskFinished: function (task: TaskID) {
+      this.passiveTaskCheckFinishedSubscribers.forEach(f => f(task));
+    },
     subscribeTaskAssigned: getSubscribeFunction(taskAssignedSubscribers),
-    subscribePassiveTaskStarted: getSubscribeFunction(passiveTaskSubscribers),
+    subscribePassiveTaskStarted: getSubscribeFunction(passiveTaskStartedSubscribers),
+    subscribePassiveTaskFinished: getSubscribeFunction(passiveTaskFinishedSubscribers),
+    subscribePassiveTaskCheckFinished: getSubscribeFunction(passiveTaskCheckFinishedSubscribers),
     subscribeRecipeFinished: getSubscribeFunction(recipeFinishedSubscribers),
-    // TODO: Testa så det här funkar.
-    // TODO: När vi förlänger tiden av en task beter vi oss som om vi startar
-    // samma task igen men att den börjar senare i tiden. Är det rätt sätt att
-    // implementera det på?
-    extendPassive: function(task: TaskID, add: number) {
-      let started = this.currentPassiveTasks.get(task);
-      if (started) {
-        let new_time = new Date (started.getTime() + add*1000);
-        let time_passed = (started.getTime() - new Date().getTime()) / 1000;
-        let real_task = getTask(scheduler.recipe, task);
-        let time_left = (real_task.estimatedTime - time_passed) + add;
-        let ext = scheduler.extended.get(task);
-        if (ext) {
-          scheduler.extended.set(task, [ext[0], ext[1]+1])
-        } else {
-          throw "Failed to find ext";
+
+    /**
+     * Startar om ett passivt task med updaterat färdig-datum och timeout
+     * Antingen given tid m add eller om undefined kommer det förlängas m 10% av taskets egna uppskattade tid
+     * @add tiden i minuter som ska förlängas, kan vara undefined
+     */
+    extendPassive: function(task: TaskID, add?: number) {
+      let taskProps = this.currentPassiveTasks.get(task);
+      if (add === 0) {
+        return;
+      }
+      if (taskProps) {
+        clearTimeout(taskProps.timeout);
+        const timeLeft = Math.max(taskProps.finish.getTime() - Date.now(), 0);
+        let extendedTimeLeft: number;
+        if (add === undefined) {
+          const taskObj = this.recipe.tasks.find((foundTask) => foundTask.id === task)
+          if (taskObj) {
+            extendedTimeLeft = timeLeft + taskObj.estimatedTime * 0.2 * MINUTE;
+            //förlänger med åtminstonde 20 sekunder
+            if (extendedTimeLeft < 20000){
+              extendedTimeLeft = 20000;
+            }
+          } else {
+            throw "extendPassive: " + task + " not found in recipe"
+          }
         }
-        startPassiveTask(time_left, this, task);
-        scheduler.passiveTaskSubscribers.forEach((fn) => fn(task, new_time));
-        scheduler.currentPassiveTasks.set(task, new_time);
+        else {
+          extendedTimeLeft = timeLeft + add * MINUTE;
+        }
+        startPassiveTask(extendedTimeLeft / MINUTE, this, task);
       }
     },
     getPassiveTasks: function() {
-      let entries = Array.from(this.currentPassiveTasks.entries())
-      let timeToFinish: Map<TaskID, number> = new Map(entries.map(([task, date]) => {
-        let now: Date = new Date();
-        let diffTime = Math.abs(now.getTime() - date.getTime()) / (1000*60)
-        let timeLeft = getTask(recipe, task).estimatedTime - diffTime;
-        return [task, timeLeft]
-
-      }));
-      return timeToFinish
-
+      let tasks = new Map<string, Date>()
+      this.currentPassiveTasks.forEach(({finish},task) => tasks.set(task, new Date(finish)))
+      return tasks
     },
     getPassiveTask: function(task: TaskID) {
       return this.getPassiveTasks().get(task)
@@ -105,29 +135,37 @@ export function createBasicScheduler(recipe: Recipe,
 }
 
 /**
- * Startar en passiv task. En task kan förlängas, då kallas den här metoden igen.
- * Innan det görs måste `scheduler.extended` uppdateras.
+ * Startar eller förnyar ett passivt task. 
+ * @timeLeft Tid i minuter tills task förväntas vara färdigt
  */
 function startPassiveTask(timeLeft: number, scheduler: Scheduler, task: TaskID) {
-    const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-    console.log("NEW PASSIVE TASK STARTED: " + task + " for " + new String(timeLeft));
+  //const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-    wait(timeLeft*1000).then(() => {
-      let ext = scheduler.extended.get(task);
-      if (ext) {
-        if (ext[0] == ext[1]) {
-          console.log("COMPLETED PASSIVE TASK: " + task);
-          scheduler.completedTasks.push(task);
-          scheduler.currentPassiveTasks.delete(task);
-          
-          // När en passiv task är klar kan nya tasks bli tillgängliga. Fördela dem.
-          assignTasks(scheduler);
-        } else {
-          let new_values: [number, number] = [ext[0] + 1, ext[1]];
-          scheduler.extended.set(task, new_values);
-        }
+  console.log("NEW PASSIVE TASK STARTED: " + task + " for " + new String(timeLeft));
+  const finish = new Date(Date.now() + timeLeft*MINUTE)
+  const timeout = setTimeout(() => scheduler.checkPassiveTaskFinished(task), timeLeft*MINUTE)
+  scheduler.currentPassiveTasks.set(task, {finish: finish, timeout: timeout});
+  
+  scheduler.passiveTaskStartedSubscribers.forEach((fn) => fn(task, new Date(finish)));
+
+  /*
+  wait(timeLeft*1000).then(() => {
+    let ext = scheduler.extended.get(task);
+    if (ext) {
+      if (ext[0] == ext[1]) {
+        console.log("COMPLETED PASSIVE TASK: " + task);
+        scheduler.completedTasks.push(task);
+        
+        scheduler.currentPassiveTasks.delete(task);
+        scheduler.passiveTaskFinishedSubscribers.forEach((fn) => fn(task));
+        // När en passiv task är klar kan nya tasks bli tillgängliga. Fördela dem.
+        assignTasks(scheduler);
+      } else {
+        let new_values: [number, number] = [ext[0] + 1, ext[1]];
+        scheduler.extended.set(task, new_values);
       }
-  });
+    }
+  });*/
 }
 
 let getDependencyMaps = (recipe: Recipe): [Map<TaskID, TaskID[]>, Map<TaskID, TaskID[]>] => {
@@ -162,12 +200,12 @@ function getTask(recipe: Recipe, taskID: TaskID): Task{
  * @returns subscription function till subList som returnerar unsub function
  */
 function getSubscribeFunction<FunctionType>(subList: FunctionType[]) {
-  const _subscribe = (subscribedFunction: FunctionType) => {
-    const _unsubscribe = () => {subList = subList.filter((value) => value !== subscribedFunction)};
+  const subscribe = (subscribedFunction: FunctionType) => {
+    const unsubscribe = () => {subList = subList.filter((value) => value !== subscribedFunction)};
     subList.push(subscribedFunction);
-    return _unsubscribe;
+    return unsubscribe;
   }
-  return _subscribe;
+  return subscribe;
 }
 
 /**
@@ -178,7 +216,7 @@ function getEligibleTasks(
   let recipe: Recipe = scheduler.recipe
   let completedTasks: TaskID[] = scheduler.completedTasks
   let currentTasks: TaskID[] = Array.from(scheduler.currentTasks.values())
-  let currentPassiveTasks: Map<TaskID, Date> = scheduler.currentPassiveTasks
+  let currentPassiveTasks = scheduler.currentPassiveTasks
     
   let eligibleTasks: TaskID[] = [];
   let strongEligibleTasks: TaskID[] = [];
@@ -218,8 +256,6 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
     let real_task = getTask(scheduler.recipe, passiveTask);
     scheduler.extended.set(passiveTask, [0, 0]);
     startPassiveTask(real_task.estimatedTime, scheduler, passiveTask);
-    scheduler.passiveTaskSubscribers.forEach((fn) => fn(passiveTask, new Date));
-    scheduler.currentPassiveTasks.set(passiveTask, new Date());
   }
   
   // Kolla om några möjliga tasks har dependencies som precis avslutades

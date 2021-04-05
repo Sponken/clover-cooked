@@ -1,0 +1,342 @@
+{
+  "id": "lasagne",
+  "name": "Klassisk lasagne",
+  "description": "A simple template for creating a recipe",
+  "portions": 4,
+  "ingredients": [
+    { "id": "lök", "name": "Gullök", "unit": "st" },
+    { "id": "vitlök", "name": "Vitlök", "unit": "klyftor" },
+    { "id": "färs", "name": "Nötfärs", "unit": "g" },
+    { "id": "tomatpure", "name": "Tomatpuré", "unit": "msk" },
+    { "id": "timjan", "name": "Timjan", "unit": "tsk" },
+    { "id": "rosmarin", "name": "Rosmarin", "unit": "tsk" },
+    { "id": "krossTomat", "name": "Krossade tomater", "unit": "g" },
+    { "id": "buljong", "name": "Köttbuljongtärning", "unit": "st" },
+    { "id": "smör", "name": "Smör", "unit": "msk" },
+    { "id": "vetemjöl", "name": "Mjöl", "unit": "msk" },
+    { "id": "mjölk", "name": "Mjölk", "unit": "l" },
+    { "id": "lasagneplattor", "name": "Lasagneplattor", "unit": "paket" },
+    { "id": "rödlök", "name": "Rödlök", "unit": "st" },
+    {
+      "id": "gulaKörsbärstomater",
+      "name": "Gula körsbärstomater",
+      "unit": "ask"
+    },
+    { "id": "basilika", "name": "Basilika", "unit": "kruka" },
+    { "id": "peppar", "name": "Peppar", "unit": "krm" },
+    { "id": "salt", "name": "Salt", "unit": "krm" },
+    { "id": "balsamvinäger", "name": "Balsamvinäger", "unit": "msk" },
+    { "id": "olivolja", "name": "Olivolja", "unit": "msk" },
+    { "id": "parmesanost", "name": "Parmesanost", "unit": "bit" }
+  ],
+  "resources": [{ "id": "ugn", "name": "Ugn" }],
+  "tasks": [
+    {
+      "id": "ugn",
+      "name": "Sätt på ugn",
+      "instructions": "Sätt ugnen på 175 grader",
+      "initalTask": true,
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
+      "id": "hackaLök",
+      "name": "Hacka lök",
+      "instructions": "Skala och hacka gullöken fint",
+      "estimatedTime": 2,
+      "ingredients": [{ "ingredientId": "lök", "amount": 2 }],
+      "resources": []
+    },
+    {
+      "id": "hackaVitlök",
+      "name": "Hacka vitlöken",
+      "instructions": "Skala och hacka vitlöken fint",
+      "estimatedTime": 2,
+      "ingredients": [{ "ingredientId": "vitlök", "amount": 2 }],
+      "resources": []
+    },
+    {
+      "id": "fräs",
+      "name": "Fräs ihop lök och färs i en stor stekpanna eller en liten stekgryta",
+      "instructions": "Fräs färs tillsammans med den hackade gul- och vitlök på medelhög värme i olivolja tills det fått färg",
+      "estimatedTime": 5,
+      "ingredients": [
+        { "ingredientId": "färs", "amount": 500 },
+        { "ingredientId": "olivolja", "amount": 1 }
+      ],
+      "resources": []
+    },
+    {
+      "id": "tomatpure",
+      "name": "Tillsätt tomatpuré",
+      "instructions": "Tillsätt tomatpuré till färsen och låt fräsa en stund",
+      "estimatedTime": 5,
+      "ingredients": [{ "ingredientId": "tomatpure", "amount": 4 }],
+      "resources": []
+    },
+    {
+      "id": "krydda",
+      "name": "Tillsätt örtkryddor",
+      "instructions": "Krydda färsen med timjan och rosmarin",
+      "estimatedTime": 2,
+      "ingredients": [
+        { "ingredientId": "timjan", "amount": 1 },
+        { "ingredientId": "rosmarin", "amount": 1 }
+      ],
+      "resources": []
+    },
+    {
+      "id": "krossadeTomater",
+      "name": "Tillsätt krossade tomater",
+      "instructions": "",
+      "estimatedTime": 2,
+      "ingredients": [{ "ingredientId": "krossTomat", "amount": 500 }],
+      "resources": []
+    },
+    {
+      "id": "buljong",
+      "name": "Smula ner buljongtärning i köttfärsåsen",
+      "instructions": "",
+      "estimatedTime": 1,
+      "ingredients": [{ "ingredientId": "buljong", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "börjaKoka",
+      "name": "Koka upp köttfärsåsen",
+      "instructions": "Rör runt i kastrullen, sätt på lock och koka upp",
+      "estimatedTime": 2,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "kokaUpp",
+      "name": "Låt köttfärsåsen koka",
+      "instructions": "Låt köttfärsåsen koka",
+      "passive": true,
+      "estimatedTime": 10,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "smakaAvTomat",
+      "name": "Smaka av köttfärsåsen",
+      "instructions": "Stäng av platten med köttfärsås och smaka av den med salt och peppar",
+      "estimatedTime": 3,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "finhackRödlök",
+      "name": "Finhacka rödlök",
+      "instructions": "Finhacka rödlök",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "rödlök", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "läggPåFat",
+      "name": "Lägg på fat",
+      "instructions": "Lägg rödlöken på ett fat med körsbärstomater och strö över bladen från basilika, olivolja, balsamvinäger, salt och peppar",
+      "estimatedTime": 5,
+      "ingredients": [
+        { "ingredientId": "gulaKörsbärstomater", "amount": 0.5 },
+        { "ingredientId": "basilika", "amount": 1 },
+        { "ingredientId": "olivolja", "amount": 1 },
+        { "ingredientId": "balsamvinäger", "amount": 1 },
+        { "ingredientId": "salt", "amount": 1 },
+        { "ingredientId": "peppar", "amount": 1 }
+      ],
+      "resources": []
+    },
+    {
+      "id": "hettaKastrull",
+      "name": "Värm upp kastrull",
+      "instructions": "Häll upp smör i en kastrull på medelhög värme",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "smör", "amount": 6 }],
+      "resources": []
+    },
+    {
+      "id": "pudraVetemjöl",
+      "name": "Pudra över vetemjöl",
+      "instructions": "Pudra vetemjöl över smöret i kastrullen",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "vetemjöl", "amount": 6 }],
+      "resources": []
+    },
+    {
+      "id": "rörNerMjölk",
+      "name": "Rör ner mjölk",
+      "instructions": "Rör ner mjölk (lite i taget)",
+      "estimatedTime": 4,
+      "ingredients": [{ "ingredientId": "mjölk", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "smakaAvSP",
+      "name": "Smaka av med salt och peppar",
+      "instructions": "Smaka av med salt och peppar",
+      "estimatedTime": 4,
+      "ingredients": [
+        { "ingredientId": "salt", "amount": 0 },
+        { "ingredientId": "peppar", "amount": 0 }
+      ],
+      "resources": []
+    },
+    {
+      "id": "rivOst",
+      "name": "Riv parmesanost",
+      "instructions": "Riv parmesanost",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "parmesanost", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "smörjForm",
+      "name": "Smörj en ugnssäker form",
+      "instructions": "Smörj en ugnssäker form",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "smör", "amount": 0.5 }],
+      "resources": []
+    },
+    {
+      "id": "täckBotten",
+      "name": "Täck botten med lasagneplattor",
+      "instructions": "Täck botten med lasagneplattor och den vita såsen",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "lasagneplattor", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "varva",
+      "name": "Varva lager med plattor, sås och köttfärsås",
+      "instructions": "Varva lager med plattor, sås och köttfärsås",
+      "estimatedTime": 5,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "avslutaBygge",
+      "name": "Häll över resterande såsen och den rivna osten",
+      "instructions": "Häll över resterande såsen och den rivna osten",
+      "estimatedTime": 3,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "ställInIUgn",
+      "name": "Ställ in lasagnen i ugn",
+      "instructions": "Ställ in lasagnen mitt i ugnen",
+      "estimatedTime": 2,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "tillagaLasagne",
+      "name": "Låt stå i ugn tills gyllenbrun",
+      "instructions": "Låt stå i ugn tills gyllenbrun",
+      "passive": true,
+      "estimatedTime": 40,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "taUtLasagne",
+      "name": "Ta ut lasagnen ur ugnen",
+      "instructions": "Ta ut lasagnen ur ugnen",
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "servera",
+      "name": "Servera",
+      "instructions": "Servera lasagne med sallad",
+      "estimatedTime": 1,
+      "finalTask": true,
+      "ingredients": [],
+      "resources": []
+    }
+  ],
+  "taskDependencies": [
+    {
+      "taskId": "läggPåFat",
+      "dependsOn": ["finhackRödlök"]
+    },
+    {
+      "taskId": "fräs",
+      "dependsOn": ["hackaLök", "hackaVitlök"]
+    },
+    {
+      "taskId": "tomatpure",
+      "strongDependsOn": ["fräs"]
+    },
+    {
+      "taskId": "krydda",
+      "strongDependsOn": ["tomatpure"]
+    },
+    {
+      "taskId": "krossadeTomater",
+      "strongDependsOn": ["krydda"]
+    },
+    {
+      "taskId": "buljong",
+      "dependsOn": ["krossadeTomater"]
+    },
+    {
+      "taskId": "börjaKoka",
+      "dependsOn": ["buljong"]
+    },
+    {
+      "taskId": "kokaUpp",
+      "strongDependsOn": ["börjaKoka"]
+    },
+    {
+      "taskId": "smakaAvTomat",
+      "dependsOn": ["kokaUpp"]
+    },
+    {
+      "taskId": "pudraVetemjöl",
+      "strongDependsOn": ["hettaKastrull"]
+    },
+    {
+      "taskId": "rörNerMjölk",
+      "dependsOn": ["pudraVetemjöl"]
+    },
+    {
+      "taskId": "smakaAvSP",
+      "dependsOn": ["rörNerMjölk"]
+    },
+    {
+      "taskId": "avslutaBygge",
+      "dependsOn": ["varva", "rivOst"]
+    },
+    {
+      "taskId": "varva",
+      "dependsOn": ["täckBotten", "smakaAvTomat"]
+    },
+    {
+      "taskId": "täckBotten",
+      "dependsOn": ["smörjForm", "smakaAvSP"]
+    },
+    {
+      "taskId": "ställInIUgn",
+      "dependsOn": ["avslutaBygge", "ugn"]
+    },
+    {
+      "taskId": "tillagaLasagne",
+      "strongDependsOn": ["ställInIUgn"]
+    },
+    {
+      "taskId": "taUtLasagne",
+      "strongDependsOn": ["tillagaLasagne"]
+    },
+    {
+      "taskId": "servera",
+      "dependsOn": ["läggPåFat", "taUtLasagne"],
+      "strongDependsOn": []
+    }
+  ]
+}

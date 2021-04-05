@@ -4,7 +4,8 @@ import {includesAll, removeElement} from "../utils"
 
 type TaskID = string
 
-const MINUTE = 1000;
+// Bestämmer hur lång en minut är. Sätt till "1000" i dev så blir 1 minut lika lång som 1 sekund
+const MINUTE = 60000;
 
 // Funktion för att skapa en ny scheduler. Den ska användas genom
 // ```

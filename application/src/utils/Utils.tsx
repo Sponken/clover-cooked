@@ -32,3 +32,46 @@ export function undefinedToBoolean(value: undefined | boolean) {
   if (value === undefined) return false;
   return value;
 }
+
+/**
+ * Få reda på hur många hela minuter det är tills ett Date
+ */
+export function getMinutesTo(date: Date): number {
+  return Math.floor(getSecondsTo(date) / 60);
+}
+
+/**
+ * Få reda på hur många sekunder det är tills ett Date
+ */
+export function getSecondsTo(date: Date): number {
+  const currentDate = new Date();
+  return milliSecondToSecond(date.getTime() - currentDate.getTime());
+}
+
+const milliSecondToSecond = (millies: number) => Math.floor(millies / 1000);
+
+/**
+ * clearInterval fast kan ta emot typen NodeJS.Timeout | undefined
+ * om undefined gör den ingenting
+ */
+export const clearIntervalOrUndefined = (
+  interval: NodeJS.Timeout | undefined
+) => {
+  if (interval !== undefined) {
+    let i = interval as NodeJS.Timeout; // hack för typescript
+    clearInterval(i);
+  }
+};
+
+/**
+ * clearTimeout fast kan ta emot typen NodeJS.Timeout | undefined
+ * om undefined gör den ingenting
+ */
+export const clearTimeoutOrUndefined = (
+  timeout: NodeJS.Timeout | undefined
+) => {
+  if (timeout !== undefined) {
+    let i = timeout as NodeJS.Timeout; // hack för typescript
+    clearInterval(i);
+  }
+};

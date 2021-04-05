@@ -35,7 +35,7 @@ export function StandardButton({ ...props }: StandardButtonProps) {
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    padding: 10,
+    padding: 15,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",

@@ -6,12 +6,12 @@ import {
   ImageBackground,
   Pressable,
   useWindowDimensions,
-  SafeAreaView,
 } from "react-native";
 import React from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { RootStackParamList } from "../navigation";
 import { IngredientList } from "../components";
@@ -89,25 +89,27 @@ export function RecipeOverview({ navigation, route }: Props) {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["right", "bottom", "left"]}>
       <View style={styles.contentContainer}>
         <View style={styles.topImageContainer}>
           <ImageBackground
             source={getRecipeThumbnail(recipe.id)}
             style={styles.topImage}
           >
-            <Pressable onPress={() => navigation.navigate("RecipeLibrary")}>
-              <View style={styles.backIconContainer}>
-                <Image source={require("../../assets/image/backImg.png")} />
+            <SafeAreaView style={styles.topImage} edges={["top"]}>
+              <Pressable onPress={() => navigation.navigate("RecipeLibrary")}>
+                <View style={styles.backIconContainer}>
+                  <Image source={require("../../assets/image/backImg.png")} />
+                </View>
+              </Pressable>
+              <View style={styles.timeContainer}>
+                <Image
+                  style={styles.timeIcon}
+                  source={require("../../assets/image/time_icon.png")}
+                />
+                <Text style={styles.timeText}>1h</Text>
               </View>
-            </Pressable>
-            <View style={styles.timeContainer}>
-              <Image
-                style={styles.timeIcon}
-                source={require("../../assets/image/time_icon.png")}
-              />
-              <Text style={styles.timeText}>1h</Text>
-            </View>
+            </SafeAreaView>
           </ImageBackground>
         </View>
         <View style={styles.infoContainer}>

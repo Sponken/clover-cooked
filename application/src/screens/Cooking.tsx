@@ -3,13 +3,13 @@ import {
   View,
   Pressable,
   Image,
-  SafeAreaView,
   Modal,
   Text,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { RootStackParamList } from "../navigation";
 import {

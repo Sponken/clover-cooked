@@ -4,6 +4,7 @@
  */
 import "react-native-gesture-handler";
 import React from "react";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import { Navigator } from "./src/navigation";
 import { LogBox } from "react-native";
@@ -12,5 +13,9 @@ import { LogBox } from "react-native";
 LogBox.ignoreLogs(["Setting a timer"]);
 
 export default function App() {
-  return <Navigator />;
+  return (
+    <SafeAreaProvider>
+      <Navigator />
+    </SafeAreaProvider>
+  );
 }

@@ -7,7 +7,7 @@ import {
   Pressable,
 } from "react-native";
 import React, { useState } from "react";
-
+import { StatusBar } from "expo-status-bar";
 import { ChefList, StandardButton, StandardText} from "../components";
 
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -48,8 +48,9 @@ export function ChefManagement({ navigation, route }: Props) {
         onPress={() => {navigation.navigate("SessionStart", {users})}}
         buttonText="Spara"
         textProps={{textWeight:"bold"}}
-      />
+        />
       </View>
+     <StatusBar style="auto" />
     </SafeAreaView>
   );
 }

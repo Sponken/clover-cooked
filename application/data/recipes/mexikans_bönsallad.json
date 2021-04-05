@@ -1,7 +1,7 @@
 {
   "id": "bönsallad",
-  "name": "Mexikansk bönsallad",
-  "description": "En Mexikansk bönsallad med en blandning av ingredienser",
+  "name": "Mexikansk bönsoppa",
+  "description": "En Mexikansk bönsoppa med en blandning av ingredienser",
   "portions": 4,
   "ingredients": [
     { "id": "lök", "name": "lök", "unit": "st" },
@@ -25,7 +25,7 @@
     {
       "id": "ugn",
       "name": "Sätt på ugn",
-      "instructions": "Sätt ugnen på 220 grader",
+      "instructions": "Sätt på ugnen på 220 grader",
       "initalTask": true,
       "estimatedTime": 1,
       "ingredients": [],
@@ -33,18 +33,26 @@
     },
     {
       "id": "hackaLök",
-      "name": "Grovhacka gullöken",
-      "instructions": "",
+      "name": "Hacka lölk",
+      "instructions": "Skala och grovhacka gullöken",
       "estimatedTime": 4,
       "ingredients": [{ "ingredientId": "lök", "amount": 1 }],
       "resources": []
     },
     {
+      "id": "skalaPotatis",
+      "name": "Skala potatis",
+      "instructions": "Skala potatisen om den är grov. Skölj ananrs av de",
+      "estimatedTime": 10,
+      "ingredients": [{ "ingredientId": "potatis", "amount": 1 }],
+      "resources": []
+    },
+    {
       "id": "tärnaPotatis",
       "name": "Tärna potatisen",
-      "instructions": "",
-      "estimatedTime": 4,
-      "ingredients": [{ "ingredientId": "potatis", "amount": 1 }],
+      "instructions": "Tärna potatisen i 1cm stora kuber",
+      "estimatedTime": 5,
+      "ingredients": [],
       "resources": []
     },
     {
@@ -66,7 +74,7 @@
     {
       "id": "fräsLök",
       "name": "Lägg i löken",
-      "instructions": "Lägg i den hacka löken i kastrullen",
+      "instructions": "Lägg i den hackade löken i kastrullen",
       "estimatedTime": 1,
       "ingredients": [],
       "resources": []
@@ -97,23 +105,23 @@
     },
     {
       "id": "tillsättBönor",
-      "name": "Tillsätt de sköljda bönorna till kastrullen",
-      "instructions": "",
+      "name": "Tillsätt bönor",
+      "instructions": "Tillsätt de sköljda bönorna till kastrullen",
       "estimatedTime": 1,
       "ingredients": [],
       "resources": []
     },
     {
       "id": "tillsättPotatis",
-      "name": "Tillsätt den tärnade potatisen till kastrullen",
-      "instructions": "",
+      "name": "Tillsätt potatis",
+      "instructions": "Tillsätt den tärnade potatisen till kastrullen",
       "estimatedTime": 1,
       "ingredients": [],
       "resources": []
     },
     {
       "id": "tillsättBuljong",
-      "name": "Tillsätt buljong till kastrullen",
+      "name": "Tillsätt buljong",
       "instructions": "Häll ner vatten och grönsaksbuljong i kastrullen",
       "estimatedTime": 2,
       "ingredients": [
@@ -150,8 +158,8 @@
     {
       "id": "låtSjuda",
       "name": "Låt sjuda",
-      "passive": true,
       "instructions": "Låt soppan sjuda tills potatisen är mjuk",
+      "passive": true,
       "estimatedTime": 8,
       "ingredients": [],
       "resources": []
@@ -167,7 +175,7 @@
     {
       "id": "förberedPlåt",
       "name": "Förbered en plåt",
-      "instructions": "Ta fram en ungsplåt och lägg bakplåtspapper på den",
+      "instructions": "Lägg bakplåtspapper på en ungsplåt",
       "estimatedTime": 2,
       "ingredients": [],
       "resources": []
@@ -193,7 +201,7 @@
     },
     {
       "id": "brödUgn",
-      "name": "Grädda brödet",
+      "name": "Ställ in brödet",
       "instructions": "Ställ in plåten med bröd i mitten av ugnen",
       "estimatedTime": 1,
       "ingredients": [],
@@ -201,9 +209,9 @@
     },
     {
       "id": "brödGräddas",
-      "name": "Låt brödet bli krispigt i ugnen",
+      "name": "Grädda brödet",
       "passive": true,
-      "instructions": "",
+      "instructions": "Låt brödet bli krispigt i ugnen",
       "estimatedTime": 3,
       "ingredients": [],
       "resources": [{ "resourceId": "ugn", "amount": 1 }]
@@ -220,7 +228,7 @@
       "id": "läggBröd",
       "name": "Lägg upp brödet",
       "finalTask": true,
-      "instructions": "Lägg upp tunnbrödsticksen på ett serveringsfat eller tallrik",
+      "instructions": "Lägg upp tunnbrödsticksen på ett serveringsfat eller en tallrik",
       "estimatedTime": 2,
       "ingredients": [],
       "resources": []
@@ -228,40 +236,39 @@
     {
       "id": "hällMajs",
       "name": "Häll av majsen",
-      "instructions": " Häll av vätskan i majsburuken",
+      "instructions": " Häll av vätskan från majsburken",
       "estimatedTime": 1,
       "ingredients": [{ "ingredientId": "majs", "amount": 1 }],
       "resources": []
     },
     {
       "id": "tärnaPaprika",
-      "name": "Tärna paprikan fint",
-      "instructions": "",
+      "name": "Tärna paprikan",
+      "instructions": "Tärna paprikan fint",
       "estimatedTime": 4,
       "ingredients": [{ "ingredientId": "paprika", "amount": 1 }],
       "resources": []
     },
     {
       "id": "tärnaFeta",
-      "name": "Tärna eller smula fetaosten",
-      "instructions": "",
+      "name": "Tärna fetaosten",
+      "instructions": "Tärna eller smula fetaosten",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "feta", "amount": 1 }],
       "resources": []
     },
     {
       "id": "hackaMynta",
-      "name": "Grovhacka myntan",
-      "instructions": "",
+      "name": "Hacka myntan",
+      "instructions": "Grovhacka myntan",
       "estimatedTime": 4,
       "ingredients": [{ "ingredientId": "mynta", "amount": 0.5 }],
       "resources": []
     },
     {
       "id": "blandaSallad",
-      "name": "Blanda myntan, paprikan och fetan i en serveringsskål",
-      "instructions": "",
-      "finalTask": true,
+      "name": "Blanda sallad",
+      "instructions": "Blanda myntan, paprikan och fetan i en serveringsskål",
       "estimatedTime": 4,
       "ingredients": [],
       "resources": []
@@ -277,7 +284,7 @@
     {
       "id": "dressaSallad",
       "name": "Dressa salladen",
-      "instructions": "Tillsätt olivolja och blanda",
+      "instructions": "Häll olivolja över salladen och blanda",
       "finalTask": true,
       "estimatedTime": 2,
       "ingredients": [{ "ingredientId": "olivolja", "amount": 1 }],
@@ -294,7 +301,7 @@
     {
       "id": "mixaSoppa",
       "name": "Mixa soppan",
-      "instructions": "Om du vill ha soppan slät, mixa den slät med en stavmixer",
+      "instructions": "Om du vill ha soppan slät, mixa den slät med en stavmixer. Den går annars att äta som den är!",
       "estimatedTime": 5,
       "finalTask": true,
       "ingredients": [],
@@ -302,6 +309,10 @@
     }
   ],
   "taskDependencies": [
+    {
+      "taskId": "tärnaPotatis",
+      "strongDependsOn": ["skalaPotatis"]
+    },
     {
       "taskId": "fräsLök",
       "strongDependsOn": ["hettaKastrull", "hackaLök"]

@@ -34,7 +34,7 @@
     {
       "id": "sepÄgg",
       "name": "Separera äggen",
-      "instructions": "Knäck äggen och separera äggulorna från vitan genom att låta äggvitan rinna av genom dina fingrar. Spara både vitan och gulan",
+      "instructions": "Knäck äggen och separera äggulorna från vitan genom att låta äggvitan rinna av genom dina fingrar. Spara både vitan och gulan separat",
       "estimatedTime": 5,
       "nonInterruptable": true,
       "ingredients": [{ "ingredientId": "ägg", "amount": 3 }],
@@ -144,7 +144,7 @@
     {
       "id": "kallt",
       "name": "Ställ biskvierna kallt",
-      "instructions": "",
+      "instructions": "Ställ biskvierna kallt",
       "estimatedTime": 1,
       "ingredients": [],
       "resources": []
@@ -160,7 +160,7 @@
     {
       "id": "choklad",
       "name": "Värm chokladen",
-      "instructions": "Lägg chokladen i en värmetålig tallrik som du sedan lägger på kastrullen med vatten. Rör runt tills chokladen smällt. När vattnet kokar, sänk värmen.",
+      "instructions": "Lägg chokladen i en värmetålig tallrik som du sedan lägger på kastrullen med vatten. Rör runt tills chokladen smällt. Om vattnet kokar, sänk värmen.",
       "estimatedTime": 5,
       "ingredients": [{ "ingredientId": "choklad", "amount": 400 }],
       "resources": []

@@ -4,13 +4,15 @@ import {
   StyleSheet,
   View,
   FlatList,
-  Button,
   TextInput,
   Pressable,
   ColorValue,
+  Image,
+  Text,
 } from "react-native";
 
 import { User } from "../data";
+import { StandardText } from "./StandardText";
 
 type ChefListProps = {
   chefList: any;
@@ -24,19 +26,44 @@ type ChefListProps = {
 
 export function ChefList({ chefList, setChefList }: ChefListProps) {
   return (
-    <View style={{ height: 800 }}>
-      <FlatList
-        data={chefList}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <ListRow chef={item} chefList={chefList} setChefList={setChefList} /> //remove chef/edit chef instead?
-        )}
-      />
-    </View>
+    <FlatList
+      data={chefList}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <ChefItem chef={item} chefList={chefList} setChefList={setChefList} />
+      )}
+      ListFooterComponent={() => (
+        <View style={styles.chefItemContainer}>
+          <Pressable
+            style={styles.addChefButton}
+            onPress={() => {
+              setChefList([
+                ...chefList,
+                {
+                  id: Date.now().toString(),
+                  name: "Ny kock",
+                  color: "#5884E0", // TODO: randomize color from e.g. 8 ones, or always take the 4 ones that work best first
+                  icon: require("../../assets/image/chefHatSmall.png"),
+                },
+              ]);
+            }}
+          >
+            <View>
+              <Image
+                style={styles.addChefIcon}
+                source={require("../../assets/image/Add_chef_icon.png")} //TODO: chef.image
+                // check chef.color to decide color of border
+              />
+            </View>
+            <Text style={styles.nameText}>Lägg till kock</Text>
+          </Pressable>
+        </View>
+      )}
+    />
   );
 }
 
-type ListRowProps = {
+type ChefItemProps = {
   chef: any;
   chefList: any;
   setChefList: any;
@@ -46,7 +73,7 @@ type ListRowProps = {
  * Listans rader
  * https://reactnative.dev/docs/image
  */
-const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
+const ChefItem = ({ chef, chefList, setChefList }: ChefItemProps) => {
   //Här spagettas det hårt, funktionen gör en kopia på chefList och splicear in den chef vi vill ändra.
   //Funktionen kommer göra det efter varje gång man ändrar texten, vet inte om det innebär varje gång man
   //skriver en ny bokstav eller när man editat klart.
@@ -68,13 +95,15 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
     let newChefs = Array.from(chefList);
 
     let color = [
-      "#5884E0",
-      "#9400D3",
-      "#4B0082",
-      "#0000FF",
-      "#00FF00",
-      "#FFF000",
-      "#FF7F00",
+      "#B856E9",
+      "#E956CD",
+      "#E3993B",
+      "#EAD755",
+      "#95DD69",
+      "#22BC29",
+      "#4DE1E1",
+      "#4DA4E1",
+      "#4F5EED",
       //"#FF0000", //Ej kompatibel med färgen på notis för användare
     ];
 
@@ -103,27 +132,18 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
   }
 
   return (
-    <View style={styles.row}>
-      <View style={styles.rowInfoContainer}>
-        <Pressable
-          style={[styles.chefColor, { backgroundColor: chef.color }]} //userColor,}
-          onPress={() => {
-            setChefList(
-              editColor(chefList.findIndex((c: User) => c.id === chef.id), chef)
-            );
-          }}
-        />
-      </View>
-
-      <View style={{ flex: 4, flexDirection: "row", alignItems: "flex-start" }}>
+    <View style={styles.chefItemContainer}>
+      <Pressable
+        style={[styles.chefColor, { backgroundColor: chef.color }]} //userColor,}
+        onPress={() => {
+          setChefList(
+            editColor(chefList.findIndex((c: User) => c.id === chef.id), chef)
+          );
+        }}
+      />
+      <View style={styles.nameContainer}>
         <TextInput
-          style={{
-            height: 40,
-            backgroundColor: "white",
-            alignItems: "flex-start",
-            flex: 1,
-            fontSize: 24,
-          }}
+          style={styles.nameText}
           defaultValue={chef.name}
           onChangeText={(name) => {
             setChefList(
@@ -136,50 +156,78 @@ const ListRow = ({ chef, chefList, setChefList }: ListRowProps) => {
           }}
         />
       </View>
-
-      <Button
+      <Pressable
+        style={styles.deleteButton}
         onPress={() =>
           setChefList(chefList.filter((c: User) => c.id !== chef.id))
         }
-        title="x" // Delete?
-      />
+      >
+        <StandardText text={"X"} colorValue={"red"} textWeight={"bold"} />
+      </Pressable>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  row: {
+  chefItemContainer: {
     flexDirection: "row",
-    flexShrink: 1,
     alignItems: "center",
     marginVertical: 3,
-    paddingVertical: 10,
-    paddingLeft: 10,
-    paddingRight: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 20,
     backgroundColor: "#FFFFFF",
     borderRadius: 10,
+
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    // Android shadow
+    elevation: 4,
   },
-  rowInfoContainer: {
-    flex: 1,
-    marginLeft: 10,
-    marginTop: 2,
+  chefColor: {
+    height: 50,
+    width: 50,
+    borderRadius: 100,
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    // Android shadow
+    elevation: 4,
   },
   chefImageInList: {
     marginLeft: 5,
     width: 50,
     height: 50,
   },
-  chefColor: {
-    margin: 0,
-    height: 30,
-    width: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 100 * 2,
+  nameContainer: {
+    flex: 2,
   },
-  name: {
-    marginLeft: 5,
-    fontSize: 20,
-    lineHeight: 20,
+  nameText: {
+    flex: 1,
+    fontSize: 22,
+    marginHorizontal: 10,
+    paddingLeft: 10,
+    paddingVertical: 10,
+  },
+  deleteButton: {
+    paddingRight: 10,
+  },
+  addChefButton: {
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  addChefIcon: {
+    height: 50,
+    width: 50,
   },
 });

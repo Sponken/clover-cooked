@@ -3,11 +3,11 @@ import {
   Text,
   Image,
   View,
-  TouchableOpacity,
-  SafeAreaView,
   Pressable
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 import React, { useState } from "react";
 
@@ -21,8 +21,6 @@ import { Recipe, User, recipes } from "../data";
 import { DrawerActions } from "@react-navigation/routers";
 
 import { getRecipeThumbnail } from "../data";
-import { ScreenContainer } from "react-native-screens";
-import { receiveMessageOnPort } from "node:worker_threads";
 
 import { Scheduler } from "../scheduler";
 
@@ -87,8 +85,7 @@ export function SessionStart({ navigation, route }: Props) {
         <Text style={{fontSize: 20, margin: 50, justifyContent: "center",}}> Inget recept valt </Text>
         </View>
       )
-    }
-    else{
+    } else {
       return (
         <View style={{alignItems: "center", justifyContent: "space-between"}}>
         <Text style={{fontSize: 20, margin: 10}}>{recipe.name}</Text>

@@ -2,11 +2,19 @@
 import gräddtårta from "../../data/recipes/gräddtårta.json";
 import ikeaköttbullar_med_snabbmakaroner from "../../data/recipes/ikeaköttbullar_med_snabbmakaroner.json";
 import ugnspannkaka from "../../data/recipes/ugnspannkaka.json";
+import chokladbiskvier from "../../data/recipes/chokladbiskvier.json";
+import auberginegratäng from "../../data/recipes/auberginegratäng.json";
+import mexikans_bönsallad from "../../data/recipes/mexikans_bönsallad.json";
+import lasagne from "../../data/recipes/lasagne.json";
 
 export const recipes = [
   gräddtårta,
   ikeaköttbullar_med_snabbmakaroner,
   ugnspannkaka,
+  chokladbiskvier,
+  auberginegratäng,
+  mexikans_bönsallad,
+  lasagne,
 ];
 
 export type IngredientDecl = {

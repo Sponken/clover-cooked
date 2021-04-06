@@ -239,6 +239,9 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     alignItems: "center",
+
+    // Förhindrar text från att komma utanför lådan
+    paddingRight: 30,
   },
   userName: {
     fontWeight: "bold",
@@ -260,6 +263,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   bigText: {
+    paddingTop: 5,
+    lineHeight: 25,
     fontSize: 25,
     fontWeight: "600",
   },

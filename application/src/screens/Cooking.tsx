@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
     width: "95%",
   },
   spacingWithNoContent: {
-    height: "12%",
+    height: "6%",
   },
   minimizedTasksFlatListContainer: {
     width: "95%",

@@ -8,6 +8,8 @@ import {
   Pressable
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 import React, { useState } from "react";
 
@@ -86,8 +88,7 @@ export function SessionStart({ navigation, route }: Props) {
       return(
         <StandardText text={"Inget recept valt"}/>
       )
-    }
-    else{
+    } else {
       return (
         <View>
           <StandardText text={recipe.name}/>

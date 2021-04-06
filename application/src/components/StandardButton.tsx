@@ -54,7 +54,7 @@ export function StandardButton({ ...props }: StandardButtonProps) {
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    padding: 10,
+    padding: 15,
     borderRadius: 8,
     borderWidth: 1.5,
     borderColor: primaryColor,

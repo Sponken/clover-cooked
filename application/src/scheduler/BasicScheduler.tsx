@@ -139,33 +139,12 @@ export function createBasicScheduler(recipe: Recipe,
  * @timeLeft Tid i minuter tills task förväntas vara färdigt
  */
 function startPassiveTask(timeLeft: number, scheduler: Scheduler, task: TaskID) {
-  //const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
   console.log("NEW PASSIVE TASK STARTED: " + task + " for " + new String(timeLeft));
   const finish = new Date(Date.now() + timeLeft*MINUTE)
   const timeout = setTimeout(() => scheduler.checkPassiveTaskFinished(task), timeLeft*MINUTE)
   scheduler.currentPassiveTasks.set(task, {finish: finish, timeout: timeout});
   
   scheduler.passiveTaskStartedSubscribers.forEach((fn) => fn(task, new Date(finish)));
-
-  /*
-  wait(timeLeft*1000).then(() => {
-    let ext = scheduler.extended.get(task);
-    if (ext) {
-      if (ext[0] == ext[1]) {
-        console.log("COMPLETED PASSIVE TASK: " + task);
-        scheduler.completedTasks.push(task);
-        
-        scheduler.currentPassiveTasks.delete(task);
-        scheduler.passiveTaskFinishedSubscribers.forEach((fn) => fn(task));
-        // När en passiv task är klar kan nya tasks bli tillgängliga. Fördela dem.
-        assignTasks(scheduler);
-      } else {
-        let new_values: [number, number] = [ext[0] + 1, ext[1]];
-        scheduler.extended.set(task, new_values);
-      }
-    }
-  });*/
 }
 
 let getDependencyMaps = (recipe: Recipe): [Map<TaskID, TaskID[]>, Map<TaskID, TaskID[]>] => {

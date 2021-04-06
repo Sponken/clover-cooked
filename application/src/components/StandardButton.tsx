@@ -13,19 +13,21 @@ type StandardButtonProps = {
 export function StandardButton({ ...props }: StandardButtonProps) {
   let buttonBackgroundColor;
   let buttonBackgroundColorPressed;
-  let buttonBorderWidth;
   let buttonTextColor;
+  let buttonBorderColor;
 
   switch (props.buttonType ?? "primary"){
     case "primary":
-      buttonBackgroundColor = primaryColorVariant;
-      buttonBackgroundColorPressed = primaryColor;
+      buttonBackgroundColorPressed = primaryColorVariant;
+      buttonBackgroundColor = primaryColor;
       buttonTextColor = "white";
+      buttonBorderColor= primaryColor;
       break;
     case "secondary":
-      buttonBackgroundColor = "lightgrey";
-      buttonBackgroundColorPressed = "white";
+      buttonBackgroundColorPressed = "lightgrey";
+      buttonBackgroundColor = "white";
       buttonTextColor = "primary";
+      buttonBorderColor = primaryColor;
       break;
   }
 
@@ -34,10 +36,10 @@ export function StandardButton({ ...props }: StandardButtonProps) {
       <Pressable onPress={props.onPress}>
         {({ pressed }) => {
           let buttonColor = pressed
-            ? { backgroundColor: buttonBackgroundColor }
-            : { backgroundColor: buttonBackgroundColorPressed };
+            ? { backgroundColor: buttonBackgroundColorPressed }
+            : { backgroundColor: buttonBackgroundColor };
           return (
-            <View style={[styles.buttonStyle, buttonColor]}>
+            <View style={[styles.buttonStyle, buttonColor, {borderColor: buttonBorderColor}]}>
               <StandardText
                 size="medium"
                 color={buttonTextColor}
@@ -57,7 +59,6 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     borderWidth: 1.5,
-    borderColor: primaryColor,
     alignItems: "center",
     justifyContent: "center",
     // iOS shadow

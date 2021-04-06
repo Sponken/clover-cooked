@@ -4,7 +4,6 @@ import {
   Image,
   View,
   Modal,
-  SafeAreaView,
   Pressable
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
@@ -90,7 +89,7 @@ export function SessionStart({ navigation, route }: Props) {
       )
     } else {
       return (
-        <View>
+        <View style={styles.recipeContainer}>
           <StandardText text={recipe.name}/>
           <Image
           style={styles.recipeImage}
@@ -157,16 +156,15 @@ export function SessionStart({ navigation, route }: Props) {
         </Pressable>
         <View style={styles.topContainerSpace}></View>
         <Pressable
-          style={styles.deleteSession}
           onPress={() =>{{
-            setDeleteSessionModalVisible(true)
-            }} 
-          }>
-          <Text style={{color: "white", fontWeight: "bold"}}>Avbryt</Text>
+            setDeleteSessionModalVisible(true)}}}>
+            <View style={styles.deleteSession}>
+          <Text style={{color: "white", fontWeight: "bold"}}>Radera</Text>
+          </View>
         </Pressable>
       </View>
 
-      <View style={styles.recipeContainer}>
+      <View style={styles.allRecipesContainer}>
         <PrintRecipe />
       </View>
 
@@ -262,24 +260,39 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
-    backgroundColor: "red",
+    backgroundColor: "#ed4040",
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    // Android shadow
+    elevation: 4,
   },
-  recipeContainer:{
+  allRecipesContainer:{
     alignItems: "center",
     justifyContent: "center",
-    height: "30%",
+    height: "25%",
+    margin: 10,
+  },
+  recipeContainer:{
+    width: "80%",
   },
   recipeImage:{
-    height: 150, 
-    width: 300, 
+    height: "80%", 
+    width: "90%", 
     borderRadius: 10,
     alignSelf:"center",
-    marginTop:20,
+    marginTop:8,
   },
   chefsContainer:{ 
     height: "50%",
+    width: "80%",
+    alignSelf: "center",
     justifyContent: "center",
-    backgroundColor:"green" 
   },
     
   chefImageInList: {
@@ -296,16 +309,16 @@ const styles = StyleSheet.create({
     width: 30,
   },
   canBePressed: {
-    height: 70,
-    width: 250,
+    height: 60,
+    width: 230,
     alignItems: "center",
     borderRadius: 10,
     backgroundColor: "#186C3B",
     flexDirection: "row",
   },
   cannotBePressed: {
-    height: 70,
-    width: 250,
+    height: 60,
+    width: 230,
     alignItems: "center",
     borderRadius: 10,
     backgroundColor: "gray",

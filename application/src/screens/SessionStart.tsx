@@ -39,15 +39,6 @@ type Props = {
 };
 
 // Exempelkod för att matlagnings skärmen skall fungera
-const example_recipe = recipes[0];
-const example_users = [
-  {
-    id: "1",
-    name: "Test User",
-    color: "blue",
-    icon: require("../../assets/image/chefHatSmall.png"),
-  }
-];
 
 /**
  * Skärm för att starta matlagningen, du har valt recept innan denna
@@ -64,7 +55,7 @@ export function SessionStart({ navigation, route }: Props) {
   
   let recipe: Recipe;
   const [recipeInSession, setRecipeInSession] = useState<Recipe>()
-  let users: User[];
+  let users: User[] = [];
   const [recipeActivated, setRecipeActivated] = useState(false);
 
   //modal poppar upp som "är du säker på att du vill deleta denna session?"
@@ -72,7 +63,6 @@ export function SessionStart({ navigation, route }: Props) {
 
   //Initiera users och recipe om de inte finns
   if(route.params?.users === undefined){
-    users = example_users;
   } else {users = route.params?.users}
 
   if(route.params?.recipe === undefined){

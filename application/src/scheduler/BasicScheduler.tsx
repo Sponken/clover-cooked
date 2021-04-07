@@ -139,33 +139,12 @@ export function createBasicScheduler(recipe: Recipe,
  * @timeLeft Tid i minuter tills task förväntas vara färdigt
  */
 function startPassiveTask(timeLeft: number, scheduler: Scheduler, task: TaskID) {
-  //const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
   console.log("NEW PASSIVE TASK STARTED: " + task + " for " + new String(timeLeft));
   const finish = new Date(Date.now() + timeLeft*MINUTE)
   const timeout = setTimeout(() => scheduler.checkPassiveTaskFinished(task), timeLeft*MINUTE)
   scheduler.currentPassiveTasks.set(task, {finish: finish, timeout: timeout});
   
   scheduler.passiveTaskStartedSubscribers.forEach((fn) => fn(task, new Date(finish)));
-
-  /*
-  wait(timeLeft*1000).then(() => {
-    let ext = scheduler.extended.get(task);
-    if (ext) {
-      if (ext[0] == ext[1]) {
-        console.log("COMPLETED PASSIVE TASK: " + task);
-        scheduler.completedTasks.push(task);
-        
-        scheduler.currentPassiveTasks.delete(task);
-        scheduler.passiveTaskFinishedSubscribers.forEach((fn) => fn(task));
-        // När en passiv task är klar kan nya tasks bli tillgängliga. Fördela dem.
-        assignTasks(scheduler);
-      } else {
-        let new_values: [number, number] = [ext[0] + 1, ext[1]];
-        scheduler.extended.set(task, new_values);
-      }
-    }
-  });*/
 }
 
 let getDependencyMaps = (recipe: Recipe): [Map<TaskID, TaskID[]>, Map<TaskID, TaskID[]>] => {
@@ -210,9 +189,12 @@ function getSubscribeFunction<FunctionType>(subList: FunctionType[]) {
 
 /**
  * Hittar alla tasks som är möjliga att utföra
+ * Returnerar två listor. Den första listan innehållar alla passiva tasks som bör påbörjas,
+ * den andra innehåller alla andra tasks som kan fördelas, i olika listor. Tasksen i varje lista har samma 
+ * prioritet, där de i den första bör göras först
  */
 function getEligibleTasks(
-  scheduler: Scheduler): [TaskID[], TaskID[]] {
+  scheduler: Scheduler): [TaskID[], TaskID[][]] {
   let recipe: Recipe = scheduler.recipe
   let completedTasks: TaskID[] = scheduler.completedTasks
   let currentTasks: TaskID[] = Array.from(scheduler.currentTasks.values())
@@ -220,7 +202,8 @@ function getEligibleTasks(
     
   let eligibleTasks: TaskID[] = [];
   let strongEligibleTasks: TaskID[] = [];
-  let passiveEligibleTasks: TaskID[] = []
+  let passiveEligibleTasks: TaskID[] = [];
+  let initialEligibleTasks: TaskID[] = []; //De initiala tasksen ska fördelas först och behöver därför hållas koll på separat
   let [depMap, strongDepMap] = getDependencyMaps(recipe);
 
   for (const task of recipe.tasks) {
@@ -234,13 +217,19 @@ function getEligibleTasks(
       passiveEligibleTasks.push(task.id)
       continue;
     }
+    if (task.initalTask){
+      initialEligibleTasks.push(task.id)
+      continue
+    }
     if (strongDepMap.get(task.id) != []) {
       strongEligibleTasks.push(task.id)
       continue
     }
     eligibleTasks.push(task.id);
   }
-  return [passiveEligibleTasks,(strongEligibleTasks.length > 0 ? strongEligibleTasks : eligibleTasks)]
+
+
+  return [passiveEligibleTasks, [initialEligibleTasks, strongEligibleTasks, eligibleTasks]]
 }
 
 
@@ -248,8 +237,9 @@ function getEligibleTasks(
 // Annars ta första möjliga uppgiften på den mest kritiska pathen 
 function assignTasks(scheduler: Scheduler, cook?: CookID) {
 
-  let [depMap, strongDepMap] = getDependencyMaps(scheduler.recipe);
-  let [passiveTasks, eligibleTasks] = getEligibleTasks(scheduler);
+  let passiveTasks: TaskID[]
+  let eligibleTasks: TaskID[][]
+  [passiveTasks, eligibleTasks] = getEligibleTasks(scheduler);
 
   // Starta alla passiva tasks som är möjliga
   for (const passiveTask of passiveTasks) {
@@ -258,6 +248,22 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
     startPassiveTask(real_task.estimatedTime, scheduler, passiveTask);
   }
   
+
+  for (const tasks of eligibleTasks) {
+    prioritizeAndAssignTasks(scheduler, tasks, cook)
+  }
+
+
+
+}
+
+
+
+// Tilldelar givna uppgifter. Försöker först tilldela till kock som jobbar på branchen, sedan för att minimera tiden
+function prioritizeAndAssignTasks(scheduler: Scheduler, eligibleTasks: TaskID[], cook?: CookID) {
+  let [depMap, strongDepMap] = getDependencyMaps(scheduler.recipe);
+
+
   // Kolla om några möjliga tasks har dependencies som precis avslutades
   let lastCompletedTask: TaskID = scheduler.completedTasks[scheduler.completedTasks.length-1]
   let cond = (eTask: TaskID) => strongDepMap.get(eTask)?.includes(lastCompletedTask) || depMap.get(eTask)?.includes(lastCompletedTask)
@@ -268,8 +274,9 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
   let rest = eligibleTasks.filter(eTask => !cond(eTask))
   let paths = findCriticalPathTasks(scheduler.recipe, rest);
   assignGivenTasks(scheduler, paths, cook);
-
 }
+
+
 
 function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], priorityCook?: CookID) {
   let cooks = vacantCooks(scheduler);

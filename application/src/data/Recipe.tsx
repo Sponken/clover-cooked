@@ -44,6 +44,7 @@ export type Task = {
   name: string;
   instructions: string;
   passive?: boolean;
+  initalTask?: boolean;
   ingredients: IngredientUsage[];
   resources: ResourceUsage[];
   estimatedTime: number;

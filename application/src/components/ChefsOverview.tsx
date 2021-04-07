@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { User } from "../data";
+import { StandardText } from "./StandardText";
 
 type ChefListProps = {
   users: User[];
@@ -24,69 +25,34 @@ export function ChefsOverview({ users, nav, recipeActivated }: ChefListProps) {
   //TODO, store chefs somewhere? History? Like Smash Bros
 
   return (
-    <View style={{}}>
+    <View>
       <FlatList
         data={[...users, { id: "editChef" }]}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           if (item.id === "editChef" && !recipeActivated) {
             return (
-              <TouchableOpacity
-                style={styles.editChefsButton}
-                onPress={() =>
-                  nav.navigate("ChefManagement", {
-                    users,
-                  })
-                }
-              >
-                <View style={styles.rowInfoContainer}>
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: "flex-start",
-                      flexDirection: "row",
-                      // backgroundColor: "red",
-                    }}
-                  >
-                    <Image
-                      style={{
-                        margin: 0,
-                        marginLeft: 13,
-                        height: 75,
-                        width: 75,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        borderRadius: 100 * 2,
-                      }}
-                      source={require("../../assets/image/editChef.png")} //TODO: chef.image
-                      // check chef.color to decide color of border
-                    />
+              <View style={styles.flatListItemContainer}>
+                <TouchableOpacity
+                  style={styles.editChefButton}
+                  onPress={() =>
+                    nav.navigate("ChefManagement", {
+                      users,
+                    })
+                  }
+                >
+                  <Image
+                    style={styles.editChefsIcon}
+                    source={require("../../assets/image/editChef.png")}
+                  />
+                  <View style={styles.editChefsTextContainer}>
+                    <StandardText text={"Redigera kockar"} />
                   </View>
-                  <View
-                    style={{
-                      flex: 2.5,
-                      alignItems: "center",
-                      flexDirection: "row",
-                      height: 75,
-                      // backgroundColor: "red",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        alignItems: "flex-start",
-                        justifyContent: "center",
-                        flex: 1,
-                        fontSize: 18,
-                      }}
-                    >
-                      Redigera kockar
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
+              </View>
             );
           }
-          return <ListRow chef={item} />; //remove chef/edit chef instead?
+          return <ChefItem chef={item} />; //remove chef/edit chef instead?
         }}
       />
     </View>
@@ -101,28 +67,19 @@ type ListRowProps = {
  * Listans rader
  * https://reactnative.dev/docs/image
  */
-const ListRow = ({ chef }: ListRowProps) => {
+const ChefItem = ({ chef }: ListRowProps) => {
   let userImage = (
     <Image
-      style={styles.chefImageInList}
-      source={require("../../assets/image/favicon.png")} //TODO: chef.image
-      // check chef.color to decide color of border
+      style={{ width: 80, height: 80 }}
+      source={require("../../assets/image/favicon.png")}
     />
   );
 
   let defaultImage = (
     <TouchableOpacity
-      style={{
-        margin: 0,
-        height: 100,
-        width: 100,
-        backgroundColor: chef.color, //userColor,
-        alignItems: "center",
-        justifyContent: "center",
-        borderRadius: 100 * 2,
-      }}
+      style={[styles.chefIcon, { backgroundColor: chef.color }]}
     >
-      <Text style={{ color: "white", fontSize: 20 }}>{chef.name}</Text>
+      <StandardText text={chef.name} color="white" size={"small"} />
     </TouchableOpacity>
   );
 
@@ -134,80 +91,66 @@ const ListRow = ({ chef }: ListRowProps) => {
   }*/
 
   return (
-    <View style={styles.row}>
-      <View style={styles.rowInfoContainer}>
-        <View
-          style={{
-            flex: 1,
-            alignItems: "flex-start",
-            flexDirection: "row",
-          }}
-        >
-          {userCircleView}
-          {/* {<Text style={styles.name}>{chef.name}</Text>} */}
-        </View>
-        {/* Färg på namn beroende på deras färg? Hur syns den ifall personen har bild annars?*/}
-        {/* <Text style={styles.name}>{chef.name}</Text> */}
+    <View style={styles.flatListItemContainer}>
+      <View style={styles.chefItemContainer}>
+        {userCircleView}
+        {/* <Text>[Chef's next task]</Text> */}
       </View>
-      {/* <Text style={{ alignItems: "center", fontSize: 24 }}>{chef.name}</Text> */}
-
-      {/* <Text style={styles.quickView}>[Chef's next task]</Text> */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  row: {
+  flatListItemContainer: {
+    flex: 1,
     flexDirection: "row",
-    flexShrink: 1,
     alignItems: "center",
-    paddingVertical: 10,
-    paddingLeft: 10,
-    paddingRight: 20,
-    // backgroundColor: "#FFFFFF",
-    borderRadius: 10,
-
-    // // iOS shadow
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.23,
-    // shadowRadius: 2.62,
-    // // Android shadow
-    // elevation: 4,
+    paddingVertical: 7,
+    paddingHorizontal: 20,
   },
-  rowInfoContainer: {
-    flex: 1,
+  chefItemContainer: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    marginLeft: 10,
-    marginTop: 2,
+    flex: 1,
   },
-  chefImageInList: {
-    marginLeft: 20,
-    width: 80,
+  chefIcon: {
     height: 80,
-    flex: 1,
-  },
-  editChefsButton: {
-    flexDirection: "row",
-    flexShrink: 1,
-    alignItems: "flex-start",
-    justifyContent: "flex-start",
-    paddingVertical: 10,
-    paddingLeft: 10,
-    paddingRight: 20,
-    // backgroundColor: "red",
-    borderRadius: 10,
-  },
-  quickView: {
-    flex: 1,
+    width: 80,
+    borderRadius: 100,
+    alignItems: "center",
     justifyContent: "center",
-    alignItems: "flex-start",
+    //backgroundColor: chef.color, //userColor,
+  },
+  editChefButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 50,
+    height: 70,
     marginLeft: 5,
-    fontSize: 18,
+    backgroundColor: "#d6d6d6", //"#a4a4a4",
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    // Android shadow
+    elevation: 4,
+  },
+  editChefsIcon: {
+    height: 65,
+    width: 65,
+    borderRadius: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 5,
+  },
+  editChefsTextContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 20,
+    marginRight: 40,
   },
 });
 

@@ -12,15 +12,16 @@ export type StandardTextProps = {
   size?: "small" | "medium" | "large",
   text?: string,
   color?: "primary" | "secondary" | "black" | "white",
-  colorValue?: ColorValue 
-  textWeight?: "normal" | "bold" | "lighter"
+  colorValue?: ColorValue ,
+  textWeight?: "normal" | "bold" | "lighter",
+  textNumbOfLines?: number,
 };
 
 export function StandardText({ ...props }: StandardTextProps) {
   let sizeStyle;
   switch(props.size ?? "medium"){
     case "small":
-      sizeStyle = {fontSize: 12};
+      sizeStyle = {fontSize: 15};
       break;
     case "medium":
       sizeStyle = {fontSize: 22};
@@ -53,15 +54,24 @@ export function StandardText({ ...props }: StandardTextProps) {
     }
 
   let weightStyle = {fontWeight: props.textWeight ?? "normal"}
-
+  
+  let numbOfLines;
+  if( props.textNumbOfLines == undefined){
+    numbOfLines = 1;
+  }
+  else{
+    let numbOfLines=props.textNumbOfLines;
+  }
+  
   return (
-    <Text style={[sizeStyle, colorStyle, weightStyle, styles.textStyle]}>{props.text}</Text>
+    <Text numberOfLines={numbOfLines} style={[sizeStyle, colorStyle, weightStyle, styles.textStyle]}>{props.text}</Text>
   );
 }
 
 const styles = StyleSheet.create({
   textStyle: {
     //fontFamily: 'cursive',
-    alignSelf: "center"
+    alignSelf: "center",
+
   },
 });

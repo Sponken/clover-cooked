@@ -6,7 +6,8 @@ import { primaryColor, primaryColorVariant } from "./Colors";
 type StandardButtonProps = {
   onPress: () => void,
   buttonText?: string,
-  buttonType?: "primary" | "secondary",
+  buttonType?: "primary" | "secondary" | "grey",
+  buttonSize?: "normal" | "small",
   textProps?: StandardTextProps,
 };
 
@@ -29,8 +30,25 @@ export function StandardButton({ ...props }: StandardButtonProps) {
       buttonTextColor = "primary";
       buttonBorderColor = primaryColor;
       break;
+    case "grey":
+      buttonBackgroundColorPressed = "#828282";
+      buttonBackgroundColor = "#a1a1a1";
+      buttonTextColor = "white";
+      buttonBorderColor = "#a1a1a1";
   }
 
+  let buttonsSize;
+  let buttonTextSize;
+  switch (props.buttonSize ?? "normal"){
+    case "normal":
+      buttonsSize = {padding: 15,};
+      buttonTextSize= "medium";
+      break;
+  case "small":
+    buttonsSize = {padding: 6,};
+    buttonTextSize = "SM";
+    break;
+  }
   return (
     <View>
       <Pressable onPress={props.onPress}>
@@ -39,9 +57,9 @@ export function StandardButton({ ...props }: StandardButtonProps) {
             ? { backgroundColor: buttonBackgroundColorPressed }
             : { backgroundColor: buttonBackgroundColor };
           return (
-            <View style={[styles.buttonStyle, buttonColor, {borderColor: buttonBorderColor}]}>
+            <View style={[styles.buttonStyle, buttonColor, buttonsSize, {borderColor: buttonBorderColor}]}>
               <StandardText
-                size="medium"
+                size={buttonTextSize}
                 color={buttonTextColor}
                 {...props.textProps}
                 text={props.buttonText}
@@ -56,7 +74,6 @@ export function StandardButton({ ...props }: StandardButtonProps) {
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    padding: 15,
     borderRadius: 8,
     borderWidth: 1.5,
     alignItems: "center",

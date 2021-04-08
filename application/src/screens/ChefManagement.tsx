@@ -1,10 +1,6 @@
 import {
   StyleSheet,
-  Text,
-  Image,
   View,
-  TouchableOpacity,
-  Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
@@ -14,6 +10,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation";
 import { User } from "../data";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Alert } from "react-native";
 
 
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
@@ -35,6 +32,15 @@ export function ChefManagement({ navigation, route }: Props) {
 
   const [users, setUsers] = useState<User[]>(route.params?.users);
 
+  function onSubmit(){
+    if(users.some(u => u.name === "")){
+      Alert.alert('Fel', 'Alla kockar måste ha ett namn')
+      return
+    }
+    navigation.navigate("SessionStart", {users})
+  }
+  
+
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.titleContainer}>
@@ -45,7 +51,7 @@ export function ChefManagement({ navigation, route }: Props) {
         </View>
       <View style={styles.buttonContainer}>
       <StandardButton
-        onPress={() => {navigation.navigate("SessionStart", {users})}}
+        onPress={() => onSubmit()}
         buttonText="Spara"
         textProps={{textWeight:"bold"}}
         />

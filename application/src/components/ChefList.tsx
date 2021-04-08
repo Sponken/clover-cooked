@@ -41,7 +41,7 @@ export function ChefList({ chefList, setChefList }: ChefListProps) {
                 ...chefList,
                 {
                   id: Date.now().toString(),
-                  name: "Ny kock",
+                  name: "",
                   color: "#5884E0", // TODO: randomize color from e.g. 8 ones, or always take the 4 ones that work best first
                   icon: require("../../assets/image/chefHatSmall.png"),
                 },
@@ -144,6 +144,7 @@ const ChefItem = ({ chef, chefList, setChefList }: ChefItemProps) => {
       <View style={styles.nameContainer}>
         <TextInput
           style={styles.nameText}
+          placeholder="Skriv ditt namn..."
           defaultValue={chef.name}
           onChangeText={(name) => {
             setChefList(

@@ -8,25 +8,33 @@ import {
 } from "../utils";
 
 const TIME_FINSIHED_TEXT = "Klar";
-const ICON_SIZE = 33;
-const NOTIFICATTION_DOT_SIZE = ICON_SIZE / 3;
+const SMALL_ICON_SIZE = 33;
+const SMALL_NOTIFICATTION_DOT_SIZE = SMALL_ICON_SIZE / 3;
+const LARGE_ICON_SIZE = 60;
+const LARGE_NOTIFICATTION_DOT_SIZE = LARGE_ICON_SIZE / 3;
+
 
 type Props = {
   onPress?: () => void;
   finish: Date | undefined;
   displayRemainingTime: "hidden" | "shown" | "hiddenUntilLow";
+  size?: "small" | "large";
 };
 
 export const CookingTimer = ({
   onPress: onPressArg,
   finish: finishArg,
   displayRemainingTime: displayRemainingTimeArg,
+  size: sizeArg,
 }: Props) => {
   if (finishArg) {
     const [onPress, setOnPress] = useState(() => onPressArg);
     const [finish, setFinish] = useState(finishArg);
     const [displayRemainingTime, setDisplayRemainingTime] = useState(
       displayRemainingTimeArg
+    );
+    const [size, setSize] = useState(
+      sizeArg ?? "small"
     );
 
     // Uppdaterar värdena om argumenten förändrass från parent komponent
@@ -35,6 +43,7 @@ export const CookingTimer = ({
     useEffect(() => setDisplayRemainingTime(displayRemainingTimeArg), [
       displayRemainingTimeArg,
     ]);
+    useEffect(() => setSize(sizeArg ?? "small"), [sizeArg]);
 
     const [timeText, setTimeText] = useState("");
     const [timerFinished, setTimerFinished] = useState(false);
@@ -89,10 +98,10 @@ export const CookingTimer = ({
         <View>
           <Image
             source={require("../../assets/image/time_icon.png")}
-            style={styles.icon}
+            style={size === "large" ? styles.largeIcon : styles.smallIcon}
           ></Image>
           <View style={styles.notificationContainer}>
-            <Notification visable={timerFinished} />
+            <Notification visable={timerFinished} size={size} />
           </View>
         </View>
         <Text>{timeText}</Text>
@@ -105,12 +114,13 @@ export const CookingTimer = ({
 
 type NotificationProps = {
   visable: boolean;
+  size: "small" | "large";
 };
 
-const Notification = ({ visable }: NotificationProps) => (
+const Notification = ({ visable, size }: NotificationProps) => (
   <View
     style={[
-      styles.notificationDot,
+      size === "large" ? styles.largeNotificationDot : styles.smallNotificationDot,
       visable ? styles.notificationDotVisable : styles.notificationDotInvisable,
     ]}
   />
@@ -132,19 +142,29 @@ export const finishTimeText = (finish: Date) =>
 
 const styles = StyleSheet.create({
   container: { alignItems: "center" },
-  icon: {
-    height: ICON_SIZE,
-    width: ICON_SIZE,
+  smallIcon: {
+    height: SMALL_ICON_SIZE,
+    width: SMALL_ICON_SIZE,
   },
   notificationContainer: {
     position: "absolute",
     right: 0,
     top: 0,
   },
-  notificationDot: {
-    borderRadius: NOTIFICATTION_DOT_SIZE / 2,
-    width: NOTIFICATTION_DOT_SIZE,
-    height: NOTIFICATTION_DOT_SIZE,
+  smallNotificationDot: {
+    borderRadius: SMALL_NOTIFICATTION_DOT_SIZE / 2,
+    width: SMALL_NOTIFICATTION_DOT_SIZE,
+    height: SMALL_NOTIFICATTION_DOT_SIZE,
+    overflow: "hidden",
+  },
+  largeIcon: {
+    height: LARGE_ICON_SIZE,
+    width: LARGE_ICON_SIZE,
+  },
+  largeNotificationDot: {
+    borderRadius: LARGE_NOTIFICATTION_DOT_SIZE / 2,
+    width: LARGE_NOTIFICATTION_DOT_SIZE,
+    height: LARGE_NOTIFICATTION_DOT_SIZE,
     overflow: "hidden",
   },
   notificationDotVisable: {

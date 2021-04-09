@@ -1,11 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  Pressable,
-  Image,
-  Modal,
-  Text,
-} from "react-native";
+import { StyleSheet, View, Pressable, Image, Modal, Text } from "react-native";
 import React, { useState, useEffect } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
@@ -19,6 +12,8 @@ import {
   CookingTimer,
   CookingTimerOverview,
   TaskConfirmType,
+  StandardText,
+  StandardButton,
 } from "../components";
 import { User } from "../data";
 import { unsafeFind, undefinedToBoolean } from "../utils";
@@ -228,6 +223,21 @@ export function Cooking({ navigation, route }: Props) {
     );
   }
 
+  /*//om det bara finns en enda user så syns den inte, men om flera så syns alla
+  let printUsers = <></>;
+  if (users.length > 1) {
+    printUsers = (
+      <UserFastSwitcher
+        users={users}
+        activeUser={activeUser}
+        userNotifications={userNotifications}
+        onActiveUserSwitch={(userId: string) => {
+          setActiveUser(userId);
+        }}
+      />
+    );
+  }*/
+
   //skapar en lista av alla task (ev passiva o ev aktiva) som ska visas som minimized
   let minimizedTasks: string[] = [...visiblePassiveTasks];
   const userTask = assignedTasks.get(activeUser);
@@ -380,6 +390,7 @@ export function Cooking({ navigation, route }: Props) {
         </Modal>
         <View style={styles.topBarContainer}>
           <View style={{ flex: 1, flexDirection: "column-reverse" }}>
+            {/*printUsers*/}
             <UserFastSwitcher
               users={users}
               activeUser={activeUser}
@@ -390,9 +401,15 @@ export function Cooking({ navigation, route }: Props) {
             />
           </View>
           <View style={styles.topBarRightMenu}>
-            <Pressable onPress={() => navigation.navigate("SessionStart")}>
+            {/* <StandardButton
+              buttonText={"Avbryt"}
+              buttonType={"grey"}
+              buttonSize={"small"}
+              onPress={() => navigation.navigate("SessionStart")}
+            /> */}
+            {/*<Pressable onPress={() => navigation.navigate("SessionStart")}>
               <Image
-                source={require("../../assets/image/editChef.png")} //Placeholder tills ikon finns
+                source={require("../../assets/image/editChef.png")}
                 style={styles.topBarRightMenuIcon}
               />
             </Pressable>
@@ -401,7 +418,7 @@ export function Cooking({ navigation, route }: Props) {
                 source={require("../../assets/image/icon.png")} // TODO: Placeholder tills ikon finns
                 style={styles.topBarRightMenuIcon}
               />
-            </Pressable>
+            </Pressable>*/}
           </View>
         </View>
         <View style={styles.contentContainer}>
@@ -423,7 +440,8 @@ export function Cooking({ navigation, route }: Props) {
             <CookingTimer
               onPress={() => setTimerModalVisible(true)}
               finish={earliestTimer}
-              displayRemainingTime={"hiddenUntilLow"}
+              displayRemainingTime="shown"
+              size="large"
             />
           </View>
         </View>
@@ -455,7 +473,8 @@ const styles = StyleSheet.create({
   },
   topBarRightMenu: {
     flexDirection: "column",
-    alignSelf: "flex-end",
+    //alignSelf: "flex-end", //det här är bara temp när vi har en avbryt knapp istället
+    margin: 15, //det här är bara temp när vi har en avbryt knapp istället
   },
   topBarRightMenuIcon: {
     width: 44,
@@ -479,8 +498,8 @@ const styles = StyleSheet.create({
   },
   timerContainer: {
     position: "absolute",
-    top: 5,
-    right: 5,
+    top: 2,
+    right: 2,
   },
   buttonContainer: {
     height: 100,

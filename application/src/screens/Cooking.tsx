@@ -440,7 +440,8 @@ export function Cooking({ navigation, route }: Props) {
             <CookingTimer
               onPress={() => setTimerModalVisible(true)}
               finish={earliestTimer}
-              displayRemainingTime={"hiddenUntilLow"}
+              displayRemainingTime="shown"
+              size="large"
             />
           </View>
         </View>
@@ -497,8 +498,8 @@ const styles = StyleSheet.create({
   },
   timerContainer: {
     position: "absolute",
-    top: 5,
-    right: 5,
+    top: 2,
+    right: 2,
   },
   buttonContainer: {
     height: 100,

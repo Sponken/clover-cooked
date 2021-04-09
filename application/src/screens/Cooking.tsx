@@ -401,12 +401,12 @@ export function Cooking({ navigation, route }: Props) {
             />
           </View>
           <View style={styles.topBarRightMenu}>
-            <StandardButton
+            {/* <StandardButton
               buttonText={"Avbryt"}
               buttonType={"grey"}
               buttonSize={"small"}
               onPress={() => navigation.navigate("SessionStart")}
-            />
+            /> */}
             {/*<Pressable onPress={() => navigation.navigate("SessionStart")}>
               <Image
                 source={require("../../assets/image/editChef.png")}

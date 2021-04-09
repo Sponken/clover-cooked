@@ -6,6 +6,7 @@ import chokladbiskvier from "../../data/recipes/chokladbiskvier.json";
 import auberginegratäng from "../../data/recipes/auberginegratäng.json";
 import mexikans_bönsallad from "../../data/recipes/mexikans_bönsallad.json";
 import lasagne from "../../data/recipes/lasagne.json";
+import testfil from "../../data/recipes/testfil.json";
 
 export const recipes = [
   gräddtårta,
@@ -15,6 +16,7 @@ export const recipes = [
   auberginegratäng,
   mexikans_bönsallad,
   lasagne,
+  testfil,
 ];
 
 export type IngredientDecl = {

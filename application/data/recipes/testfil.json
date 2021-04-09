@@ -1,0 +1,94 @@
+{
+  "id": "fil",
+  "name": "Testfil",
+  "description": "Fattar du, fil?",
+  "portions": 1,
+  "ingredients": [
+    { "id": "ägg", "name": "ägg", "unit": "st" },
+    { "id": "socker", "name": "socker", "unit": "dl" },
+    { "id": "mandelmassa", "name": "mandelmassa", "unit": "g" },
+    { "id": "smör", "name": "smör", "unit": "g" },
+    { "id": "florsocker", "name": "florsocker", "unit": "dl" },
+    { "id": "kakao", "name": "kakao", "unit": "msk" },
+    { "id": "choklad", "name": "blockchoklad", "unit": "g" }
+  ],
+  "resources": [],
+  "tasks": [
+    {
+      "id": "start",
+      "name": "YEP",
+      "instructions": "Klicka start och sen på timern",
+      "estimatedTime": 1,
+      "finalTask": true,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "gräddas1",
+      "name": "namn1",
+      "instructions": "besk1",
+      "passive": true,
+      "estimatedTime": 0.05,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "gräddas2",
+      "name": "namn2",
+      "instructions": "besk2",
+      "passive": true,
+      "estimatedTime": 0.05,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "gräddas3",
+      "name": "namn3",
+      "instructions": "besk3",
+      "passive": true,
+      "estimatedTime": 0.05,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "gräddas4",
+      "name": "namn4",
+      "instructions": "besk4",
+      "passive": true,
+      "estimatedTime": 0.05,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "slut",
+      "name": "YEP",
+      "instructions": "instruktioner",
+      "estimatedTime": 1,
+      "finalTask": true,
+      "ingredients": [],
+      "resources": []
+    }
+  ],
+  "taskDependencies": [
+    {
+      "taskId": "slut",
+      "dependsOn": ["gräddas1", "gräddas2", "gräddas3", "gräddas4"]
+    },
+    {
+      "taskId": "gräddas1",
+      "dependsOn": ["start"]
+    },
+    {
+      "taskId": "gräddas2",
+      "dependsOn": ["start"]
+    },
+    {
+      "taskId": "gräddas3",
+      "dependsOn": ["start"]
+    },
+    {
+      "taskId": "gräddas4",
+      "dependsOn": ["start"]
+    }
+  ]
+}

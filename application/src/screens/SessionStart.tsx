@@ -63,6 +63,12 @@ export function SessionStart({ navigation, route }: Props) {
 
   //Initiera users och recipe om de inte finns
   if(route.params?.users === undefined){
+    users = [{
+      id: Date.now().toString(),
+      name: "Kock 1",
+      color: "#5884E0", // TODO: randomize color from e.g. 8 ones, or always take the 4 ones that work best first
+      icon: require("../../assets/image/chefHatSmall.png"),
+    }]
   } else {users = route.params?.users}
 
   if(route.params?.recipe === undefined){
@@ -163,6 +169,7 @@ export function SessionStart({ navigation, route }: Props) {
       </View>      
 
       {/* Conditional: ska visa "Fortsätt" om det redan är startat */}
+      {/* när schedulen inte skickas med: "börja om" istället för fortsätt */}
       <View style={styles.buttonContainer}>
       
       <Pressable disabled={startButtonSessionCheck()} 
@@ -181,11 +188,11 @@ export function SessionStart({ navigation, route }: Props) {
         }
       >
         <Image
-          style={{height: 32, width: 24, margin: 15, marginLeft: 63}}
+          style={{height: 32, width: 24, margin: 15, marginLeft: 40}}
           source={require("../../assets/image/play-button.png")} //TODO: chef.image
           // check chef.color to decide color of border
         />
-        <Text style={{color: "white", fontSize: 32}}>{recipeActivated ? "Fortsätt" : "Starta"}</Text>
+        <Text style={{color: "white", fontSize: 32}}>{recipeActivated ? "Börja om" : "Starta"}</Text>
       </Pressable>
       </View>
 

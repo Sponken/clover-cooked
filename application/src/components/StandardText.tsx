@@ -9,7 +9,7 @@ import {primaryColor, secondaryColor} from "./Colors"
 
 
 export type StandardTextProps = {
-  size?: "small" | "medium" | "large",
+  size?: "small" | "SM" | "medium" | "large",
   text?: string,
   color?: "primary" | "secondary" | "black" | "white",
   colorValue?: ColorValue ,
@@ -21,7 +21,10 @@ export function StandardText({ ...props }: StandardTextProps) {
   let sizeStyle;
   switch(props.size ?? "medium"){
     case "small":
-      sizeStyle = {fontSize: 15};
+      sizeStyle = {fontSize: 12};
+      break;
+    case "SM":
+      sizeStyle = {fontSize: 18};
       break;
     case "medium":
       sizeStyle = {fontSize: 22};

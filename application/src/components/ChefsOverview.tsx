@@ -79,7 +79,7 @@ const ChefItem = ({ chef }: ListRowProps) => {
     <TouchableOpacity
       style={[styles.chefIcon, { backgroundColor: chef.color }]}
     >
-      <StandardText text={chef.name} color="white" size={"small"} />
+      <StandardText text={chef.name} color="white" size={"SM"} />
     </TouchableOpacity>
   );
 

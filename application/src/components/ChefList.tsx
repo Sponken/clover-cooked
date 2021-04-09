@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 //import { chefs as importedChefs, Chef } from "../data";
 import {
   StyleSheet,
@@ -25,6 +25,11 @@ type ChefListProps = {
  */
 
 export function ChefList({ chefList, setChefList }: ChefListProps) {
+  // Hitta det senaste färgindexet för att kunna fördela nya
+  let lastColorIndex = colors.indexOf(chefList[chefList.length - 1]?.color) ?? -1
+
+  let [nextColorIndex, setNextColorIndex] = useState<number>(lastColorIndex+1);
+
   return (
     <FlatList
       data={chefList}
@@ -41,11 +46,12 @@ export function ChefList({ chefList, setChefList }: ChefListProps) {
                 ...chefList,
                 {
                   id: Date.now().toString(),
-                  name: "Ny kock",
-                  color: "#5884E0", // TODO: randomize color from e.g. 8 ones, or always take the 4 ones that work best first
+                  name: "",
+                  color: colors[nextColorIndex], // TODO: randomize color from e.g. 8 ones, or always take the 4 ones that work best first
                   icon: require("../../assets/image/chefHatSmall.png"),
                 },
               ]);
+              setNextColorIndex((nextColorIndex + 1) % colors.length);
             }}
           >
             <View>
@@ -62,6 +68,19 @@ export function ChefList({ chefList, setChefList }: ChefListProps) {
     />
   );
 }
+
+// Färger som tilldeas kockar
+let colors = [
+  "#B856E9",
+  "#E956CD",
+  "#E3993B",
+  "#EAD755",
+  "#95DD69",
+  "#22BC29",
+  "#4DE1E1",
+  "#4DA4E1",
+  "#4F5EED",
+];
 
 type ChefItemProps = {
   chef: any;
@@ -94,27 +113,14 @@ const ChefItem = ({ chef, chefList, setChefList }: ChefItemProps) => {
   function editColor(index: number, chef: User) {
     let newChefs = Array.from(chefList);
 
-    let color = [
-      "#B856E9",
-      "#E956CD",
-      "#E3993B",
-      "#EAD755",
-      "#95DD69",
-      "#22BC29",
-      "#4DE1E1",
-      "#4DA4E1",
-      "#4F5EED",
-      //"#FF0000", //Ej kompatibel med färgen på notis för användare
-    ];
-
     function checkColor(col: ColorValue) {
       return col == chef.color.toString();
     }
 
-    let colIndex = color.findIndex(checkColor);
+    let colIndex = colors.findIndex(checkColor);
     //let colIndex = color.findIndex((c) => c == chef.color.toString());
 
-    if (colIndex < color.length - 1) {
+    if (colIndex < colors.length - 1) {
       colIndex += 1;
     } else {
       colIndex = 0;
@@ -123,7 +129,7 @@ const ChefItem = ({ chef, chefList, setChefList }: ChefItemProps) => {
     let tempChef: User = {
       id: chef.id,
       name: chef.name,
-      color: color[colIndex],
+      color: colors[colIndex],
       icon: chef.icon,
     };
 
@@ -144,6 +150,7 @@ const ChefItem = ({ chef, chefList, setChefList }: ChefItemProps) => {
       <View style={styles.nameContainer}>
         <TextInput
           style={styles.nameText}
+          placeholder="Skriv ditt namn..."
           defaultValue={chef.name}
           onChangeText={(name) => {
             setChefList(

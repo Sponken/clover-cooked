@@ -63,12 +63,7 @@ export function SessionStart({ navigation, route }: Props) {
 
   //Initiera users och recipe om de inte finns
   if(route.params?.users === undefined){
-    users = [{
-      id: Date.now().toString(),
-      name: "Kock 1",
-      color: "#5884E0", // TODO: randomize color from e.g. 8 ones, or always take the 4 ones that work best first
-      icon: require("../../assets/image/chefHatSmall.png"),
-    }]
+    users = []
   } else {users = route.params?.users}
 
   if(route.params?.recipe === undefined){

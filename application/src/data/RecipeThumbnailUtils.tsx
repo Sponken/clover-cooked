@@ -13,6 +13,14 @@ export const getRecipeThumbnail = (recipeId: string) => {
       return require(recipeThumbnailDir + "ikeabull.jpg");
     case "ugnpan":
       return require(recipeThumbnailDir + "ugnpan.jpg");
+    case "auberginelasagne":
+      return require(recipeThumbnailDir + "auberginegratäng.jpg");
+    case "lasagne":
+      return require(recipeThumbnailDir + "lasagne.jpg");
+    case "bönsallad":
+      return require(recipeThumbnailDir + "mexikansk_bönsallad.jpg");
+    case "biskvier":
+      return require(recipeThumbnailDir + "chokladbiskvier.jpg");
     default:
       return require(recipeThumbnailDir + "default.png");
   }

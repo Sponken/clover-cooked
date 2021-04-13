@@ -140,7 +140,7 @@
       "name": "Lägg på fat",
       "instructions": "Lägg rödlöken på ett fat tillsammans med körsbärstomater. Blanda försiktigt",
       "estimatedTime": 5,
-      "ingredients": [{ "ingredientId": "gulaKörsbärstomater", "amount": 0.5 }],
+      "ingredients": [{ "ingredientId": "gulaKörsbärstomater", "amount": 1 }],
       "resources": []
     },
     {
@@ -149,7 +149,6 @@
       "instructions": "Strö över bladen från basilika, olivolja, balsamvinäger, salt och peppar på tomatsalladen",
       "estimatedTime": 5,
       "ingredients": [
-        { "ingredientId": "gulaKörsbärstomater", "amount": 0.5 },
         { "ingredientId": "basilika", "amount": 1 },
         { "ingredientId": "olivolja", "amount": 1 },
         { "ingredientId": "balsamvinäger", "amount": 1 },
@@ -179,7 +178,7 @@
       "name": "Rör ner mjölk",
       "instructions": "Vispa ner mjölken i kastrullen med smör och mjöl, lite i taget. Låt koka upp och koka några minuter under omrörning.",
       "estimatedTime": 8,
-      "ingredients": [{ "ingredientId": "mjölk", "amount": 4 }],
+      "ingredients": [{ "ingredientId": "mjölk", "amount": 1 }],
       "resources": []
     },
     {

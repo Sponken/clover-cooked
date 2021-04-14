@@ -279,7 +279,7 @@
     {
       "id": "taUtLasagne",
       "name": "Ta ut lasagnen ur ugnen",
-      "instructions": "Ta ut lasagnen ur ugnen. Stäng av lasagnen",
+      "instructions": "Ta ut lasagnen ur ugnen. Stäng av ugnen",
       "estimatedTime": 1,
       "ingredients": [],
       "resources": []
@@ -297,7 +297,7 @@
       "name": "Lägg på fat",
       "instructions": "Lägg rödlöken på ett fat tillsammans med körsbärstomater. Blanda försiktigt",
       "estimatedTime": 5,
-      "ingredients": [{ "ingredientId": "gulaKörsbärstomater", "amount": 0.5 }],
+      "ingredients": [{ "ingredientId": "gulaKörsbärstomater", "amount": 1 }],
       "resources": []
     },
     {
@@ -306,7 +306,6 @@
       "instructions": "Strö över bladen från basilika, olivolja, balsamvinäger, salt och peppar på tomatsalladen",
       "estimatedTime": 5,
       "ingredients": [
-        { "ingredientId": "gulaKörsbärstomater", "amount": 0.5 },
         { "ingredientId": "basilika", "amount": 1 },
         { "ingredientId": "olivolja", "amount": 1 },
         { "ingredientId": "balsamvinäger", "amount": 1 },

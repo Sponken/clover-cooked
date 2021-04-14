@@ -281,8 +281,10 @@ function prioritizeAndAssignTasks(scheduler: Scheduler, eligibleTasks: TaskID[],
 function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], priorityCook?: CookID) {
   let cooks = vacantCooks(scheduler);
   if (priorityCook) {
-    cooks = cooks.filter(c => c != priorityCook)
-    cooks.push(priorityCook)
+    if (cooks.includes(priorityCook)) {
+      cooks = cooks.filter(c => c != priorityCook)
+      cooks.push(priorityCook)
+    }
   }
 
   for (const task of tasksToAssign) {

@@ -37,7 +37,8 @@ export const TaskCard = ({
     task = {
       id: "__FÄRDIG__",
       name: "Det finns inget att göra just nu",
-      instructions: "Diska om det går, vila annars!",
+      instructions:
+        "Det finns inget att göra just nu. Kolla om du kan hjälpa någon annan eller diska, vila annars!",
       ingredients: [],
       resources: [],
       estimatedTime: 9999,

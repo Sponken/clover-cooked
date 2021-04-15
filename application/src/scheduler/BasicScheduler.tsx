@@ -41,6 +41,8 @@ export function createBasicScheduler(recipe: Recipe,
     currentTasks: new Map<CookID, TaskID>(),
     currentPassiveTasks: new Map<TaskID, {finish: Date, timeout: NodeJS.Timeout}>(),
     finishTask: function (task: TaskID, cook: CookID) {
+      console.log("GOT HERE");
+      console.log("subscr", this.subscribeTaskAssigned)
       this.completedTasks.push(task);
       this.currentTasks.delete(cook);
       if(isRecipeFinished(this)){
@@ -180,6 +182,7 @@ function getTask(recipe: Recipe, taskID: TaskID): Task{
  */
 function getSubscribeFunction<FunctionType>(subList: FunctionType[]) {
   const subscribe = (subscribedFunction: FunctionType) => {
+    console.log("functions", subList)
     const unsubscribe = () => {subList = subList.filter((value) => value !== subscribedFunction)};
     subList.push(subscribedFunction);
     return unsubscribe;
@@ -240,7 +243,8 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
   let passiveTasks: TaskID[]
   let eligibleTasks: TaskID[][]
   [passiveTasks, eligibleTasks] = getEligibleTasks(scheduler);
-
+  
+  console.log("startOfAssign")
   // Starta alla passiva tasks som är möjliga
   for (const passiveTask of passiveTasks) {
     let real_task = getTask(scheduler.recipe, passiveTask);
@@ -252,6 +256,7 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
   for (const tasks of eligibleTasks) {
     prioritizeAndAssignTasks(scheduler, tasks, cook)
   }
+  console.log("endOfAssign")
 
 
 
@@ -291,6 +296,7 @@ function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], priorit
     const cook = cooks.pop()
     if (cook) {
       scheduler.currentTasks.set(cook, task);
+      console.log(scheduler.taskAssignedSubscribers[0]);
       scheduler.taskAssignedSubscribers.forEach((fn) => fn(task, cook))
     } else {
       break

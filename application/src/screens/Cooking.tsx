@@ -1,5 +1,5 @@
 import { StyleSheet, View, Pressable, Image, Modal, Text } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -26,6 +26,8 @@ import {
 } from "../scheduler";
 import { FlatList } from "react-native-gesture-handler";
 
+import { schedulerContext } from "./scheduler-context";
+
 const OK_TIME_BETWEEN_CLICK = 700;
 
 type CookingScreenNavigationProp = StackNavigationProp<
@@ -44,7 +46,7 @@ type Props = {
  * Cooking, skärmen som visas under tiden matlagningen sker
  */
 export function Cooking({ navigation, route }: Props) {
-  const { recipe, users /*initScheduler*/ } = route.params;
+  const { recipe, users } = route.params;
 
   const [activeUser, setActiveUser] = useState(users[0].id); //id på aktiv användare
   const [userNotifications, setUserNotifications] = useState<
@@ -68,7 +70,7 @@ export function Cooking({ navigation, route }: Props) {
   const [assignedTasks, setAssignedTasks] = useState<
     Map<string, string | undefined>
   >(new Map());
-  const [scheduler, setScheduler] = useState<Scheduler>();
+  const {scheduler, setScheduler} = useContext(schedulerContext);
 
   //lista med de passiva tasks som visas som taskCards, både i små o stor storlek
   //(om de är klara kommer de upp för att säga ok avsluta passive task men även
@@ -106,7 +108,6 @@ export function Cooking({ navigation, route }: Props) {
   };
 
   const taskAssignedSubscriber = (task: string | undefined, cook: string) => {
-    console.log("task assigned " + task + " to " + cook);
     setAssignedTasks((assigned) => new Map(assigned.set(cook, task)));
     if (task !== undefined) {
       setUserNotifications(
@@ -150,7 +151,12 @@ export function Cooking({ navigation, route }: Props) {
 
   useEffect(() => {
     let userIds = users.map((u) => u.id);
-    let ssss: Scheduler = createBasicScheduler(recipe, userIds);
+    let ssss: Scheduler;
+    if (scheduler) {
+      ssss = scheduler;
+    } else {
+      ssss = createBasicScheduler(recipe, userIds);
+    }
     const taskAssignedUnsubscribe = ssss.subscribeTaskAssigned(
       taskAssignedSubscriber
     );
@@ -178,6 +184,7 @@ export function Cooking({ navigation, route }: Props) {
     setScheduler(ssss);
 
     return () => {
+      console.log("UNSIBSCRIBING")
       taskAssignedUnsubscribe();
       passiveTaskStartedUnsubscribe();
       passiveTaskFinishedUnsubscribe();
@@ -407,12 +414,13 @@ export function Cooking({ navigation, route }: Props) {
               buttonSize={"small"}
               onPress={() => navigation.navigate("SessionStart")}
             /> */}
-            {/*<Pressable onPress={() => navigation.navigate("SessionStart")}>
+            <Pressable onPress={() => navigation.navigate("SessionStart", {})}>
               <Image
                 source={require("../../assets/image/editChef.png")}
                 style={styles.topBarRightMenuIcon}
-              />
+                />
             </Pressable>
+              {/*
             <Pressable>
               <Image
                 source={require("../../assets/image/icon.png")} // TODO: Placeholder tills ikon finns

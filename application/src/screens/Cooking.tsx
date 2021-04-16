@@ -183,10 +183,11 @@ export function Cooking({ navigation, route }: Props) {
 
     return () => {
       console.log("UNSIBSCRIBING")
-      passiveTaskStartedUnsubscribe();
-      passiveTaskFinishedUnsubscribe();
-      passiveTaskCheckFinishedUnsubscribe();
-      recipeFinishedUnsubscribe();
+      ssss.unsubscribeTaskAssigned(taskAssignedSubscriber);
+      ssss.unsubscribePassiveTaskStarted(passiveTaskStartedSubscriber);
+      ssss.unsubscribePassiveTaskFinished(passiveTaskFinishedSubscriber);
+      ssss.unsubscribePassiveTaskCheckFinished(passiveTaskCheckFinishedSubscriber);
+      ssss.unsubscribeRecipeFinished(recipeFinishedSubscriber);
     };
   }, []);
 

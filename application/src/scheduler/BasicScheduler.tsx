@@ -17,7 +17,7 @@ const MINUTE = 60000;
 export function createBasicScheduler(recipe: Recipe, 
   cooks: CookID[], 
   ): Scheduler {
-  const taskAssignedSubscribers: TaskAssignedSubscriber | undefined = undefined;
+  const taskAssignedSubscribers: TaskAssignedSubscriber[] = [];
   const passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[] = [];
   const passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[] = [];
   const passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[] = [];
@@ -67,12 +67,26 @@ export function createBasicScheduler(recipe: Recipe,
     checkPassiveTaskFinished: function (task: TaskID) {
       this.passiveTaskCheckFinishedSubscribers.forEach(f => f(task));
     },
-    subscribeTaskAssigned: function (aaa: TaskAssignedSubscriber | undefined)
-    {this.taskAssignedSubscribers = aaa},
-    subscribePassiveTaskStarted: getSubscribeFunction(passiveTaskStartedSubscribers),
-    subscribePassiveTaskFinished: getSubscribeFunction(passiveTaskFinishedSubscribers),
-    subscribePassiveTaskCheckFinished: getSubscribeFunction(passiveTaskCheckFinishedSubscribers),
-    subscribeRecipeFinished: getSubscribeFunction(recipeFinishedSubscribers),
+    subscribeTaskAssigned: function (f: TaskAssignedSubscriber) { this.taskAssignedSubscribers.push(f) },
+    unsubscribeTaskAssigned: function (f: TaskAssignedSubscriber) {
+      this.taskAssignedSubscribers = this.taskAssignedSubscribers.filter((value) => value !== f)
+    },
+    subscribePassiveTaskStarted: function (f: PassiveTaskStartedSubscriber) { this.passiveTaskStartedSubscribers.push(f) },
+    unsubscribePassiveTaskStarted: function (f: PassiveTaskStartedSubscriber) {
+      this.passiveTaskStartedSubscribers = this.passiveTaskStartedSubscribers.filter((value) => value !== f)
+    },
+    subscribePassiveTaskFinished: function (f: PassiveTaskFinishedSubscriber) { this.passiveTaskFinishedSubscribers.push(f) },
+    unsubscribePassiveTaskFinished: function (f: PassiveTaskFinishedSubscriber) {
+      this.passiveTaskFinishedSubscribers = this.passiveTaskFinishedSubscribers.filter((value) => value !== f)
+    },
+    subscribePassiveTaskCheckFinished: function (f: PassiveTaskCheckFinishedSubscriber) { this.passiveTaskCheckFinishedSubscribers.push(f) },
+    unsubscribePassiveTaskCheckFinished: function (f: PassiveTaskCheckFinishedSubscriber) {
+      this.passiveTaskCheckFinishedSubscribers = this.passiveTaskCheckFinishedSubscribers.filter((value) => value !== f)
+    },
+    subscribeRecipeFinished: function (f: RecipeFinishedSubscriber) { this.recipeFinishedSubscribers.push(f) },
+    unsubscribeRecipeFinished: function (f: RecipeFinishedSubscriber) {
+      this.recipeFinishedSubscribers = this.recipeFinishedSubscribers.filter((value) => value !== f)
+    },
 
     /**
      * Startar om ett passivt task med updaterat färdig-datum och timeout
@@ -174,21 +188,6 @@ function getTask(recipe: Recipe, taskID: TaskID): Task{
       return recipe.tasks[i]
   }
   throw "getTask: Task not found"
-}
-
-/**
- * Skapar subscription function till en given array med subscribers
- * @param subList array där subscribers sparas
- * @returns subscription function till subList som returnerar unsub function
- */
-function getSubscribeFunction<FunctionType>(subList: FunctionType[]) {
-  const subscribe = (subscribedFunction: FunctionType) => {
-    console.log("functions", subList)
-    const unsubscribe = () => {subList = subList.filter((value) => value !== subscribedFunction)};
-    subList.push(subscribedFunction);
-    return unsubscribe;
-  }
-  return subscribe;
 }
 
 /**
@@ -298,9 +297,7 @@ function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], priorit
     if (cook) {
       scheduler.currentTasks.set(cook, task);
       
-      if (scheduler.taskAssignedSubscribers) {
-        scheduler.taskAssignedSubscribers(task, cook)
-      }
+      scheduler.taskAssignedSubscribers.forEach((fn) => fn(task, cook))
     } else {
       break
     }

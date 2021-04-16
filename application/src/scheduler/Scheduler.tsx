@@ -40,27 +40,28 @@ export interface Scheduler {
   /**
    * Metod som kallas på när en task är tilldelad
    */
-  subscribeTaskAssigned: (aaa: TaskAssignedSubscriber | undefined) => void;
+  subscribeTaskAssigned:   (f: TaskAssignedSubscriber) => void;
+  unsubscribeTaskAssigned: (f: TaskAssignedSubscriber) => void;
   /**
    * Metod som kallas på när ny passiv task är startad
    */
-  subscribePassiveTaskStarted: (f: PassiveTaskStartedSubscriber) => () => void;
+  subscribePassiveTaskStarted:   (f: PassiveTaskStartedSubscriber) => void;
+  unsubscribePassiveTaskStarted: (f: PassiveTaskStartedSubscriber) => void;
   /**
    * Metod som kallas på när en passiv task är avslutad
    */
-  subscribePassiveTaskFinished: (
-    f: PassiveTaskFinishedSubscriber
-  ) => () => void;
+  subscribePassiveTaskFinished:   (f: PassiveTaskFinishedSubscriber ) => void;
+  unsubscribePassiveTaskFinished: (f: PassiveTaskFinishedSubscriber) => void;
   /**
    * Metod som kallas för att kolla att det passiva tasket är helt avslutat av användaren
    */
-  subscribePassiveTaskCheckFinished: (
-    f: PassiveTaskCheckFinishedSubscriber
-  ) => () => void;
+  subscribePassiveTaskCheckFinished:   (f: PassiveTaskCheckFinishedSubscriber) => void;
+  unsubscribePassiveTaskCheckFinished: (f: PassiveTaskCheckFinishedSubscriber) => void;
   /**
    * Metod som kallas på när alla task är avklarade
    */
-  subscribeRecipeFinished: (f: RecipeFinishedSubscriber) => () => void;
+  subscribeRecipeFinished:   (f: RecipeFinishedSubscriber) => void;
+  unsubscribeRecipeFinished: (f: RecipeFinishedSubscriber) => void;
   /**
    * Utöker tiden på en pågående passiv task
    */
@@ -94,6 +95,6 @@ export interface Scheduler {
   passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[];
   passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[];
   passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[];
-  taskAssignedSubscribers: TaskAssignedSubscriber | undefined;
-  readonly recipeFinishedSubscribers: RecipeFinishedSubscriber[];
+  taskAssignedSubscribers: TaskAssignedSubscriber[];
+  recipeFinishedSubscribers: RecipeFinishedSubscriber[];
 }

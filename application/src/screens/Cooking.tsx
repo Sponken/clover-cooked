@@ -124,7 +124,6 @@ export function Cooking({ navigation, route }: Props) {
   const passiveTaskStartedSubscriber = (task: string, finish: Date) => {
     setPassiveTasks((tasks) => {
       tasks.set(task, finish);
-      updateEarliestTimer(tasks);
       return new Map(tasks);
     });
   };
@@ -132,7 +131,6 @@ export function Cooking({ navigation, route }: Props) {
   const passiveTaskFinishedSubscriber = (task: string) => {
     setPassiveTasks((tasks) => {
       tasks.delete(task);
-      updateEarliestTimer(tasks);
       return new Map(tasks);
     });
     setVisiblePassiveTasks((prevVisablePassiveTasks) =>
@@ -150,6 +148,10 @@ export function Cooking({ navigation, route }: Props) {
   };
 
   useEffect(() => {
+    updateEarliestTimer(passiveTasks);
+  }, [passiveTasks])
+
+  useEffect(() => {
     let userIds = users.map((u) => u.id);
     let ssss: Scheduler;
     if (scheduler) {
@@ -158,18 +160,10 @@ export function Cooking({ navigation, route }: Props) {
       ssss = createBasicScheduler(recipe, userIds);
     }
     ssss.subscribeTaskAssigned(taskAssignedSubscriber);
-    const passiveTaskStartedUnsubscribe = ssss.subscribePassiveTaskStarted(
-      passiveTaskStartedSubscriber
-    );
-    const passiveTaskFinishedUnsubscribe = ssss.subscribePassiveTaskFinished(
-      passiveTaskFinishedSubscriber
-    );
-    const passiveTaskCheckFinishedUnsubscribe = ssss.subscribePassiveTaskCheckFinished(
-      passiveTaskCheckFinishedSubscriber
-    );
-    const recipeFinishedUnsubscribe = ssss.subscribeRecipeFinished(
-      recipeFinishedSubscriber
-    );
+    ssss.subscribePassiveTaskStarted(passiveTaskStartedSubscriber);
+    ssss.subscribePassiveTaskFinished(passiveTaskFinishedSubscriber);
+    ssss.subscribePassiveTaskCheckFinished(passiveTaskCheckFinishedSubscriber);
+    ssss.subscribeRecipeFinished(recipeFinishedSubscriber);
     setAssignedTasks(ssss.getTasks());
 
     let _userNotifications = new Map<string, boolean>();
@@ -213,7 +207,6 @@ export function Cooking({ navigation, route }: Props) {
         if (vTask === pTask) {
           setPassiveTasksInModal((mTasks) => {
             mTasks.delete(vTask);
-            updateEarliestTimer(mTasks);
             return new Map(mTasks);
           });
         }

@@ -191,7 +191,7 @@ export function SessionStart({ navigation, route }: Props) {
           source={require("../../assets/image/play-button.png")} //TODO: chef.image
           // check chef.color to decide color of border
         />
-        <Text style={{color: "white", fontSize: 32}}>{recipeActivated ? "Börja om" : "Starta"}</Text>
+        <Text style={{color: "white", fontSize: 32}}>{recipeActivated ? "Fortsätt" : "Starta"}</Text>
       </Pressable>
       </View>
 

@@ -165,6 +165,7 @@ export function Cooking({ navigation, route }: Props) {
     ssss.subscribePassiveTaskCheckFinished(passiveTaskCheckFinishedSubscriber);
     ssss.subscribeRecipeFinished(recipeFinishedSubscriber);
     setAssignedTasks(ssss.getTasks());
+    setPassiveTasks(ssss.getPassiveTasks());
 
     let _userNotifications = new Map<string, boolean>();
     ssss

@@ -157,9 +157,7 @@ export function Cooking({ navigation, route }: Props) {
     } else {
       ssss = createBasicScheduler(recipe, userIds);
     }
-    const taskAssignedUnsubscribe = ssss.subscribeTaskAssigned(
-      taskAssignedSubscriber
-    );
+    ssss.subscribeTaskAssigned(taskAssignedSubscriber);
     const passiveTaskStartedUnsubscribe = ssss.subscribePassiveTaskStarted(
       passiveTaskStartedSubscriber
     );
@@ -185,7 +183,6 @@ export function Cooking({ navigation, route }: Props) {
 
     return () => {
       console.log("UNSIBSCRIBING")
-      taskAssignedUnsubscribe();
       passiveTaskStartedUnsubscribe();
       passiveTaskFinishedUnsubscribe();
       passiveTaskCheckFinishedUnsubscribe();

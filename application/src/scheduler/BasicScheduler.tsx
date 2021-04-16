@@ -17,7 +17,7 @@ const MINUTE = 60000;
 export function createBasicScheduler(recipe: Recipe, 
   cooks: CookID[], 
   ): Scheduler {
-  const taskAssignedSubscribers: TaskAssignedSubscriber[] = [];
+  const taskAssignedSubscribers: TaskAssignedSubscriber | undefined = undefined;
   const passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[] = [];
   const passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[] = [];
   const passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[] = [];
@@ -41,15 +41,15 @@ export function createBasicScheduler(recipe: Recipe,
     currentTasks: new Map<CookID, TaskID>(),
     currentPassiveTasks: new Map<TaskID, {finish: Date, timeout: NodeJS.Timeout}>(),
     finishTask: function (task: TaskID, cook: CookID) {
-      console.log("GOT HERE");
-      console.log("subscr", this.subscribeTaskAssigned)
       this.completedTasks.push(task);
       this.currentTasks.delete(cook);
+      console.log("startOfAssign")
       if(isRecipeFinished(this)){
-        this.recipeFinishedSubscribers.forEach((fn) => fn());
+        this.recipeFinishedSubscribers.forEach((fn) => fn()); 
         return;
       }
       assignTasks(scheduler, cook);
+      console.log("endOfAssign")
     },
     finishPassiveTask: function (task: TaskID) {
       const taskProps = this.currentPassiveTasks.get(task)
@@ -67,7 +67,8 @@ export function createBasicScheduler(recipe: Recipe,
     checkPassiveTaskFinished: function (task: TaskID) {
       this.passiveTaskCheckFinishedSubscribers.forEach(f => f(task));
     },
-    subscribeTaskAssigned: getSubscribeFunction(taskAssignedSubscribers),
+    subscribeTaskAssigned: function (aaa: TaskAssignedSubscriber | undefined)
+    {this.taskAssignedSubscribers = aaa},
     subscribePassiveTaskStarted: getSubscribeFunction(passiveTaskStartedSubscribers),
     subscribePassiveTaskFinished: getSubscribeFunction(passiveTaskFinishedSubscribers),
     subscribePassiveTaskCheckFinished: getSubscribeFunction(passiveTaskCheckFinishedSubscribers),
@@ -296,8 +297,10 @@ function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], priorit
     const cook = cooks.pop()
     if (cook) {
       scheduler.currentTasks.set(cook, task);
-      console.log(scheduler.taskAssignedSubscribers[0]);
-      scheduler.taskAssignedSubscribers.forEach((fn) => fn(task, cook))
+      
+      if (scheduler.taskAssignedSubscribers) {
+        scheduler.taskAssignedSubscribers(task, cook)
+      }
     } else {
       break
     }

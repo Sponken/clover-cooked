@@ -40,7 +40,7 @@ export interface Scheduler {
   /**
    * Metod som kallas på när en task är tilldelad
    */
-  subscribeTaskAssigned: (f: TaskAssignedSubscriber) => () => void;
+  subscribeTaskAssigned: (aaa: TaskAssignedSubscriber | undefined) => void;
   /**
    * Metod som kallas på när ny passiv task är startad
    */
@@ -94,6 +94,6 @@ export interface Scheduler {
   passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[];
   passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[];
   passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[];
-  taskAssignedSubscribers: TaskAssignedSubscriber[];
+  taskAssignedSubscribers: TaskAssignedSubscriber | undefined;
   readonly recipeFinishedSubscribers: RecipeFinishedSubscriber[];
 }

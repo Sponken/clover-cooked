@@ -10,7 +10,7 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 import { ChefsOverview, StandardButton, StandardText } from "../components";
 
@@ -24,6 +24,8 @@ import { DrawerActions } from "@react-navigation/routers";
 import { getRecipeThumbnail } from "../data";
 
 import { Scheduler } from "../scheduler";
+
+import { schedulerContext } from "./scheduler-context";
 
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
 type ChefManagementScreenNavigationProp = StackNavigationProp<
@@ -47,6 +49,7 @@ type Props = {
 export function SessionStart({ navigation, route }: Props) {
 
   let initScheduler: Boolean;
+  const {scheduler, setScheduler} = useContext(schedulerContext);
 
   //Kolla om vi har en scheduler, i nuläget testar den bara om vi startat recept
   if(route.params?.initScheduler === undefined){
@@ -124,6 +127,7 @@ export function SessionStart({ navigation, route }: Props) {
                 {{
                   setDeleteSessionModalVisible(false);
                   setRecipeActivated(false);
+                  setScheduler();
             navigation.setParams({ recipe: undefined }),
             navigation.navigate("RecipeLibrary", {
               screen: "RecipeLibrary"

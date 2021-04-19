@@ -96,4 +96,11 @@ export interface Scheduler {
   passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[];
   taskAssignedSubscribers: TaskAssignedSubscriber[];
   readonly recipeFinishedSubscribers: RecipeFinishedSubscriber[];
+
+  /**
+   * När en user inte har något att göra så läggs den in här med datumet som den las in
+   * När nya task assignas kollar den om någon inte haft något att göra på länge och då
+   * prioriteras denna user att få ett nytt task
+   */
+  readonly lastWorked: Map<CookID, Date>;
 }

@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
+import { activateKeepAwake, deactivateKeepAwake } from "expo-keep-awake";
+import { View, Switch, StyleSheet, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+} from "@react-navigation/drawer";
 import { Scheduler } from "../scheduler";
 
 import {
@@ -38,6 +44,7 @@ export function Navigator() {
   return (
     <NavigationContainer>
       <Drawer.Navigator
+        drawerContent={(props) => <CustomDrawerContent {...props} />}
         initialRouteName="RecipeLibrary"
         drawerStyle={{ backgroundColor: "#f5f5f5", width: 200 }}
       >
@@ -105,3 +112,41 @@ const RecipeLibraryNav = () => (
     />
   </Stack.Navigator>
 );
+
+function CustomDrawerContent(props) {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => {
+    setIsEnabled((previousState) => !previousState);
+    if (isEnabled) {
+      activateKeepAwake();
+      alert("Activated");
+    } else {
+      deactivateKeepAwake();
+      alert("Deactivated");
+    }
+  };
+  return (
+    <DrawerContentScrollView style={styles.extraDrawerItemsContainer}>
+      <DrawerItemList {...props} />
+      <View style={styles.switchContainer}>
+        <Text>Keep Awake</Text>
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={toggleSwitch}
+          value={isEnabled}
+        />
+      </View>
+    </DrawerContentScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  switchContainer: {
+    paddingTop: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  extraDrawerItemsContainer: {},
+});

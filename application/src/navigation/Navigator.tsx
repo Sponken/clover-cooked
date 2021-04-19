@@ -117,12 +117,10 @@ function CustomDrawerContent(props) {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
-    if (isEnabled) {
+    if (!isEnabled) {
       activateKeepAwake();
-      alert("Activated");
     } else {
       deactivateKeepAwake();
-      alert("Deactivated");
     }
   };
   return (
@@ -132,7 +130,7 @@ function CustomDrawerContent(props) {
         <Text>Keep Awake</Text>
         <Switch
           trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+          thumbColor={isEnabled ? "#f4f3f4" : "#f4f3f4"}
           ios_backgroundColor="#3e3e3e"
           onValueChange={toggleSwitch}
           value={isEnabled}
@@ -145,6 +143,7 @@ function CustomDrawerContent(props) {
 const styles = StyleSheet.create({
   switchContainer: {
     paddingTop: 10,
+    paddingLeft: 10,
     flexDirection: "row",
     justifyContent: "space-between",
   },

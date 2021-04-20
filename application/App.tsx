@@ -10,7 +10,9 @@ import { Navigator } from "./src/navigation";
 import { LogBox } from "react-native";
 import { schedulerContext } from "./src/screens/scheduler-context";
 import { Scheduler } from "./src/scheduler";
-//
+
+// Fix för att inte visa error medelande varje gång en timer sätts på android
+
 LogBox.ignoreLogs(["Setting a timer"]);
 
 export default function App() {

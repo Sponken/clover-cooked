@@ -6,11 +6,10 @@ import {
   Modal,
   Pressable
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 import { ChefsOverview, StandardButton, StandardText } from "../components";
 
@@ -23,7 +22,8 @@ import { DrawerActions } from "@react-navigation/routers";
 
 import { getRecipeThumbnail } from "../data";
 
-import { Scheduler } from "../scheduler";
+
+import { schedulerContext } from "./scheduler-context";
 
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
 type ChefManagementScreenNavigationProp = StackNavigationProp<
@@ -47,6 +47,9 @@ type Props = {
 export function SessionStart({ navigation, route }: Props) {
 
   let initScheduler: Boolean;
+  const {scheduler, setScheduler} = useContext(schedulerContext);
+
+  
 
   //Kolla om vi har en scheduler, i nuläget testar den bara om vi startat recept
   if(route.params?.initScheduler === undefined){
@@ -56,7 +59,6 @@ export function SessionStart({ navigation, route }: Props) {
   let recipe: Recipe;
   const [recipeInSession, setRecipeInSession] = useState<Recipe>()
   let users: User[] = [];
-  const [recipeActivated, setRecipeActivated] = useState(false);
 
   //modal poppar upp som "är du säker på att du vill deleta denna session?"
   const [deleteSessionModalVisible, setDeleteSessionModalVisible] = useState(false);
@@ -68,7 +70,7 @@ export function SessionStart({ navigation, route }: Props) {
 
   if(route.params?.recipe === undefined){
   }
-  else if(recipeActivated){
+  else if(scheduler){
     recipe = recipeInSession;
   }
   else {recipe = route.params?.recipe}
@@ -99,6 +101,15 @@ export function SessionStart({ navigation, route }: Props) {
       return false;
     }
   }
+
+  function schedulerExist() {
+    if(scheduler){
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
   
   return (
     <SafeAreaView style={styles.container}>
@@ -123,7 +134,7 @@ export function SessionStart({ navigation, route }: Props) {
                 <StandardButton buttonText={"Ta bort receptet"} onPress={() => 
                 {{
                   setDeleteSessionModalVisible(false);
-                  setRecipeActivated(false);
+                  setScheduler();
             navigation.setParams({ recipe: undefined }),
             navigation.navigate("RecipeLibrary", {
               screen: "RecipeLibrary"
@@ -160,7 +171,7 @@ export function SessionStart({ navigation, route }: Props) {
       </View>
 
       <View style={styles.chefsContainer}>
-        <ChefsOverview users={users} nav={navigation} recipeActivated={recipeActivated}/>
+        <ChefsOverview users={users} nav={navigation} recipeActivated={schedulerExist()}/>
       </View>      
 
       {/* Conditional: ska visa "Fortsätt" om det redan är startat */}
@@ -170,15 +181,8 @@ export function SessionStart({ navigation, route }: Props) {
       <Pressable disabled={startButtonSessionCheck()} 
         style={startButtonSessionCheck() ? styles.cannotBePressed : styles.canBePressed} 
         onPress={() =>{
-          //fortsätter
-          if(recipeActivated){
-            {navigation.navigate("Cooking", {recipe,users /*, initScheduler*/})}
-          }
-          //initierar en ny cooking och session
-          else{
-            setRecipeActivated(true);
-            setRecipeInSession(recipe);
-            {navigation.navigate("Cooking", {recipe, users})}};
+            if(!schedulerExist()){setRecipeInSession(recipe)} // Om ett recept redan är startat
+            {navigation.navigate("Cooking", {recipe, users})};
           }
         }
       >
@@ -187,7 +191,7 @@ export function SessionStart({ navigation, route }: Props) {
           source={require("../../assets/image/play-button.png")} //TODO: chef.image
           // check chef.color to decide color of border
         />
-        <Text style={{color: "white", fontSize: 32}}>{recipeActivated ? "Börja om" : "Starta"}</Text>
+        <Text style={{color: "white", fontSize: 32}}>{scheduler ? "Fortsätt" : "Starta"}</Text>
       </Pressable>
       </View>
 

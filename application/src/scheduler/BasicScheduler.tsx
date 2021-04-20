@@ -43,11 +43,13 @@ export function createBasicScheduler(recipe: Recipe,
     finishTask: function (task: TaskID, cook: CookID) {
       this.completedTasks.push(task);
       this.currentTasks.delete(cook);
+      console.log("startOfAssign")
       if(isRecipeFinished(this)){
-        this.recipeFinishedSubscribers.forEach((fn) => fn());
+        this.recipeFinishedSubscribers.forEach((fn) => fn()); 
         return;
       }
       assignTasks(scheduler, cook);
+      console.log("endOfAssign")
     },
     finishPassiveTask: function (task: TaskID) {
       const taskProps = this.currentPassiveTasks.get(task)
@@ -65,11 +67,26 @@ export function createBasicScheduler(recipe: Recipe,
     checkPassiveTaskFinished: function (task: TaskID) {
       this.passiveTaskCheckFinishedSubscribers.forEach(f => f(task));
     },
-    subscribeTaskAssigned: getSubscribeFunction(taskAssignedSubscribers),
-    subscribePassiveTaskStarted: getSubscribeFunction(passiveTaskStartedSubscribers),
-    subscribePassiveTaskFinished: getSubscribeFunction(passiveTaskFinishedSubscribers),
-    subscribePassiveTaskCheckFinished: getSubscribeFunction(passiveTaskCheckFinishedSubscribers),
-    subscribeRecipeFinished: getSubscribeFunction(recipeFinishedSubscribers),
+    subscribeTaskAssigned: function (f: TaskAssignedSubscriber) { this.taskAssignedSubscribers.push(f) },
+    unsubscribeTaskAssigned: function (f: TaskAssignedSubscriber) {
+      this.taskAssignedSubscribers = this.taskAssignedSubscribers.filter((value) => value !== f)
+    },
+    subscribePassiveTaskStarted: function (f: PassiveTaskStartedSubscriber) { this.passiveTaskStartedSubscribers.push(f) },
+    unsubscribePassiveTaskStarted: function (f: PassiveTaskStartedSubscriber) {
+      this.passiveTaskStartedSubscribers = this.passiveTaskStartedSubscribers.filter((value) => value !== f)
+    },
+    subscribePassiveTaskFinished: function (f: PassiveTaskFinishedSubscriber) { this.passiveTaskFinishedSubscribers.push(f) },
+    unsubscribePassiveTaskFinished: function (f: PassiveTaskFinishedSubscriber) {
+      this.passiveTaskFinishedSubscribers = this.passiveTaskFinishedSubscribers.filter((value) => value !== f)
+    },
+    subscribePassiveTaskCheckFinished: function (f: PassiveTaskCheckFinishedSubscriber) { this.passiveTaskCheckFinishedSubscribers.push(f) },
+    unsubscribePassiveTaskCheckFinished: function (f: PassiveTaskCheckFinishedSubscriber) {
+      this.passiveTaskCheckFinishedSubscribers = this.passiveTaskCheckFinishedSubscribers.filter((value) => value !== f)
+    },
+    subscribeRecipeFinished: function (f: RecipeFinishedSubscriber) { this.recipeFinishedSubscribers.push(f) },
+    unsubscribeRecipeFinished: function (f: RecipeFinishedSubscriber) {
+      this.recipeFinishedSubscribers = this.recipeFinishedSubscribers.filter((value) => value !== f)
+    },
 
     /**
      * Startar om ett passivt task med updaterat färdig-datum och timeout
@@ -174,20 +191,6 @@ function getTask(recipe: Recipe, taskID: TaskID): Task{
 }
 
 /**
- * Skapar subscription function till en given array med subscribers
- * @param subList array där subscribers sparas
- * @returns subscription function till subList som returnerar unsub function
- */
-function getSubscribeFunction<FunctionType>(subList: FunctionType[]) {
-  const subscribe = (subscribedFunction: FunctionType) => {
-    const unsubscribe = () => {subList = subList.filter((value) => value !== subscribedFunction)};
-    subList.push(subscribedFunction);
-    return unsubscribe;
-  }
-  return subscribe;
-}
-
-/**
  * Hittar alla tasks som är möjliga att utföra
  * Returnerar två listor. Den första listan innehållar alla passiva tasks som bör påbörjas,
  * den andra innehåller alla andra tasks som kan fördelas, i olika listor. Tasksen i varje lista har samma 
@@ -240,7 +243,8 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
   let passiveTasks: TaskID[]
   let eligibleTasks: TaskID[][]
   [passiveTasks, eligibleTasks] = getEligibleTasks(scheduler);
-
+  
+  console.log("startOfAssign")
   // Starta alla passiva tasks som är möjliga
   for (const passiveTask of passiveTasks) {
     let real_task = getTask(scheduler.recipe, passiveTask);
@@ -252,6 +256,7 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
   for (const tasks of eligibleTasks) {
     prioritizeAndAssignTasks(scheduler, tasks, cook)
   }
+  console.log("endOfAssign")
 
 
 
@@ -291,6 +296,7 @@ function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], priorit
     const cook = cooks.pop()
     if (cook) {
       scheduler.currentTasks.set(cook, task);
+      
       scheduler.taskAssignedSubscribers.forEach((fn) => fn(task, cook))
     } else {
       break

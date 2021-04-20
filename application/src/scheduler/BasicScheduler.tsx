@@ -232,7 +232,8 @@ function getEligibleTasks(
       initialEligibleTasks.push(task.id)
       continue
     }
-    if (strongDepMap.get(task.id) != []) {
+    let ddd = strongDepMap.get(task.id);
+    if (ddd && ddd.length != 0) {
       strongEligibleTasks.push(task.id)
       continue
     }
@@ -305,55 +306,53 @@ function prioritizeAndAssignTasks(scheduler: Scheduler, eligibleTasks: TaskID[],
 
 function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], justFinishedCook: CookID | undefined, toPreviousUser: boolean) {
 
-  //console.log("lastFinished")
-  //console.log(scheduler.lastFinished);
-
-  console.log("tasksToAssign")
-  console.log(tasksToAssign);
-
   let cooks = getVacantCooks(scheduler);
 
   //alltid sortera cooks
   let waitingCooks: [CookID, Date][] = []
   let remainingCooks: CookID[]  = []
   let now = new Date(Date.now());
-  let timewait = 0.25*MINUTE; ///TESTTTID
+  let timewait = 10*MINUTE; 
   for (const cook of cooks) {
-    let cooklastFinished = scheduler.lastFinished.get(cook)
-    if (cooklastFinished && (now.getTime() - cooklastFinished.getTime() > timewait) ) {
-      console.log("HÄÄÄÄÄÄR")
+    let cookLastFinished = scheduler.lastFinished.get(cook)
+
+    if (cookLastFinished && (now.getTime() - cookLastFinished.getTime() > timewait) ) {
+      //console.log("kocken har väntat länge!")
       let cookName: string = cook;
-      waitingCooks.push([cookName, cooklastFinished])
+      waitingCooks.push([cookName, cookLastFinished])
     } else if (cook !== justFinishedCook) {
       remainingCooks.push(cook)
     }
   }
+
   //sortera waitingCooks, de som väntat längst kommer sist i listan = högst orio
-  waitingCooks.sort((a,b)=> a[1].getTime() - b[1].getTime())
+  waitingCooks.sort((a,b)=>  b[1].getTime() - a[1].getTime())
   let waitingCooksSorted: CookID[] = waitingCooks.map(([a, b]) => a)
 
-  //console.log("waiting cooks")
-  //console.log(waitingCooks)
-
   let sortedCooks = remainingCooks;
+
+  //strong dependency - samma kock bör få task igen
   //[rest + waitingUsers + justfinished]
   if (toPreviousUser) {
-    sortedCooks.concat(waitingCooksSorted);
+    //console.log("STRONG DEPENDENCY - borde gå till samma kock")
+    sortedCooks = sortedCooks.concat(waitingCooksSorted);
     if (justFinishedCook && cooks.includes(justFinishedCook)) {
       sortedCooks.push(justFinishedCook)
     }
   } 
   //[rest + justfinished + waitingUsers]
   else {
+    //console.log("INTE strong dependency - borde gå till samma kock")
     if (justFinishedCook && cooks.includes(justFinishedCook)) {
       sortedCooks.push(justFinishedCook)
     }
-    sortedCooks.concat(waitingCooksSorted);
+    sortedCooks = sortedCooks.concat(waitingCooksSorted);
   }
-  
+
   //assigna task från våran skapade lista
   for (const task of tasksToAssign) {
     const cook = sortedCooks.pop()
+    console.log(cook)
     if (cook) {
       scheduler.currentTasks.set(cook, task);
       

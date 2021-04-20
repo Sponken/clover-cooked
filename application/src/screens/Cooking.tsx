@@ -28,7 +28,7 @@ import { FlatList } from "react-native-gesture-handler";
 
 import { schedulerContext } from "./scheduler-context";
 
-const OK_TIME_BETWEEN_CLICK = 10; // 700;
+const OK_TIME_BETWEEN_CLICK = 700;
 
 type CookingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,

@@ -28,7 +28,7 @@ import { FlatList } from "react-native-gesture-handler";
 
 import { schedulerContext } from "./scheduler-context";
 
-const OK_TIME_BETWEEN_CLICK = 700;
+const OK_TIME_BETWEEN_CLICK = 10; // 700;
 
 type CookingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -70,7 +70,7 @@ export function Cooking({ navigation, route }: Props) {
   const [assignedTasks, setAssignedTasks] = useState<
     Map<string, string | undefined>
   >(new Map());
-  const {scheduler, setScheduler} = useContext(schedulerContext);
+  const { scheduler, setScheduler } = useContext(schedulerContext);
 
   //lista med de passiva tasks som visas som taskCards, både i små o stor storlek
   //(om de är klara kommer de upp för att säga ok avsluta passive task men även
@@ -149,7 +149,7 @@ export function Cooking({ navigation, route }: Props) {
 
   useEffect(() => {
     updateEarliestTimer(passiveTasks);
-  }, [passiveTasks])
+  }, [passiveTasks]);
 
   useEffect(() => {
     let userIds = users.map((u) => u.id);
@@ -177,11 +177,13 @@ export function Cooking({ navigation, route }: Props) {
     setScheduler(ssss);
 
     return () => {
-      console.log("UNSIBSCRIBING")
+      console.log("UNSIBSCRIBING");
       ssss.unsubscribeTaskAssigned(taskAssignedSubscriber);
       ssss.unsubscribePassiveTaskStarted(passiveTaskStartedSubscriber);
       ssss.unsubscribePassiveTaskFinished(passiveTaskFinishedSubscriber);
-      ssss.unsubscribePassiveTaskCheckFinished(passiveTaskCheckFinishedSubscriber);
+      ssss.unsubscribePassiveTaskCheckFinished(
+        passiveTaskCheckFinishedSubscriber
+      );
       ssss.unsubscribeRecipeFinished(recipeFinishedSubscriber);
     };
   }, []);
@@ -410,9 +412,9 @@ export function Cooking({ navigation, route }: Props) {
               <Image
                 source={require("../../assets/image/editChef.png")}
                 style={styles.topBarRightMenuIcon}
-                />
+              />
             </Pressable>
-              {/*
+            {/*
             <Pressable>
               <Image
                 source={require("../../assets/image/icon.png")} // TODO: Placeholder tills ikon finns

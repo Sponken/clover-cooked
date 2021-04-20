@@ -23,7 +23,7 @@ export function createBasicScheduler(recipe: Recipe,
   const passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[] = [];
   const recipeFinishedSubscribers: RecipeFinishedSubscriber[] =[];
 
-  let lastWorked : Map<CookID, Date> = new Map();
+  let lastFinished : Map<CookID, Date> = new Map();
   let scheduler: Scheduler = {
     taskAssignedSubscribers: taskAssignedSubscribers,
     passiveTaskStartedSubscribers: passiveTaskStartedSubscribers,
@@ -37,24 +37,29 @@ export function createBasicScheduler(recipe: Recipe,
     // timer startats. Vi gör så för att det inte går att stoppa en passiv task
     // som redan börjat.
     extended: new Map<TaskID, [number, number]>(),
-    lastWorked: lastWorked,
+    lastFinished: lastFinished,
     cooks: cooks,
     recipe: recipe,
     completedTasks: [],
     currentTasks: new Map<CookID, TaskID>(),
     currentPassiveTasks: new Map<TaskID, {finish: Date, timeout: NodeJS.Timeout}>(),
+    
+    //en user klickar klar
     finishTask: function (task: TaskID, cook: CookID) {
+      //lägger in kocken med datumet när den klickade klar (den kanske får ett nytt task några rader ner)
+      this.lastFinished.set(cook, new Date(Date.now()));
+      
       this.completedTasks.push(task);
       this.currentTasks.delete(cook);
-      console.log("startOfAssign")
       if(isRecipeFinished(this)){
         this.recipeFinishedSubscribers.forEach((fn) => fn()); 
         return;
       }
       assignTasks(scheduler, cook);
-      console.log("endOfAssign")
+      
     },
     finishPassiveTask: function (task: TaskID) {
+      
       const taskProps = this.currentPassiveTasks.get(task)
       if (taskProps) {
         clearTimeout(taskProps.timeout);
@@ -300,21 +305,25 @@ function prioritizeAndAssignTasks(scheduler: Scheduler, eligibleTasks: TaskID[],
 
 function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], justFinishedCook: CookID | undefined, toPreviousUser: boolean) {
 
-  
+  //console.log("lastFinished")
+  //console.log(scheduler.lastFinished);
+
+  console.log("tasksToAssign")
+  console.log(tasksToAssign);
+
   let cooks = getVacantCooks(scheduler);
 
   //alltid sortera cooks
   let waitingCooks: [CookID, Date][] = []
   let remainingCooks: CookID[]  = []
   let now = new Date(Date.now());
-  let timewait = 600000;
+  let timewait = 0.25*MINUTE; ///TESTTTID
   for (const cook of cooks) {
-    let cookLastWorked = scheduler.lastWorked.get(cook)
-    if (cookLastWorked && (cookLastWorked.getTime() - now.getTime() > timewait) ) {
-
-      // HACK: typescript complains
+    let cooklastFinished = scheduler.lastFinished.get(cook)
+    if (cooklastFinished && (now.getTime() - cooklastFinished.getTime() > timewait) ) {
+      console.log("HÄÄÄÄÄÄR")
       let cookName: string = cook;
-      waitingCooks.push([cookName, cookLastWorked])
+      waitingCooks.push([cookName, cooklastFinished])
     } else if (cook !== justFinishedCook) {
       remainingCooks.push(cook)
     }
@@ -322,6 +331,9 @@ function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], justFin
   //sortera waitingCooks, de som väntat längst kommer sist i listan = högst orio
   waitingCooks.sort((a,b)=> a[1].getTime() - b[1].getTime())
   let waitingCooksSorted: CookID[] = waitingCooks.map(([a, b]) => a)
+
+  //console.log("waiting cooks")
+  //console.log(waitingCooks)
 
   let sortedCooks = remainingCooks;
   //[rest + waitingUsers + justfinished]
@@ -339,16 +351,7 @@ function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], justFin
     sortedCooks.concat(waitingCooksSorted);
   }
   
-  
-  
-  // Vid en strongDependency, så vill vi prioritera baserat på tid och sen den som precis blev klar
-  // Annars, så vill vi prioritera den som precis blev klar och sen baserat på tid?
-
-  // Men annars så vill vi fortfarande bry oss om justFinishedCook, men de som inte har haft något att göra har högre prioritet
-  
-
-  // Om vi har strongdependency så vill vi bara bry oss om justFinishedCook, ej hur lång tid någon har varit utan task
-
+  //assigna task från våran skapade lista
   for (const task of tasksToAssign) {
     const cook = sortedCooks.pop()
     if (cook) {

@@ -24,6 +24,11 @@ export function createBasicScheduler(recipe: Recipe,
   const recipeFinishedSubscribers: RecipeFinishedSubscriber[] =[];
 
   let lastFinished : Map<CookID, Date> = new Map();
+  // alla kockar läggs till i lastFinished kockar (inkluderar då även de som ej blev tilldelade vid start)
+  let now = new Date(Date.now())
+  for (const cook of cooks) {
+    lastFinished.set(cook, now)
+  }
   let scheduler: Scheduler = {
     taskAssignedSubscribers: taskAssignedSubscribers,
     passiveTaskStartedSubscribers: passiveTaskStartedSubscribers,
@@ -299,6 +304,9 @@ function prioritizeAndAssignTasks(scheduler: Scheduler, eligibleTasks: TaskID[],
 }
 
 
+
+
+
 //om toPrev=true + en kock klickat klar + har strong dependency vill vi sätta den allra först
 //if    om lång tid utan task prioriteras dem
 //else  alltid annars kock som klickade klar
@@ -317,9 +325,7 @@ function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], justFin
     let cookLastFinished = scheduler.lastFinished.get(cook)
 
     if (cookLastFinished && (now.getTime() - cookLastFinished.getTime() > timewait) ) {
-      //console.log("kocken har väntat länge!")
-      let cookName: string = cook;
-      waitingCooks.push([cookName, cookLastFinished])
+      waitingCooks.push([cook, cookLastFinished])
     } else if (cook !== justFinishedCook) {
       remainingCooks.push(cook)
     }
@@ -331,10 +337,12 @@ function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], justFin
 
   let sortedCooks = remainingCooks;
 
+  
+  // TODO: samma kock borde få task igen, prioriteras, om den vilat och sen bara gjort ett task
+
   //strong dependency - samma kock bör få task igen
   //[rest + waitingUsers + justfinished]
   if (toPreviousUser) {
-    //console.log("STRONG DEPENDENCY - borde gå till samma kock")
     sortedCooks = sortedCooks.concat(waitingCooksSorted);
     if (justFinishedCook && cooks.includes(justFinishedCook)) {
       sortedCooks.push(justFinishedCook)
@@ -342,7 +350,6 @@ function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], justFin
   } 
   //[rest + justfinished + waitingUsers]
   else {
-    //console.log("INTE strong dependency - borde gå till samma kock")
     if (justFinishedCook && cooks.includes(justFinishedCook)) {
       sortedCooks.push(justFinishedCook)
     }

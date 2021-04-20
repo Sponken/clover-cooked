@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { View, StyleSheet } from "react-native";
 
 import { StandardButton, StandardText } from "../components";
@@ -7,6 +7,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation";
 
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import { schedulerContext } from "./scheduler-context";
 
 type RecipeFinishedScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -18,6 +20,8 @@ type Props = {
 };
 
 export function RecipeFinished({ navigation }: Props) {
+  const { scheduler, setScheduler } = useContext(schedulerContext);
+
   return (
     <SafeAreaView style={styles.screenContainer}>
       <View style={styles.textContainer}>
@@ -25,6 +29,7 @@ export function RecipeFinished({ navigation }: Props) {
       </View>
       <StandardButton
         onPress={() => {
+          setScheduler();
           navigation.setParams({ recipe: undefined });
           navigation.navigate("RecipeLibrary", {
             screen: "RecipeLibrary",

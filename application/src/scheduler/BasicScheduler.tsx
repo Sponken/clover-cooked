@@ -1,6 +1,7 @@
-import { Recipe, Task } from "../data";
+import { Recipe, Task, idleTaskIDs, isIdleTaskID, doDishesTaskID, setTableTaskID, helpOrRestTaskID } from "../data";
 import {Scheduler, CookID, PassiveTaskStartedSubscriber, PassiveTaskFinishedSubscriber, PassiveTaskCheckFinishedSubscriber, TaskAssignedSubscriber,RecipeFinishedSubscriber} from "./Scheduler"
 import {includesAll, removeElement} from "../utils"
+
 
 type TaskID = string
 
@@ -14,6 +15,7 @@ const MINUTE = 60000;
 // let scheduler: Scheduler = createScheduler(recipe, ["William", "Pontus"], tal, ptsl);
 // scheduler.finishTask(new_task, "William");
 // ```
+
 export function createBasicScheduler(recipe: Recipe, 
   cooks: CookID[], 
   ): Scheduler {
@@ -22,13 +24,13 @@ export function createBasicScheduler(recipe: Recipe,
   const passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[] = [];
   const passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[] = [];
   const recipeFinishedSubscribers: RecipeFinishedSubscriber[] =[];
+
   let scheduler: Scheduler = {
     taskAssignedSubscribers: taskAssignedSubscribers,
     passiveTaskStartedSubscribers: passiveTaskStartedSubscribers,
     passiveTaskFinishedSubscribers: passiveTaskFinishedSubscribers,
     passiveTaskCheckFinishedSubscribers: passiveTaskCheckFinishedSubscribers,
     recipeFinishedSubscribers: recipeFinishedSubscribers,
-
     // Detta fältet representerar hur många gånger en task har blivit förlängd.
     // I `[number, number]` är det första värdet hur många gånger den blivit
     // "klar" och det andra värdet är hur många gånger den förlängts och en ny
@@ -41,15 +43,22 @@ export function createBasicScheduler(recipe: Recipe,
     currentTasks: new Map<CookID, TaskID>(),
     currentPassiveTasks: new Map<TaskID, {finish: Date, timeout: NodeJS.Timeout}>(),
     finishTask: function (task: TaskID, cook: CookID) {
-      this.completedTasks.push(task);
       this.currentTasks.delete(cook);
-      console.log("startOfAssign")
-      if(isRecipeFinished(this)){
-        this.recipeFinishedSubscribers.forEach((fn) => fn()); 
-        return;
+
+      if (recipe.tasks.some(t => t.id===task)) {
+        this.completedTasks.push(task);
+        if(isRecipeFinished(this)){
+          this.recipeFinishedSubscribers.forEach((fn) => fn()); 
+          return;
+        }
+      } else if (isIdleTaskID(task)) {
+        if (doDishesTaskID) {
+
+        } else if (doDishesTaskID) {
+
+        }
       }
       assignTasks(scheduler, cook);
-      console.log("endOfAssign")
     },
     finishPassiveTask: function (task: TaskID) {
       const taskProps = this.currentPassiveTasks.get(task)
@@ -244,7 +253,6 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
   let eligibleTasks: TaskID[][]
   [passiveTasks, eligibleTasks] = getEligibleTasks(scheduler);
   
-  console.log("startOfAssign")
   // Starta alla passiva tasks som är möjliga
   for (const passiveTask of passiveTasks) {
     let real_task = getTask(scheduler.recipe, passiveTask);
@@ -256,9 +264,6 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
   for (const tasks of eligibleTasks) {
     prioritizeAndAssignTasks(scheduler, tasks, cook)
   }
-  console.log("endOfAssign")
-
-
 
 }
 

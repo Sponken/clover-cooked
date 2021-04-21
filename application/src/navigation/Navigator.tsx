@@ -114,7 +114,7 @@ const RecipeLibraryNav = () => (
 );
 
 function CustomDrawerContent(props) {
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(true);
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
     if (!isEnabled) {

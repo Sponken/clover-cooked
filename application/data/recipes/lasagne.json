@@ -166,11 +166,19 @@
       "resources": []
     },
     {
+      "id": "delaKörsbärs",
+      "name": "Dela körsbärstomaterna",
+      "instructions": "Skär körsbärstomaterna i 2 delar",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "gulaKörsbärstomater", "amount": 1 }],
+      "resources": []
+    },
+    {
       "id": "läggPåFat",
       "name": "Lägg på fat",
-      "instructions": "Lägg rödlöken på ett fat tillsammans med körsbärstomater. Blanda försiktigt",
+      "instructions": "Lägg rödlöken på ett fat tillsammans med körsbärstomaterna. Blanda försiktigt",
       "estimatedTime": 5,
-      "ingredients": [{ "ingredientId": "gulaKörsbärstomater", "amount": 1 }],
+      "ingredients": [],
       "resources": []
     },
     {
@@ -206,9 +214,17 @@
     {
       "id": "rörNerMjölk",
       "name": "Rör ner mjölk",
-      "instructions": "Vispa ner mjölken i kastrullen med smör och mjöl, lite i taget. Låt koka upp och koka några minuter under omrörning.",
+      "instructions": "Vispa ner mjölken i kastrullen med smör och mjöl, lite i taget.",
       "estimatedTime": 8,
       "ingredients": [{ "ingredientId": "mjölk", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "kokaSås",
+      "name": "Koka såsen",
+      "instructions": "Låt såsen i kastrullen koka upp och sedan koka några minuter under omrörning.",
+      "estimatedTime": 8,
+      "ingredients": [],
       "resources": []
     },
     {
@@ -300,7 +316,7 @@
   "taskDependencies": [
     {
       "taskId": "läggPåFat",
-      "dependsOn": ["finhackRödlök"]
+      "dependsOn": ["finhackRödlök", "delaKörsbärs"]
     },
     {
       "taskId": "ugnVärms",
@@ -359,8 +375,12 @@
       "strongDependsOn": ["pudraVetemjöl"]
     },
     {
-      "taskId": "smakaAvSP",
+      "taskId": "kokaSås",
       "strongDependsOn": ["rörNerMjölk"]
+    },
+    {
+      "taskId": "smakaAvSP",
+      "strongDependsOn": ["kokaSås"]
     },
     {
       "taskId": "avslutaBygge",

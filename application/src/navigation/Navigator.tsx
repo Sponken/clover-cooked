@@ -114,10 +114,10 @@ const RecipeLibraryNav = () => (
 );
 
 function CustomDrawerContent(props) {
-  const [isEnabled, setIsEnabled] = useState(true);
+  const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
-    if (!isEnabled) {
+    if (isEnabled) {
       activateKeepAwake();
     } else {
       deactivateKeepAwake();
@@ -127,7 +127,7 @@ function CustomDrawerContent(props) {
     <DrawerContentScrollView style={styles.extraDrawerItemsContainer}>
       <DrawerItemList {...props} />
       <View style={styles.switchContainer}>
-        <Text>Keep Awake</Text>
+        <Text>Autolås</Text>
         <Switch
           trackColor={{ false: "#767577", true: "#81b0ff" }}
           thumbColor={isEnabled ? "#f4f3f4" : "#f4f3f4"}

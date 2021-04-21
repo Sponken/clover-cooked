@@ -142,10 +142,10 @@ function CustomDrawerContent(props) {
 
 const styles = StyleSheet.create({
   switchContainer: {
-    paddingTop: 10,
-    paddingLeft: 10,
+    padding: 15,
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
   },
   extraDrawerItemsContainer: {},
 });

@@ -12,14 +12,23 @@
     { "id": "kakao", "name": "kakao", "unit": "msk" },
     { "id": "choklad", "name": "blockchoklad", "unit": "g" }
   ],
-  "resources": [],
+  "resources": [{ "id": "ugn", "name": "Ugn" }],
   "tasks": [
     {
       "id": "ugn",
       "name": "Sätt på ugnen",
-      "instructions": "Sätt på ugnen på 175°C",
+      "instructions": "Sätt på ugnen på 175°C. (Klar startar timer)",
       "initalTask": true,
       "estimatedTime": 1,
+      "ingredients": [],
+      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
+      "id": "ugnVärms",
+      "name": "Ugnen värms",
+      "instructions": "Ugnen värms",
+      "passive": true,
+      "estimatedTime": 7,
       "ingredients": [],
       "resources": []
     },
@@ -34,7 +43,7 @@
     {
       "id": "sepÄgg",
       "name": "Separera äggen",
-      "instructions": "Knäck äggen och separera äggulorna från vitan genom att låta äggvitan rinna av genom dina fingrar. Spara både vitan och gulan separat",
+      "instructions": "Knäck äggen och separera äggulorna från vitan genom att låta äggvitan rinna av genom dina fingrar. Spara både vitan och gulan i separata bunkar",
       "estimatedTime": 5,
       "nonInterruptable": true,
       "ingredients": [{ "ingredientId": "ägg", "amount": 3 }],
@@ -51,15 +60,23 @@
     {
       "id": "sockerI",
       "name": "Vispa i socker",
-      "instructions": "Häll i socker i den vispade äggvitan och vispa",
+      "instructions": "Häll i socker i den vispade äggvitan",
       "estimatedTime": 4,
       "ingredients": [{ "ingredientId": "socker", "amount": 1.5 }],
       "resources": []
     },
     {
+      "id": "vispSockVita",
+      "name": "Vispa sockret och äggvitan",
+      "instructions": "Vispa sockret och äggvitan",
+      "estimatedTime": 4,
+      "ingredients": [],
+      "resources": []
+    },
+    {
       "id": "delaMandelMassa",
       "name": "Hacka mandelmassan grovt",
-      "instructions": "Hacka mandelmassan grovt för att göra den lättare att blanda i smeten sen",
+      "instructions": "Hacka mandelmassan grovt för att göra den lättare att blanda i smeten senare",
       "estimatedTime": 5,
       "ingredients": [{ "ingredientId": "mandelmassa", "amount": 500 }],
       "resources": []
@@ -75,7 +92,7 @@
     {
       "id": "klickaSmet",
       "name": "Klicka ut smeten",
-      "instructions": "Med hjälp av en sprits eller en sked, klicka  ut smeten till runda biskviebottnar på plåten med bakplåtspapper. Använd ett glas eller rund pepparkaksform om du vill få jämnstora bottnar!",
+      "instructions": "Med hjälp av en sprits eller en sked, klicka ut smeten till runda biskviebottnar på plåten med bakplåtspapper. Tips: Använd ett glas eller rund pepparkaksform om du vill få jämnstora bottnar!",
       "estimatedTime": 10,
       "ingredients": [],
       "resources": []
@@ -83,7 +100,7 @@
     {
       "id": "inUgn",
       "name": "Grädda bottnarna",
-      "instructions": "Stoppa in plåten med bottnarna i den varma ugnen",
+      "instructions": "Stoppa in plåten med bottnarna i den varma ugnen (Klar startar timer)",
       "estimatedTime": 1,
       "ingredients": [],
       "resources": []
@@ -114,6 +131,23 @@
       "resources": []
     },
     {
+      "id": "svalnaBisk",
+      "name": "Låt biskvierna svalna",
+      "instructions": "Om biskvierna inte kyldes, låt biskvierna svalna. (Klar startar timer)",
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "svalnaBiskPass",
+      "name": "Låt biskvierna svalna",
+      "instructions": "Låt biskvierna svalna.",
+      "passive": true,
+      "estimatedTime": 5,
+      "ingredients": [],
+      "resources": []
+    },
+    {
       "id": "smörFram",
       "name": "Ställ fram smör",
       "instructions": "Ställ fram smöret i rumstemperatur",
@@ -125,7 +159,7 @@
     {
       "id": "blandaKräm",
       "name": "Blanda ihop smörkrämen",
-      "instructions": "Häll det rumsvarma smöret, florsocker, kakao och äggulorna i en bunke. Rör till en jämn smet.",
+      "instructions": "Häll det rumsvarma smöret, florsocker, kakao och i bunken med äggulorna. Rör till en jämn smet.",
       "estimatedTime": 1,
       "ingredients": [
         { "ingredientId": "kakao", "amount": 6 },
@@ -144,8 +178,17 @@
     {
       "id": "kallt",
       "name": "Ställ biskvierna kallt",
-      "instructions": "Ställ biskvierna kallt",
+      "instructions": "Ställ biskvierna kallt. (Klar startar timer)",
       "estimatedTime": 1,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "kalltPass",
+      "name": "Biskvierna kyls",
+      "instructions": "Biskvierna kyls",
+      "passive": true,
+      "estimatedTime": 10,
       "ingredients": [],
       "resources": []
     },
@@ -189,12 +232,20 @@
       "dependsOn": ["sepÄgg"]
     },
     {
+      "taskId": "ugnVärms",
+      "strongDependsOn": ["ugn"]
+    },
+    {
       "taskId": "sockerI",
       "dependsOn": ["vispaVita"]
     },
     {
+      "taskId": "vispSockVita",
+      "dependsOn": ["sockerI"]
+    },
+    {
       "taskId": "blandaMandel",
-      "dependsOn": ["delaMandelMassa", "sockerI"]
+      "dependsOn": ["delaMandelMassa", "vispSockVita"]
     },
     {
       "taskId": "klickaSmet",
@@ -202,7 +253,7 @@
     },
     {
       "taskId": "inUgn",
-      "dependsOn": ["klickaSmet", "ugn"]
+      "dependsOn": ["klickaSmet", "ugnVärms"]
     },
     {
       "taskId": "gräddas",
@@ -221,12 +272,24 @@
       "dependsOn": ["smörFram", "sepÄgg"]
     },
     {
+      "taskId": "svalnaBisk",
+      "dependsOn": ["lossa"]
+    },
+    {
+      "taskId": "svalnaBiskPass",
+      "dependsOn": ["svalnaBisk"]
+    },
+    {
       "taskId": "bredKräm",
-      "dependsOn": ["blandaKräm", "lossa"]
+      "dependsOn": ["blandaKräm", "svalnaBiskPass"]
     },
     {
       "taskId": "kallt",
       "dependsOn": ["bredKräm"]
+    },
+    {
+      "taskId": "kalltPass",
+      "dependsOn": ["kallt"]
     },
     {
       "taskId": "choklad",
@@ -234,7 +297,7 @@
     },
     {
       "taskId": "doppa",
-      "dependsOn": ["kallt", "choklad"]
+      "dependsOn": ["kalltPass", "choklad"]
     },
     {
       "taskId": "förvara",

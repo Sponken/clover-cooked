@@ -25,6 +25,12 @@ export function createBasicScheduler(recipe: Recipe,
   const passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[] = [];
   const recipeFinishedSubscribers: RecipeFinishedSubscriber[] =[];
 
+  let lastFinished : Map<CookID, Date> = new Map();
+  // alla kockar läggs till i lastFinished kockar (inkluderar då även de som ej blev tilldelade vid start)
+  let now = new Date(Date.now())
+  for (const cook of cooks) {
+    lastFinished.set(cook, now)
+  }
   let scheduler: Scheduler = {
     tableIsSet: recipe.requiresSettingTable,
     possibleDishesRemaining: false,
@@ -39,20 +45,23 @@ export function createBasicScheduler(recipe: Recipe,
     // timer startats. Vi gör så för att det inte går att stoppa en passiv task
     // som redan börjat.
     extended: new Map<TaskID, [number, number]>(),
+    lastFinished: lastFinished,
     cooks: cooks,
     recipe: recipe,
     completedTasks: [],
     currentTasks: new Map<CookID, TaskID>(),
     currentPassiveTasks: new Map<TaskID, {finish: Date, timeout: NodeJS.Timeout}>(),
+    
+    //en user klickar klar
     finishTask: function (task: TaskID, cook: CookID) {
-
       if (recipe.tasks.some(t => t.id===task)) {
-        this.currentTasks.delete(cook);
-        this.completedTasks.push(task);
-        if(isRecipeFinished(this)){
-          this.recipeFinishedSubscribers.forEach((fn) => fn()); 
-          return;
-        }
+      this.lastFinished.set(cook, new Date(Date.now()));
+      
+      this.completedTasks.push(task);
+      this.currentTasks.delete(cook);
+      if(isRecipeFinished(this)){
+        this.recipeFinishedSubscribers.forEach((fn) => fn()); 
+        return;
         assignTasks(scheduler, cook);
       } else if (isIdleTaskID(task)) {
         switch (task) {
@@ -71,8 +80,11 @@ export function createBasicScheduler(recipe: Recipe,
             break;
         }
       }
+      assignTasks(scheduler, cook);
+      console.log("endOfAssign")
     },
     finishPassiveTask: function (task: TaskID) {
+      
       const taskProps = this.currentPassiveTasks.get(task)
       if (taskProps) {
         clearTimeout(taskProps.timeout);
@@ -245,7 +257,8 @@ function getEligibleTasks(
       initialEligibleTasks.push(task.id)
       continue
     }
-    if (strongDepMap.get(task.id) != []) {
+    let ddd = strongDepMap.get(task.id);
+    if (ddd && ddd.length != 0) {
       strongEligibleTasks.push(task.id)
       continue
     }
@@ -262,9 +275,10 @@ function getEligibleTasks(
 function assignTasks(scheduler: Scheduler, cook?: CookID) {
 
   let passiveTasks: TaskID[]
-  let eligibleTasks: TaskID[][]
-  [passiveTasks, eligibleTasks] = getEligibleTasks(scheduler);
-  
+  let initialTasks: TaskID[]
+  let strongTasks: TaskID[]
+  let restTasks: TaskID[]
+  [passiveTasks, [initialTasks, strongTasks, restTasks]] = getEligibleTasks(scheduler);
   // Starta alla passiva tasks som är möjliga
   for (const passiveTask of passiveTasks) {
     let real_task = getTask(scheduler.recipe, passiveTask);
@@ -273,16 +287,26 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
   }
   
 
-  for (const tasks of eligibleTasks) {
-    prioritizeAndAssignTasks(scheduler, tasks, cook)
-  }
+  //tilldelar initial tasks som bör göras
+  prioritizeAndAssignTasks(scheduler, initialTasks, cook, false)
+  
+  //tilldelas task som bör göras av specifik föregående users
+  prioritizeAndAssignTasks(scheduler, strongTasks, cook, true)
+  
+  //tilldelar resterande task till de som är kvar
+  prioritizeAndAssignTasks(scheduler, restTasks, cook, false)
+
+
 
 }
 
 
 
-// Tilldelar givna uppgifter. Försöker först tilldela till kock som jobbar på branchen, sedan för att minimera tiden
-function prioritizeAndAssignTasks(scheduler: Scheduler, eligibleTasks: TaskID[], cook?: CookID) {
+// Tilldelar givna uppgifter. 
+// om toPrev är true så tilldelas till samma kock som jobbat på branchen
+// om toPrev false tilldelas till kock som antingen varit inaktiv längst, över en viss tid, 
+// eller till random kock om ingen varit inaktiv tillräckligt länge
+function prioritizeAndAssignTasks(scheduler: Scheduler, eligibleTasks: TaskID[], cook: CookID | undefined, toPreviousUser: boolean) {
   let [depMap, strongDepMap] = getDependencyMaps(scheduler.recipe);
 
 
@@ -291,26 +315,72 @@ function prioritizeAndAssignTasks(scheduler: Scheduler, eligibleTasks: TaskID[],
   let cond = (eTask: TaskID) => strongDepMap.get(eTask)?.includes(lastCompletedTask) || depMap.get(eTask)?.includes(lastCompletedTask)
   let dependers = eligibleTasks.filter(cond)
 
-  assignGivenTasks(scheduler, dependers, cook);
+  //delar ut alla task som precis blev möjliga
+  assignGivenTasks(scheduler, dependers, cook, toPreviousUser);
 
+  //andra task som är möjliga sorteras om och delas ut
   let rest = eligibleTasks.filter(eTask => !cond(eTask))
   let paths = findCriticalPathTasks(scheduler.recipe, rest);
-  assignGivenTasks(scheduler, paths, cook);
+  assignGivenTasks(scheduler, paths, cook, toPreviousUser);
 }
 
 
 
-function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], priorityCook?: CookID) {
-  let cooks = vacantCooks(scheduler);
-  if (priorityCook) {
-    if (cooks.includes(priorityCook)) {
-      cooks = cooks.filter(c => c != priorityCook)
-      cooks.push(priorityCook)
+
+
+//om toPrev=true + en kock klickat klar + har strong dependency vill vi sätta den allra först
+//if    om lång tid utan task prioriteras dem
+//else  alltid annars kock som klickade klar
+//sen tilldela alla task som finns till kockarna i tur ordning
+
+function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], justFinishedCook: CookID | undefined, toPreviousUser: boolean) {
+
+  let cooks = getVacantCooks(scheduler);
+
+  //alltid sortera cooks
+  let waitingCooks: [CookID, Date][] = []
+  let remainingCooks: CookID[]  = []
+  let now = new Date(Date.now());
+  let timewait = 10*MINUTE; 
+  for (const cook of cooks) {
+    let cookLastFinished = scheduler.lastFinished.get(cook)
+
+    if (cookLastFinished && (now.getTime() - cookLastFinished.getTime() > timewait) ) {
+      waitingCooks.push([cook, cookLastFinished])
+    } else if (cook !== justFinishedCook) {
+      remainingCooks.push(cook)
     }
   }
 
+  //sortera waitingCooks, de som väntat längst kommer sist i listan = högst orio
+  waitingCooks.sort((a,b)=>  b[1].getTime() - a[1].getTime())
+  let waitingCooksSorted: CookID[] = waitingCooks.map(([a, b]) => a)
+
+  let sortedCooks = remainingCooks;
+
+  
+  // TODO: samma kock borde få task igen, prioriteras, om den vilat och sen bara gjort ett task
+
+  //strong dependency - samma kock bör få task igen
+  //[rest + waitingUsers + justfinished]
+  if (toPreviousUser) {
+    sortedCooks = sortedCooks.concat(waitingCooksSorted);
+    if (justFinishedCook && cooks.includes(justFinishedCook)) {
+      sortedCooks.push(justFinishedCook)
+    }
+  } 
+  //[rest + justfinished + waitingUsers]
+  else {
+    if (justFinishedCook && cooks.includes(justFinishedCook)) {
+      sortedCooks.push(justFinishedCook)
+    }
+    sortedCooks = sortedCooks.concat(waitingCooksSorted);
+  }
+
+  //assigna task från våran skapade lista
   for (const task of tasksToAssign) {
-    const cook = cooks.pop()
+    const cook = sortedCooks.pop()
+    console.log(cook)
     if (cook) {
       scheduler.currentTasks.set(cook, task);
       
@@ -326,7 +396,7 @@ function isRecipeFinished(scheduler: Scheduler): boolean{
 }
 
 
-function vacantCooks(scheduler: Scheduler): CookID[] {
+function getVacantCooks(scheduler: Scheduler): CookID[] {
   return scheduler.cooks.filter(cook => !scheduler.currentTasks.has(cook))
 }
 

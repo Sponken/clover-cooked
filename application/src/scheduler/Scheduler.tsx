@@ -100,7 +100,14 @@ export interface Scheduler {
   passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[];
   passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[];
   taskAssignedSubscribers: TaskAssignedSubscriber[];
-  recipeFinishedSubscribers: RecipeFinishedSubscriber[];
+  readonly recipeFinishedSubscribers: RecipeFinishedSubscriber[];
+
+  /**
+   * När en user inte har något att göra så läggs den in här med datumet som den las in
+   * När nya task assignas kollar den om någon inte haft något att göra på länge och då
+   * prioriteras denna user att få ett nytt task
+   */
+  readonly lastFinished: Map<CookID, Date>;
 
   // Data för om bordet är dukat
   tableIsSet: boolean;

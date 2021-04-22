@@ -6,6 +6,9 @@ import {
   IngredientUsage,
   getIngredientName,
   getIngredientUnit,
+  isIdleTaskID,
+  idleTasks,
+  getIdleTask,
 } from "../data";
 import { StyleSheet, Text, View, FlatList, Image } from "react-native";
 import { unsafeFind } from "../utils";
@@ -31,18 +34,12 @@ export const TaskCard = ({
   minimized,
 }: TaskCardProps) => {
   let task: TaskType;
-  if (taskId) {
+  if (taskId && isIdleTaskID(taskId)) {
+    task = getIdleTask(taskId);
+  } else if (taskId) {
     task = unsafeFind(recipe.tasks, (o: TaskType) => o.id == taskId);
   } else {
-    task = {
-      id: "__FÄRDIG__",
-      name: "Det finns inget att göra just nu",
-      instructions:
-        "Det finns inget att göra just nu. Kolla om du kan hjälpa någon annan eller diska, vila annars!",
-      ingredients: [],
-      resources: [],
-      estimatedTime: 9999,
-    };
+    return <></>;
   }
 
   let userIndicator: JSX.Element;

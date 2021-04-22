@@ -26,6 +26,8 @@ export function createBasicScheduler(recipe: Recipe,
   const recipeFinishedSubscribers: RecipeFinishedSubscriber[] =[];
 
   let scheduler: Scheduler = {
+    tableIsSet: recipe.requiresSettingTable,
+    possibleDishesRemaining: false,
     taskAssignedSubscribers: taskAssignedSubscribers,
     passiveTaskStartedSubscribers: passiveTaskStartedSubscribers,
     passiveTaskFinishedSubscribers: passiveTaskFinishedSubscribers,
@@ -43,22 +45,32 @@ export function createBasicScheduler(recipe: Recipe,
     currentTasks: new Map<CookID, TaskID>(),
     currentPassiveTasks: new Map<TaskID, {finish: Date, timeout: NodeJS.Timeout}>(),
     finishTask: function (task: TaskID, cook: CookID) {
-      this.currentTasks.delete(cook);
 
       if (recipe.tasks.some(t => t.id===task)) {
+        this.currentTasks.delete(cook);
         this.completedTasks.push(task);
         if(isRecipeFinished(this)){
           this.recipeFinishedSubscribers.forEach((fn) => fn()); 
           return;
         }
+        assignTasks(scheduler, cook);
       } else if (isIdleTaskID(task)) {
-        if (doDishesTaskID) {
-
-        } else if (doDishesTaskID) {
-
+        switch (task) {
+          case doDishesTaskID:
+            this.currentTasks.delete(cook);
+            this.possibleDishesRemaining = false;
+            assignTasks(scheduler, cook);
+            break;
+          case setTableTaskID:
+            this.currentTasks.delete(cook);
+            this.tableIsSet = true;
+            assignTasks(scheduler, cook);
+            break;
+          case helpOrRestTaskID:
+            // Gör ingenting för nu
+            break;
         }
       }
-      assignTasks(scheduler, cook);
     },
     finishPassiveTask: function (task: TaskID) {
       const taskProps = this.currentPassiveTasks.get(task)

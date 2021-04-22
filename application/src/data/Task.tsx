@@ -33,4 +33,13 @@ export const idleTasks: Task[] = [
 ];
 export const idleTaskIDs: string[] = idleTasks.map((task) => task.id);
 
+export const getIdleTask = (taskId: string): Task => {
+  for (const task of idleTasks) {
+    if (task.id === taskId) {
+      return task;
+    }
+  }
+  throw "getIdleTask: Task is not an idle task";
+};
+
 export const isIdleTaskID = (taskId: string) => idleTaskIDs.includes(taskId);

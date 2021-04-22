@@ -3,6 +3,7 @@
   "name": "Chokladbiskvier",
   "description": "Goda chokladbiskvier för hela familjen",
   "portions": 1,
+  "requiresSettingTable": false,
   "ingredients": [
     { "id": "ägg", "name": "ägg", "unit": "st" },
     { "id": "socker", "name": "socker", "unit": "dl" },

@@ -8,7 +8,7 @@ export const idleTasks: Task[] = [
   {
     id: setTableTaskID,
     name: "Duka",
-    instructions: "Duka",
+    instructions: "Duka fram det som behövs för måltiden",
     ingredients: [],
     resources: [],
     estimatedTime: 0,
@@ -16,7 +16,8 @@ export const idleTasks: Task[] = [
   {
     id: doDishesTaskID,
     name: "Diska",
-    instructions: "Diska det som går att diska",
+    instructions:
+      'Diska det som går att diska. Finns det ingen disk kan du trycka "Klar"',
     ingredients: [],
     resources: [],
     estimatedTime: 0,

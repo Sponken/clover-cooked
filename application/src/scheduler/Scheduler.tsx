@@ -100,7 +100,7 @@ export interface Scheduler {
   passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[];
   passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[];
   taskAssignedSubscribers: TaskAssignedSubscriber[];
-  readonly recipeFinishedSubscribers: RecipeFinishedSubscriber[];
+  recipeFinishedSubscribers: RecipeFinishedSubscriber[];
 
   /**
    * När en user inte har något att göra så läggs den in här med datumet som den las in

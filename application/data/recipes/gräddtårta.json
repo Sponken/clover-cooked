@@ -3,6 +3,7 @@
   "name": "Gräddtårta",
   "description": "En gräddtårta med jordgubbar på",
   "portions": 10,
+  "requiresSettingTable": false,
   "ingredients": [
     { "id": "vaniljstång", "name": "Vaniljstång", "unit": "st" },
     { "id": "smör", "name": "Smör", "unit": "msk" },

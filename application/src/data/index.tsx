@@ -21,4 +21,5 @@ export {
   setTableTaskID,
   doDishesTaskID,
   helpOrRestTaskID,
+  getIdleTask,
 } from "./Task";

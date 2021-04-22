@@ -32,7 +32,7 @@ export function createBasicScheduler(recipe: Recipe,
     lastFinished.set(cook, now)
   }
   let scheduler: Scheduler = {
-    tableIsSet: recipe.requiresSettingTable,
+    tableIsSet: !recipe.requiresSettingTable??false,
     possibleDishesRemaining: false,
     taskAssignedSubscribers: taskAssignedSubscribers,
     passiveTaskStartedSubscribers: passiveTaskStartedSubscribers,
@@ -55,13 +55,15 @@ export function createBasicScheduler(recipe: Recipe,
     //en user klickar klar
     finishTask: function (task: TaskID, cook: CookID) {
       if (recipe.tasks.some(t => t.id===task)) {
-      this.lastFinished.set(cook, new Date(Date.now()));
-      
-      this.completedTasks.push(task);
-      this.currentTasks.delete(cook);
-      if(isRecipeFinished(this)){
-        this.recipeFinishedSubscribers.forEach((fn) => fn()); 
-        return;
+        this.lastFinished.set(cook, new Date(Date.now()));
+        
+        this.completedTasks.push(task);
+        this.currentTasks.delete(cook);
+        this.possibleDishesRemaining = true;
+        if(isRecipeFinished(this)){
+          this.recipeFinishedSubscribers.forEach((fn) => fn()); 
+          return;
+        }
         assignTasks(scheduler, cook);
       } else if (isIdleTaskID(task)) {
         switch (task) {
@@ -82,6 +84,7 @@ export function createBasicScheduler(recipe: Recipe,
       }
       assignTasks(scheduler, cook);
       console.log("endOfAssign")
+    
     },
     finishPassiveTask: function (task: TaskID) {
       
@@ -296,10 +299,38 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
   //tilldelar resterande task till de som är kvar
   prioritizeAndAssignTasks(scheduler, restTasks, cook, false)
 
-
+  assignIdleTasks(scheduler)
 
 }
 
+  // Delar ut idle uppgifter till alla som inte lagar mat
+  function assignIdleTasks(scheduler: Scheduler){
+
+    let idleCooks = getIdleCooks(scheduler).filter(c => scheduler.currentTasks.get(c) === helpOrRestTaskID || !scheduler.currentTasks.has(c))
+    // Om det är odukat och ingen dukar, ge någon i uppgift att duka
+    if (idleCooks.length > 0 && !scheduler.tableIsSet && !Array.from(scheduler.currentTasks.values()).some(t => t===setTableTaskID)){
+      const nextIdleCook = idleCooks.pop()
+      if (nextIdleCook) {
+        scheduler.currentTasks.set(nextIdleCook, setTableTaskID)
+        scheduler.taskAssignedSubscribers.forEach(s => s(setTableTaskID, nextIdleCook))
+      }
+    }
+
+    if(idleCooks.length > 0 && scheduler.possibleDishesRemaining && !Array.from(scheduler.currentTasks.values()).some(t => t===doDishesTaskID)){
+      const nextIdleCook = idleCooks.pop()
+      if(nextIdleCook) {
+        scheduler.currentTasks.set(nextIdleCook, doDishesTaskID)
+        scheduler.taskAssignedSubscribers.forEach(s => s(doDishesTaskID, nextIdleCook))
+      }
+
+    }
+    
+    for (const cook of idleCooks.filter(c => !scheduler.currentTasks.has(c))){
+      scheduler.currentTasks.set(cook, helpOrRestTaskID)
+      scheduler.taskAssignedSubscribers.forEach(s => s(helpOrRestTaskID, cook))
+    }
+    
+  }
 
 
 // Tilldelar givna uppgifter. 
@@ -335,7 +366,7 @@ function prioritizeAndAssignTasks(scheduler: Scheduler, eligibleTasks: TaskID[],
 
 function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], justFinishedCook: CookID | undefined, toPreviousUser: boolean) {
 
-  let cooks = getVacantCooks(scheduler);
+  let cooks = getIdleCooks(scheduler);
 
   //alltid sortera cooks
   let waitingCooks: [CookID, Date][] = []
@@ -396,8 +427,18 @@ function isRecipeFinished(scheduler: Scheduler): boolean{
 }
 
 
-function getVacantCooks(scheduler: Scheduler): CookID[] {
-  return scheduler.cooks.filter(cook => !scheduler.currentTasks.has(cook))
+function getIdleCooks(scheduler: Scheduler): CookID[] {
+  let cooksWithIdleTasks:CookID[] = []
+  scheduler.currentTasks.forEach((task, cook) => {
+    if (task === setTableTaskID || task === doDishesTaskID)
+    cooksWithIdleTasks.push(cook);
+  })
+  scheduler.currentTasks.forEach((task, cook) => {
+    if (task === helpOrRestTaskID)
+    cooksWithIdleTasks.push(cook);
+  })
+  
+  return  cooksWithIdleTasks.concat(scheduler.cooks.filter(cook => !scheduler.currentTasks.has(cook)))
 }
 
 

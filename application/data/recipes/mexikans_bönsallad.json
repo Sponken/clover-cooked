@@ -211,7 +211,7 @@
     {
       "id": "brödUgn",
       "name": "Ställ in brödet",
-      "instructions": "Ställ in plåten med bröd i mitten av ugnen (Klar startar timer)",
+      "instructions": "Ställ in plåten med bröd i mitten av ugnen. (Klar startar timer)",
       "estimatedTime": 1,
       "ingredients": [],
       "resources": [{ "resourceId": "ugn", "amount": 1 }]

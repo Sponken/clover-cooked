@@ -214,7 +214,7 @@
     {
       "id": "rörNerMjölk",
       "name": "Rör ner mjölk",
-      "instructions": "Vispa ner mjölken i kastrullen med smör och mjöl, lite i taget.",
+      "instructions": "Vispa ner mjölken, lite i taget, i kastrullen med smör och mjölk.",
       "estimatedTime": 8,
       "ingredients": [{ "ingredientId": "mjölk", "amount": 1 }],
       "resources": []
@@ -265,7 +265,7 @@
     {
       "id": "varva",
       "name": "Varva lager med plattor, sås och köttfärsås",
-      "instructions": "Spara lite av den vit såsen till nästa steg. Varva sedan lager med plattor, sås och köttfärssås. Upprepa tills köttfärssåsen är slut, eller formen nästan full.",
+      "instructions": "Spara lite av den vita såsen till nästa steg. Varva sedan lager med plattor, sås och köttfärssås. Upprepa tills köttfärssåsen är slut, eller formen nästan full.",
       "estimatedTime": 8,
       "ingredients": [],
       "resources": []

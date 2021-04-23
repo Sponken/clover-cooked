@@ -40,27 +40,31 @@ export interface Scheduler {
   /**
    * Metod som kallas på när en task är tilldelad
    */
-  subscribeTaskAssigned:   (f: TaskAssignedSubscriber) => void;
+  subscribeTaskAssigned: (f: TaskAssignedSubscriber) => void;
   unsubscribeTaskAssigned: (f: TaskAssignedSubscriber) => void;
   /**
    * Metod som kallas på när ny passiv task är startad
    */
-  subscribePassiveTaskStarted:   (f: PassiveTaskStartedSubscriber) => void;
+  subscribePassiveTaskStarted: (f: PassiveTaskStartedSubscriber) => void;
   unsubscribePassiveTaskStarted: (f: PassiveTaskStartedSubscriber) => void;
   /**
    * Metod som kallas på när en passiv task är avslutad
    */
-  subscribePassiveTaskFinished:   (f: PassiveTaskFinishedSubscriber ) => void;
+  subscribePassiveTaskFinished: (f: PassiveTaskFinishedSubscriber) => void;
   unsubscribePassiveTaskFinished: (f: PassiveTaskFinishedSubscriber) => void;
   /**
    * Metod som kallas för att kolla att det passiva tasket är helt avslutat av användaren
    */
-  subscribePassiveTaskCheckFinished:   (f: PassiveTaskCheckFinishedSubscriber) => void;
-  unsubscribePassiveTaskCheckFinished: (f: PassiveTaskCheckFinishedSubscriber) => void;
+  subscribePassiveTaskCheckFinished: (
+    f: PassiveTaskCheckFinishedSubscriber
+  ) => void;
+  unsubscribePassiveTaskCheckFinished: (
+    f: PassiveTaskCheckFinishedSubscriber
+  ) => void;
   /**
    * Metod som kallas på när alla task är avklarade
    */
-  subscribeRecipeFinished:   (f: RecipeFinishedSubscriber) => void;
+  subscribeRecipeFinished: (f: RecipeFinishedSubscriber) => void;
   unsubscribeRecipeFinished: (f: RecipeFinishedSubscriber) => void;
   /**
    * Utöker tiden på en pågående passiv task
@@ -96,5 +100,12 @@ export interface Scheduler {
   passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[];
   passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[];
   taskAssignedSubscribers: TaskAssignedSubscriber[];
-  recipeFinishedSubscribers: RecipeFinishedSubscriber[];
+  readonly recipeFinishedSubscribers: RecipeFinishedSubscriber[];
+
+  /**
+   * När en user inte har något att göra så läggs den in här med datumet som den las in
+   * När nya task assignas kollar den om någon inte haft något att göra på länge och då
+   * prioriteras denna user att få ett nytt task
+   */
+  readonly lastFinished: Map<CookID, Date>;
 }

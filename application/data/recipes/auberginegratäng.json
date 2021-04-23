@@ -43,11 +43,20 @@
     {
       "id": "ugn",
       "name": "Sätt på ugn",
-      "instructions": "Sätt på ugnen på 225 grader",
+      "instructions": "Sätt på ugnen på 225°C. (Klar startar timer)",
       "initalTask": true,
       "estimatedTime": 1,
       "ingredients": [],
       "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
+      "id": "ugnVärms",
+      "name": "Ugnen värms",
+      "instructions": "Ugnen värms",
+      "passive": true,
+      "estimatedTime": 7,
+      "ingredients": [],
+      "resources": []
     },
     {
       "id": "hackaLök",
@@ -108,7 +117,7 @@
     {
       "id": "hettaStekgryta",
       "name": "Värm upp stekgryta",
-      "instructions": "Häll upp olivolja i en stekgryta på medelhög värme",
+      "instructions": "Häll upp olivolja i en gryta på medelhög värme",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "olivolja", "amount": 1 }],
       "resources": []
@@ -116,7 +125,7 @@
     {
       "id": "fräsStekgryta",
       "name": "Fräs i stekgryta",
-      "instructions": "Lägg skivad lök, hackad paprika, pressad vitlöken, hackad rosmarin, tomatpure, chiliflakes och kanel i en stekgryta och fräs i 4-5 minuter: ",
+      "instructions": "Lägg skivad lök, hackad paprika, pressad vitlöken, hackad rosmarin, tomatpure, chiliflakes och kanel i grytan och fräs i 4-5 minuter: ",
       "estimatedTime": 8,
       "ingredients": [
         { "ingredientId": "tomatpure", "amount": 2 },
@@ -136,7 +145,7 @@
     {
       "id": "tillsättStekgryta",
       "name": "Tillsätt till gryta",
-      "instructions": "Tillsätt till stekgrytan aubergine, röda linser, konserverade tomater, vatten och salt. Koka upp",
+      "instructions": "Tillsätt till grytan aubergine, röda linser, konserverade tomater, vatten och salt. Koka upp. (Klar startar timer)",
       "estimatedTime": 3,
       "ingredients": [
         { "ingredientId": "konserveradeTomater", "amount": 1 },
@@ -197,7 +206,7 @@
     {
       "id": "smulaTärning",
       "name": "Tillsätt buljong",
-      "instructions": "Smula ner grönsaksbuljong i den vita såsen. Koka upp",
+      "instructions": "Smula ner grönsaksbuljong i den vita såsen. Koka upp. (Klar startar timer)",
       "estimatedTime": 6,
       "ingredients": [{ "ingredientId": "grönsaksbuljong", "amount": 1 }],
       "resources": []
@@ -230,7 +239,7 @@
     {
       "id": "smörjForm",
       "name": "Smörj en ugnssäker form",
-      "instructions": "Smörj en ugnssäker form med smör",
+      "instructions": "Ta fram och smörj en ugnssäker form med smör",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "smör", "amount": 0.5 }],
       "resources": []
@@ -262,7 +271,7 @@
     {
       "id": "ställInIUgn",
       "name": "Ställ in lasagnen i ugn",
-      "instructions": "Ställ in lasagnen mitt i ugnen",
+      "instructions": "Ställ in lasagnen mitt i ugnen. (Klar startar timer)",
       "estimatedTime": 2,
       "ingredients": [],
       "resources": []
@@ -290,6 +299,14 @@
       "instructions": "Skala och finhacka rödlöken",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "rödlök", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "delaKörsbärs",
+      "name": "Dela körsbärstomaterna",
+      "instructions": "Skär körsbärstomaterna i 2 delar",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "gulaKörsbärstomater", "amount": 1 }],
       "resources": []
     },
     {
@@ -325,6 +342,10 @@
     }
   ],
   "taskDependencies": [
+    {
+      "taskId": "ugnVärms",
+      "strongDependsOn": ["ugn"]
+    },
     {
       "taskId": "brynaAubergine",
       "dependsOn": ["tärnaAubergine"],
@@ -395,7 +416,7 @@
     },
     {
       "taskId": "ställInIUgn",
-      "dependsOn": ["avslutaBygge", "ugn"],
+      "dependsOn": ["avslutaBygge", "ugnVärms"],
       "strongDependsOn": []
     },
     {
@@ -404,8 +425,13 @@
       "strongDependsOn": ["ställInIUgn"]
     },
     {
-      "taskId": "läggPåFat",
+      "taskId": "delaKörsbärs",
       "dependsOn": ["finhackRödlök"],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "läggPåFat",
+      "dependsOn": ["delaKörsbärs"],
       "strongDependsOn": []
     },
     {

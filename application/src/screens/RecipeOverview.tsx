@@ -42,7 +42,6 @@ export function RecipeOverview({ navigation, route }: Props) {
     // State för vilka sidor som finns i tabview
     { key: "ing", title: "Ingredienser" },
     { key: "des", title: "Beskrivning" },
-    { key: "ins", title: "Instruktioner" },
   ]);
 
   // komponenter till tab view
@@ -58,16 +57,9 @@ export function RecipeOverview({ navigation, route }: Props) {
     </View>
   );
 
-  const Instructions = () => (
-    <View style={styles.tabViewSceneContainer}>
-      <Text style={styles.descriptionText}>Funktionalitet finns ej än.</Text>
-    </View>
-  );
-
   const renderScene = SceneMap({
     ing: Ingredients,
     des: Description,
-    ins: Instructions,
   });
 
   // Navigationsbar för tabviewn
@@ -102,13 +94,6 @@ export function RecipeOverview({ navigation, route }: Props) {
                   <Image source={require("../../assets/image/backImg.png")} />
                 </View>
               </Pressable>
-              <View style={styles.timeContainer}>
-                <Image
-                  style={styles.timeIcon}
-                  source={require("../../assets/image/time_icon.png")}
-                />
-                <Text style={styles.timeText}>1h</Text>
-              </View>
             </SafeAreaView>
           </ImageBackground>
         </View>
@@ -117,7 +102,11 @@ export function RecipeOverview({ navigation, route }: Props) {
             <Text style={styles.name}>{recipe.name}</Text>
           </View>
           <View style={styles.portionsContainer}>
-            <Text style={styles.portions}>Portioner: {recipe.portions}</Text>
+            <Text style={styles.portions}>
+              {recipe.portions +
+                " " +
+                (recipe.portions === 1 ? "portion" : "portioner")}
+            </Text>
           </View>
           <TabView
             navigationState={{ index, routes }}
@@ -189,14 +178,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  timeIcon: {
-    height: 16,
-    width: 16,
-    marginRight: 4,
-  },
-  timeText: {
-    fontSize: 15,
-  },
   infoContainer: {
     flex: 2,
   },
@@ -211,10 +192,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   portionsContainer: {
-    marginLeft: 8,
-    backgroundColor: "lightgray",
+    marginHorizontal: 8,
     padding: 6,
-    borderRadius: 4,
     alignSelf: "flex-start",
   },
   portions: { fontSize: 15 },

@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  Text,
   Image,
   View,
   Modal,
@@ -17,7 +16,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation";
 
 
-import { Recipe, User, recipes } from "../data";
+import { Recipe, User } from "../data";
 import { DrawerActions } from "@react-navigation/routers";
 
 import { getRecipeThumbnail } from "../data";
@@ -63,6 +62,9 @@ export function SessionStart({ navigation, route }: Props) {
   //modal poppar upp som "är du säker på att du vill deleta denna session?"
   const [deleteSessionModalVisible, setDeleteSessionModalVisible] = useState(false);
 
+  //modal poppar upp som "det måste finnas åtminstonde en kock för att starta"
+  const [chefModalVisible, setChefModalVisible] = useState(false);
+
   //Initiera users och recipe om de inte finns
   if(route.params?.users === undefined){
     users = []
@@ -83,11 +85,24 @@ export function SessionStart({ navigation, route }: Props) {
     } else {
       return (
         <View style={styles.recipeContainer}>
-          <StandardText text={recipe.name}/>
-          <Image
-          style={styles.recipeImage}
-          source={getRecipeThumbnail(recipe.id)}
-          />
+          <View style={styles.recipeImageAndDeleteContainer}>
+          
+            <Image
+            style={styles.recipeImage}
+            source={getRecipeThumbnail(recipe.id)}
+            />
+              <View style={styles.deleteContainer}>
+                <StandardButton onPress={() =>{scheduler ? setDeleteSessionModalVisible(true): navigation.navigate("RecipeLibrary", {
+              screen: "RecipeLibrary"
+              })}}
+                buttonIcon={<Image style={styles.deleteIcon}source={require("../../assets/image/deleteWhite.png")}
+                />}
+                buttonSize={"small"}
+                buttonType={"black"}
+                />
+              </View>
+          </View>
+          <StandardText text={recipe.name} textWeight={"bold"}/>
       </View>
       )
     }
@@ -126,12 +141,13 @@ export function SessionStart({ navigation, route }: Props) {
           >
             <Pressable style={styles.modalContainer} onPress={() => null}>
               <View style={styles.modalTextContainer}>
-              <StandardText text={"Vill du radera denna matlagningssession?"}/>
+              <StandardText text={"Receptet är inte klart,"}/>
+              <StandardText text={"vill du ändå avsluta matlagningen?"}/>
               </View>
               <View style={styles.modalButtonsContainer}>
                 <StandardButton buttonType={"secondary"} buttonText={"Avbryt"} onPress={() => setDeleteSessionModalVisible(!deleteSessionModalVisible)}/>
                 <View style={{width: "10%" }}/>
-                <StandardButton buttonText={"Ta bort receptet"} onPress={() => 
+                <StandardButton buttonText={"Avsluta receptet"} onPress={() => 
                 {{
                   setDeleteSessionModalVisible(false);
                   setScheduler();
@@ -143,6 +159,27 @@ export function SessionStart({ navigation, route }: Props) {
               </View>
             </Pressable>
           </Pressable>
+        </Modal>
+        <Modal
+          visible={chefModalVisible}
+          animationType="fade"
+          onRequestClose={() => setChefModalVisible(false)}
+          transparent={true}
+          statusBarTranslucent={true}
+        >
+        <Pressable
+          style={styles.modalBackground}
+          onPress={() => setChefModalVisible(!chefModalVisible)}
+        >
+          <Pressable style={styles.modalContainer} onPress={() => null}>
+            <View style={styles.modalTextContainer}>
+            <StandardText text={"Du behöver minst en kock och ett recept för att påbörja ett recept"} textNumbOfLines={2}/>
+            </View>
+            <View style={styles.modalButtonsContainer}>
+              <StandardButton buttonText={"Ok"} onPress={() => setChefModalVisible(!chefModalVisible)} />
+            </View>
+          </Pressable>
+        </Pressable>
         </Modal>
 
       <View style={styles.topContainer}>
@@ -156,14 +193,6 @@ export function SessionStart({ navigation, route }: Props) {
             />
           </View>
         </Pressable>
-        <View style={styles.topContainerSpace}></View>
-        <Pressable
-          onPress={() =>{{
-            setDeleteSessionModalVisible(true)}}}>
-            <View style={styles.deleteSession}>
-          <Text style={{color: "white", fontWeight: "bold"}}>Radera</Text>
-          </View>
-        </Pressable>
       </View>
 
       <View style={styles.allRecipesContainer}>
@@ -174,28 +203,20 @@ export function SessionStart({ navigation, route }: Props) {
         <ChefsOverview users={users} nav={navigation} recipeActivated={schedulerExist()}/>
       </View>      
 
-      {/* Conditional: ska visa "Fortsätt" om det redan är startat */}
-      {/* när schedulen inte skickas med: "börja om" istället för fortsätt */}
       <View style={styles.buttonContainer}>
       
-      <Pressable disabled={startButtonSessionCheck()} 
-        style={startButtonSessionCheck() ? styles.cannotBePressed : styles.canBePressed} 
-        onPress={() =>{
-            if(!schedulerExist()){setRecipeInSession(recipe)} // Om ett recept redan är startat
-            {navigation.navigate("Cooking", {recipe, users})};
-          }
-        }
-      >
-        <Image
-          style={{height: 32, width: 24, margin: 15, marginLeft: 40}}
-          source={require("../../assets/image/play-button.png")} //TODO: chef.image
-          // check chef.color to decide color of border
-        />
-        <Text style={{color: "white", fontSize: 32}}>{scheduler ? "Fortsätt" : "Starta"}</Text>
-      </Pressable>
+      <StandardButton buttonText={scheduler ? "Fortsätt" :"Påbörja matlagning"}
+      textProps={{textWeight:"bold"}}
+      buttonType={startButtonSessionCheck() ? "passive" : "primary"}
+      onPress={() =>{
+        if(!schedulerExist()){setRecipeInSession(recipe)} // Om ett recept redan är startat
+        {startButtonSessionCheck() ? setChefModalVisible(true): navigation.navigate("Cooking", {recipe, users})};
+      }}
+      buttonIcon={<Image
+        style={{marginLeft: 10}}
+        source={require("../../assets/image/play-button.png")}/>}
+      />
       </View>
-
-      {/*<StatusBar style="auto" />*/}
     </SafeAreaView>
   );
 }
@@ -210,11 +231,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(160, 160, 160, 0.5)",
+    backgroundColor: "rgba(87, 87, 87, 0.6)",
   },
   modalContainer: {
     backgroundColor: "white",
-    height: "40%",
+    height: "35%",
     width: "85%",
     borderRadius: 10,
   },
@@ -235,7 +256,6 @@ const styles = StyleSheet.create({
     borderRadius: 30 * 2,
     flexDirection: "row",
   },
-
   topContainer: {
     height: 30,
     flexDirection: "row",
@@ -250,24 +270,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexGrow: 1,
   },
-  deleteSession:{
-    height: 40,
-    width: 70,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-    backgroundColor: "#ed4040",
-    // iOS shadow
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    // Android shadow
-    elevation: 4,
-  },
+
   allRecipesContainer:{
     alignItems: "center",
     justifyContent: "center",
@@ -275,15 +278,28 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   recipeContainer:{
-    width: "80%",
+    width: "75%",
+    height:"90%"
+  },
+  recipeImageAndDeleteContainer:{
+    height:"100%",
   },
   recipeImage:{
-    height: "80%", 
+    height: "90%", 
     width: "90%", 
-    borderRadius: 10,
+    borderRadius: 4,
     alignSelf:"center",
     marginTop:8,
   },
+  deleteContainer:{
+    position: "absolute",
+    alignSelf: "flex-end",
+  },
+  deleteIcon:{
+    height: 17,
+    width: 17,
+  },
+
   chefsContainer:{ 
     height: "50%",
     width: "80%",

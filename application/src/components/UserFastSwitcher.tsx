@@ -10,6 +10,7 @@ import {
   Image,
 } from "react-native";
 import { undefinedToBoolean } from "../utils";
+import { StandardText } from "./StandardText";
 
 const ACTIVE_USER_BUBBLE_SIZE = 65;
 const INACTIVE_USER_BUBBLE_SIZE = 45;
@@ -112,14 +113,8 @@ const UserBubble = ({
           />
         </View>
       </Pressable>
-      <Text
-        numberOfLines={1}
-        style={
-          isActiveUser ? styles.activeBubbleText : styles.inactiveBubbleText
-        }
-      >
-        {user.name}
-      </Text>
+
+      <StandardText text={user.name} size={isActiveUser ? "SM" : "small"} />
     </View>
   );
 };
@@ -177,16 +172,6 @@ const styles = StyleSheet.create({
     borderRadius: INACTIVE_USER_BUBBLE_SIZE / 2,
     overflow: "hidden",
     borderWidth: 3,
-  },
-  inactiveBubbleText: {
-    alignSelf: "center",
-    fontSize: 10,
-    flex: 1,
-  },
-  activeBubbleText: {
-    alignSelf: "center",
-    fontSize: 10,
-    fontWeight: "bold",
   },
   activeUserNotification: {
     overflow: "hidden",

@@ -1,6 +1,7 @@
 import React from "react";
 import { getIngredientListings, IngredientListing, Recipe } from "../data";
 import { StyleSheet, Text, View, FlatList, Button } from "react-native";
+import { StandardText } from "./StandardText";
 
 type IngredientListProps = {
   recipe: Recipe;
@@ -33,9 +34,11 @@ type ListRowProps = {
 const ListRow = ({ ingredient }: ListRowProps) => (
   <View style={styles.row}>
     <View style={styles.rowInfoContainer}>
-      <Text style={styles.name}>
-        {ingredient.amount} {ingredient.unit} {ingredient.name}
-      </Text>
+      <StandardText
+        size={"SM"}
+        textAlignment={"left"}
+        text={ingredient.amount + " " + ingredient.unit + " " + ingredient.name}
+      />
     </View>
   </View>
 );
@@ -53,6 +56,7 @@ const styles = StyleSheet.create({
   rowInfoContainer: {
     flex: 1,
     marginVertical: 6,
+    flexDirection: "row",
   },
   name: {
     fontSize: 16,

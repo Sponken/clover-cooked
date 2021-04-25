@@ -13,6 +13,7 @@ import {
 
 import { User } from "../data";
 import { StandardText } from "./StandardText";
+import {chefColors} from "./Colors";
 
 type ChefListProps = {
   chefList: any;
@@ -26,7 +27,7 @@ type ChefListProps = {
 
 export function ChefList({ chefList, setChefList }: ChefListProps) {
   // Hitta det senaste färgindexet för att kunna fördela nya
-  let lastColorIndex = colors.indexOf(chefList[chefList.length - 1]?.color) ?? -1
+  let lastColorIndex = chefColors.indexOf(chefList[chefList.length - 1]?.color) ?? -1
 
   let [nextColorIndex, setNextColorIndex] = useState<number>(lastColorIndex+1);
 
@@ -47,11 +48,11 @@ export function ChefList({ chefList, setChefList }: ChefListProps) {
                 {
                   id: Date.now().toString(),
                   name: "",
-                  color: colors[nextColorIndex], // TODO: randomize color from e.g. 8 ones, or always take the 4 ones that work best first
+                  color: chefColors[nextColorIndex], // TODO: randomize color from e.g. 8 ones, or always take the 4 ones that work best first
                   icon: require("../../assets/image/chefHatSmall.png"),
                 },
               ]);
-              setNextColorIndex((nextColorIndex + 1) % colors.length);
+              setNextColorIndex((nextColorIndex + 1) % chefColors.length);
             }}
           >
             <View>
@@ -69,18 +70,7 @@ export function ChefList({ chefList, setChefList }: ChefListProps) {
   );
 }
 
-// Färger som tilldeas kockar
-let colors = [
-  "#B856E9",
-  "#E956CD",
-  "#E3993B",
-  "#EAD755",
-  "#95DD69",
-  "#22BC29",
-  "#4DE1E1",
-  "#4DA4E1",
-  "#4F5EED",
-];
+
 
 type ChefItemProps = {
   chef: any;
@@ -117,10 +107,10 @@ const ChefItem = ({ chef, chefList, setChefList }: ChefItemProps) => {
       return col == chef.color.toString();
     }
 
-    let colIndex = colors.findIndex(checkColor);
+    let colIndex = chefColors.findIndex(checkColor);
     //let colIndex = color.findIndex((c) => c == chef.color.toString());
 
-    if (colIndex < colors.length - 1) {
+    if (colIndex < chefColors.length - 1) {
       colIndex += 1;
     } else {
       colIndex = 0;
@@ -129,7 +119,7 @@ const ChefItem = ({ chef, chefList, setChefList }: ChefItemProps) => {
     let tempChef: User = {
       id: chef.id,
       name: chef.name,
-      color: colors[colIndex],
+      color: chefColors[colIndex],
       icon: chef.icon,
     };
 

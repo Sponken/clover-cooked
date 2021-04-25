@@ -1,20 +1,17 @@
 import {
   StyleSheet,
-  Image,
   View,
+  Modal,
   Pressable,
-  Text,
 } from "react-native";
 import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { ChefList, StandardButton, StandardText, UserFastSwitcher} from "../components";
-
+import { ChefList, StandardButton, StandardText} from "../components";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation";
 import { User } from "../data";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Alert } from "react-native";
-import { useRoute } from "@react-navigation/core";
 
 
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
@@ -38,17 +35,15 @@ export function ChefManagement({ navigation, route }: Props) {
 
   const [users, setUsers] = useState<User[]>(route.params?.users);
 
+  const [modalVisible, setModalVisible] = useState(false);
+
   function onSubmit(){
-    if(users.some(u => u.name === "")){
-      Alert.alert('Fel', 'Alla kockar måste ha ett namn')
-      return
-    }
     navigation.navigate("SessionStart", {users})
   }
   
   //ifall ingen kock är tillagd så kan man inte klicka spara
   function sparaButtonSessionCheck() {
-    if( users.length == 0){
+    if( users.length == 0 || (users.some(u => u.name === ""))){
       return true;
     }
     else {
@@ -58,6 +53,33 @@ export function ChefManagement({ navigation, route }: Props) {
 
   return (
     <SafeAreaView style={styles.screenContainer}>
+
+<Modal
+        visible={modalVisible}
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+        transparent={true}
+        statusBarTranslucent={true}
+      >
+        <Pressable
+          style={styles.modalBackground}
+          onPress={() => setModalVisible(!modalVisible)}
+        >
+          <Pressable style={styles.modalContainer} onPress={() => null}>
+            <View style={styles.modalTextContainer}>
+              <StandardText text={"Du behöver minst en kock och"} />
+              <StandardText text={"alla kockar behöver ett namn"} />
+            </View>
+            <View style={styles.modalButtonsContainer}>
+              <StandardButton
+                buttonText={"Ok"}
+                onPress={() => setModalVisible(!modalVisible)}
+              />
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
       <View style={styles.titleContainer}>
         <StandardText text={"Redigera kockar"} size={"large"}/>
       </View>
@@ -66,10 +88,9 @@ export function ChefManagement({ navigation, route }: Props) {
         </View>
       <View style={styles.buttonContainer}>
       <StandardButton
-        onPress={() => {sparaButtonSessionCheck()? null : onSubmit()}}
-        buttonText={sparaButtonSessionCheck() ? "Det måste finnas minst en kock" : "Spara"}
-        buttonType={sparaButtonSessionCheck() ? "grey" : "primary"}
-        textProps={{textWeight:"bold"}}
+        onPress={() => {sparaButtonSessionCheck()? setModalVisible(true) : onSubmit()}}
+        buttonText={ "Spara"}
+        buttonType={sparaButtonSessionCheck() ? "passive" : "primary"}
         />
       </View>
      <StatusBar style="auto" />
@@ -83,6 +104,27 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     backgroundColor: "white",
     justifyContent: "flex-end",
+  },
+
+  modalBackground: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(87, 87, 87, 0.6)",
+  },
+  modalContainer: {
+    backgroundColor: "white",
+    height: "35%",
+    width: "85%",
+    borderRadius: 10,
+  },
+  modalTextContainer:{
+    justifyContent: "center",
+    height: "70%",
+  },
+  modalButtonsContainer:{
+    flexDirection: "row",
+    justifyContent: "center",
   },
   titleContainer:{
     height: "10%",

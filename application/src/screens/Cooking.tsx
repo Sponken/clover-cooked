@@ -1,4 +1,4 @@
-import { StyleSheet, View, Pressable, Image, Modal, Text } from "react-native";
+import { StyleSheet, View, Pressable, Image, Modal } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
@@ -12,8 +12,6 @@ import {
   CookingTimer,
   CookingTimerOverview,
   TaskConfirmType,
-  StandardText,
-  StandardButton,
 } from "../components";
 import { User } from "../data";
 import { unsafeFind, undefinedToBoolean } from "../utils";

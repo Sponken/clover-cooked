@@ -4,17 +4,18 @@ import {
   StyleSheet,
   ColorValue
 } from "react-native";
-import {primaryColor, secondaryColor} from "./Colors"
+import {primaryColor, passiveColor} from "./Colors"
 
 
 
 export type StandardTextProps = {
   size?: "small" | "SM" | "medium" | "large",
   text?: string,
-  color?: "primary" | "secondary" | "black" | "white",
+  color?: "primary" | "passive" | "black" | "white",
   colorValue?: ColorValue ,
-  textWeight?: "normal" | "bold" | "lighter",
+  textWeight?: "bold" |"normal" | "lighter",
   textNumbOfLines?: number,
+  textAlignment?: "center" | "left",
 };
 
 export function StandardText({ ...props }: StandardTextProps) {
@@ -41,8 +42,8 @@ export function StandardText({ ...props }: StandardTextProps) {
       case "primary":
         colorStyle = {color: primaryColor};
         break;
-      case "secondary":
-        colorStyle = {color: secondaryColor}
+      case "passive":
+        colorStyle = {color: passiveColor};
         break;
       case "white":
         colorStyle = {color: "white"}
@@ -50,14 +51,36 @@ export function StandardText({ ...props }: StandardTextProps) {
       case "black":
         colorStyle = {color: "black"}
         break;
+        }
     }
-  }
     else{
       colorStyle = {color: props.colorValue.toString()}
     }
 
-  let weightStyle = {fontWeight: props.textWeight ?? "normal"}
+    let alignment;
+    switch(props.textAlignment ?? "center"){
+      case "center":
+        alignment = {alignSelf: "center"};
+        break;
+      case "left":
+        alignment = {};
+        break;
+      }
   
+
+  let weightStyle;
+  switch(props.textWeight ?? "normal"){
+    case "bold":
+      weightStyle = {fontWeight: "600"};
+      break;
+    case "normal":
+      weightStyle = {fontWeight: "normal"};
+      break;
+    case "lighter":
+      weightStyle = {fontWeight: "lighter"};
+      break;
+    }
+
   let numbOfLines;
   if( props.textNumbOfLines == undefined){
     numbOfLines = 1;
@@ -65,16 +88,19 @@ export function StandardText({ ...props }: StandardTextProps) {
   else{
     let numbOfLines=props.textNumbOfLines;
   }
+
   
   return (
-    <Text numberOfLines={numbOfLines} style={[sizeStyle, colorStyle, weightStyle, styles.textStyle]}>{props.text}</Text>
+    <Text numberOfLines={numbOfLines} 
+          style={[sizeStyle, colorStyle, weightStyle, alignment, styles.textStyle]}>
+            {props.text}
+    </Text>
   );
 }
 
 const styles = StyleSheet.create({
   textStyle: {
-    //fontFamily: 'cursive',
-    alignSelf: "center",
-
+    //fontFamily: "Avenir",
+    
   },
 });

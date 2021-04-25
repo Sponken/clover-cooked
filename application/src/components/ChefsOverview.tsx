@@ -1,14 +1,8 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, FlatList, Image, Pressable } from "react-native";
 import { User } from "../data";
 import { StandardText } from "./StandardText";
+import { StandardButton } from "./StandardButton";
 
 type ChefListProps = {
   users: User[];
@@ -33,22 +27,21 @@ export function ChefsOverview({ users, nav, recipeActivated }: ChefListProps) {
           if (item.id === "editChef" && !recipeActivated) {
             return (
               <View style={styles.flatListItemContainer}>
-                <TouchableOpacity
-                  style={styles.editChefButton}
+                <StandardButton
+                  buttonText={"Redigera kockar"}
+                  buttonType={"passive"}
                   onPress={() =>
                     nav.navigate("ChefManagement", {
                       users,
                     })
                   }
-                >
-                  <Image
-                    style={styles.editChefsIcon}
-                    source={require("../../assets/image/editChef.png")}
-                  />
-                  <View style={styles.editChefsTextContainer}>
-                    <StandardText text={"Redigera kockar"} />
-                  </View>
-                </TouchableOpacity>
+                  buttonIcon={
+                    <Image
+                      style={styles.editChefsIcon}
+                      source={require("../../assets/image/editChef.png")}
+                    />
+                  }
+                />
               </View>
             );
           }
@@ -68,27 +61,31 @@ type ListRowProps = {
  * https://reactnative.dev/docs/image
  */
 const ChefItem = ({ chef }: ListRowProps) => {
-  let userImage = (
-    <Image
-      style={{ width: 80, height: 80 }}
-      source={require("../../assets/image/favicon.png")}
-    />
-  );
-
-  let defaultImage = (
-    <TouchableOpacity
-      style={[styles.chefIcon, { backgroundColor: chef.color }]}
-    >
-      <StandardText text={chef.name} color="white" size={"SM"} />
-    </TouchableOpacity>
-  );
-
-  let userCircleView = defaultImage;
-  /*if (chef.icon != undefined) {
-    userCircleView = userImage;
-  } else {
-    userCircleView = defaultImage;
-  }*/
+  let userCircleView = <></>;
+  if (chef) {
+    userCircleView = (
+      <View style={styles.chefItemContainer}>
+        <StandardButton
+          buttonSize={"chef"}
+          buttonType={"chef"}
+          buttonColor={chef.color}
+          buttonIcon={
+            chef.color ? (
+              <Image
+                style={{ height: 40, width: 45 }}
+                source={require("../../assets/image/chefHat.png")}
+              />
+            ) : (
+              <></>
+            )
+          }
+          onPress={() => {}}
+        />
+        <View style={{ width: 10 }}></View>
+        <StandardText text={chef.name} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.flatListItemContainer}>
@@ -110,47 +107,10 @@ const styles = StyleSheet.create({
   },
   chefItemContainer: {
     flexDirection: "row",
-    flex: 1,
-  },
-  chefIcon: {
-    height: 80,
-    width: 80,
-    borderRadius: 100,
-    alignItems: "center",
-    justifyContent: "center",
-    //backgroundColor: chef.color, //userColor,
-  },
-  editChefButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 50,
-    height: 70,
-    marginLeft: 5,
-    backgroundColor: "#d6d6d6", //"#a4a4a4",
-    // iOS shadow
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    // Android shadow
-    elevation: 4,
   },
   editChefsIcon: {
-    height: 65,
-    width: 65,
-    borderRadius: 100,
-    alignItems: "center",
-    justifyContent: "center",
-    marginLeft: 5,
-  },
-  editChefsTextContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginLeft: 20,
-    marginRight: 40,
+    height: 50,
+    width: 50,
   },
 });
 

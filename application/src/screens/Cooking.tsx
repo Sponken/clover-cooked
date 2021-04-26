@@ -389,19 +389,36 @@ export function Cooking({ navigation, route }: Props) {
             </Pressable>
           </Pressable>
         </Modal>
-        <View style={styles.topBarContainer}>
-          <View style={{ flex: 1, flexDirection: "column-reverse" }}>
-            {/*printUsers*/}
-            <UserFastSwitcher
-              users={users}
-              activeUser={activeUser}
-              userNotifications={userNotifications}
-              onActiveUserSwitch={(userId: string) => {
-                setActiveUser(userId);
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View
+            style={{
+              flexGrow: 1,
+              /*styles.timerContainer*/
+            }}
+          >
+            <View
+              style={{
+                margin: 10,
+                padding: 5,
+                borderWidth: 1,
+                borderColor: "grey",
+                borderRadius: 10,
               }}
-            />
+            >
+              <CookingTimer
+                onPress={() => setTimerModalVisible(true)}
+                finish={earliestTimer}
+                displayRemainingTime="shown"
+                size="small"
+              />
+            </View>
           </View>
-          <View style={styles.topBarRightMenu}>
+          <View
+            style={{
+              marginRight: 10,
+              /*styles.topBarRightMenu*/
+            }}
+          >
             {/* <StandardButton
               buttonText={"Avbryt"}
               buttonType={"grey"}
@@ -423,6 +440,19 @@ export function Cooking({ navigation, route }: Props) {
             </Pressable>*/}
           </View>
         </View>
+        <View style={styles.topBarContainer}>
+          <View style={{ flex: 1, flexDirection: "column-reverse" }}>
+            {/*printUsers*/}
+            <UserFastSwitcher
+              users={users}
+              activeUser={activeUser}
+              userNotifications={userNotifications}
+              onActiveUserSwitch={(userId: string) => {
+                setActiveUser(userId);
+              }}
+            />
+          </View>
+        </View>
         <View style={styles.contentContainer}>
           <View style={styles.spacingWithNoContent} />
           <View style={styles.minimizedTasksFlatListContainer}>
@@ -438,14 +468,14 @@ export function Cooking({ navigation, route }: Props) {
               }
             />
           </View>
-          <View style={styles.timerContainer}>
+          {/*<View style={styles.timerContainer}>
             <CookingTimer
               onPress={() => setTimerModalVisible(true)}
               finish={earliestTimer}
               displayRemainingTime="shown"
               size="large"
             />
-          </View>
+            </View>*/}
         </View>
         <View style={styles.buttonContainer}>{taskConfirmButtons}</View>
       </SafeAreaView>
@@ -463,12 +493,14 @@ const styles = StyleSheet.create({
   modalScreenContainer: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+
+    justifyContent: "flex-start",
     backgroundColor: "rgba(160, 160, 160, 0.5)",
   },
   timerModalContainer: {
-    height: "40%",
-    width: "85%",
+    height: "50%",
+    width: "95%",
+    marginTop: 90,
   },
   topBarContainer: {
     flexDirection: "row",
@@ -501,7 +533,7 @@ const styles = StyleSheet.create({
   timerContainer: {
     position: "absolute",
     top: 2,
-    right: 2,
+    left: 20,
   },
   buttonContainer: {
     height: 100,

@@ -15,9 +15,6 @@ export function CookingTimerOverview({ passiveTasks, recipe, onPress }: Props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Pågående timers</Text>
-      </View>
       <FlatList
         data={passiveTaskIds}
         keyExtractor={(item) => item}
@@ -51,21 +48,41 @@ const PassiveTaskCard = ({
 }: PassiveTaskCardProps) => {
   if (finish) {
     return (
-      <Pressable onPress={onPress}>
-        {({ pressed }) => (
-          <View
-            style={[
-              styles.cardContainer,
-              pressed ? styles.pressedCardColor : styles.cardColor,
-            ]}
-          >
-            <CookingTimer finish={finish} displayRemainingTime={"shown"} />
-            <Text style={styles.taskText} numberOfLines={1}>
-              {unsafeFind(recipe.tasks, (t: Task) => t.id === taskId).name}
-            </Text>
-          </View>
-        )}
-      </Pressable>
+      <View>
+        <View style={{ flexDirection: "row" }}>
+          <CookingTimer
+            size="large"
+            finish={finish}
+            displayRemainingTime={"shown"}
+          />
+          <Text>"TODO: lägg Knapp här"</Text>
+        </View>
+
+        <Text style={styles.taskText} numberOfLines={1}>
+          {unsafeFind(recipe.tasks, (t: Task) => t.id === taskId).instructions}
+        </Text>
+
+        <Pressable
+          // knapp för att säga att timern är klar
+          onPress={onPress}
+          style={styles.button}
+        ></Pressable>
+      </View>
+      // <Pressable onPress={onPress}>
+      //   {({ pressed }) => (
+      //     <View
+      //       style={[
+      //         styles.cardContainer,
+      //         pressed ? styles.pressedCardColor : styles.cardColor,
+      //       ]}
+      //     >
+      //       <CookingTimer finish={finish} displayRemainingTime={"shown"} />
+      //       <Text style={styles.taskText} numberOfLines={1}>
+      //         {unsafeFind(recipe.tasks, (t: Task) => t.id === taskId).name}
+      //       </Text>
+      //     </View>
+      //   )}
+      // </Pressable>
     );
   }
   return <></>;
@@ -78,7 +95,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   headerContainer: {
-    paddingTop: 10,
+    paddingTop: 15,
     alignItems: "center",
   },
   headerText: {
@@ -94,7 +111,20 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
   },
+  button: {
+    borderRadius: 8,
+    height: 70,
+    width: 160,
+    marginHorizontal: 8,
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   taskText: {
+    fontSize: 24,
+    flexGrow: 1,
+    // backgroundColor: "blue",
+
     paddingHorizontal: 10,
   },
   pressedCardColor: {

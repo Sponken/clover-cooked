@@ -151,7 +151,13 @@ export const finishTimeText = (finish: Date) =>
     : TIME_FINSIHED_TEXT;
 
 const styles = StyleSheet.create({
-  container: { alignItems: "center" },
+  container: { 
+    alignItems: "center",
+    flexDirection: "row", 
+    backgroundColor: "white",
+    
+
+  },
   smallIcon: {
     height: SMALL_ICON_SIZE,
     width: SMALL_ICON_SIZE,

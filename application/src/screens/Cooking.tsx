@@ -14,6 +14,7 @@ import {
   TaskConfirmType,
   StandardText,
   StandardButton,
+  UndoButton,
 } from "../components";
 import { User } from "../data";
 import { unsafeFind, undefinedToBoolean } from "../utils";
@@ -58,6 +59,18 @@ export function Cooking({ navigation, route }: Props) {
   const [earliestTimer, setEarliestTimer] = useState<Date | undefined>(
     undefined
   ); //date för nästa passiv task, undefined om inga finns
+
+  // Map från användare till deras senaste avklarade task
+  const [lastFinishedTask, setLastFinishedTask] = useState<Map<string, string>>(
+    new Map()
+  );
+  // Data för varje användares undoknapp
+  type UndoData = {
+    available: boolean;
+    timeout?: NodeJS.Timeout;
+  };
+
+  const [undoData, setUndoData] = useState<Map<string, UndoData>>(new Map());
 
   // Varje userid har en associerad task
   //
@@ -223,20 +236,45 @@ export function Cooking({ navigation, route }: Props) {
     );
   }
 
-  /*//om det bara finns en enda user så syns den inte, men om flera så syns alla
-  let printUsers = <></>;
-  if (users.length > 1) {
-    printUsers = (
-      <UserFastSwitcher
-        users={users}
-        activeUser={activeUser}
-        userNotifications={userNotifications}
-        onActiveUserSwitch={(userId: string) => {
-          setActiveUser(userId);
-        }}
-      />
-    );
-  }*/
+  // undoar activeUsers senaste avklarade task
+  const undo = () => {
+    let task = lastFinishedTask.get(activeUser);
+    if (task && scheduler) {
+      scheduler.undo(task);
+    }
+  };
+
+  // undo knapp
+  let undoButton = <></>;
+  if (undoData.get(activeUser)?.available) {
+    console.log(undoData.get(activeUser))
+    // Vi kollar inte `okToPress` på den här `onPress` för personer kanske vilja undo:a på direkten
+    undoButton = <View style={styles.undoContainer}><UndoButton onPress={undo}/></View>
+  }
+
+  // Visar undo knapp i 15 sec efter lastFinishedTask uppdaterats
+  useEffect(() => {
+    if (lastFinishedTask.get(activeUser)) {
+      const oldData = undoData.get(activeUser);
+      if (oldData && oldData.timeout) {
+        clearTimeout(oldData.timeout);
+      }
+      const buttonClearTimeout = setTimeout(
+        () =>
+          setUndoData(
+            (old) => new Map(old.set(activeUser, { available: false }))
+          ),
+        15000
+      );
+      setUndoData(
+        (old) =>
+          new Map(
+            old.set(activeUser, { available: true, timeout: buttonClearTimeout })
+          )
+      );
+      return () => clearTimeout(buttonClearTimeout);
+    }
+  }, [lastFinishedTask]);
 
   //skapar en lista av alla task (ev passiva o ev aktiva) som ska visas som minimized
   let minimizedTasks: string[] = [...visiblePassiveTasks];
@@ -282,14 +320,18 @@ export function Cooking({ navigation, route }: Props) {
             confirmType={taskConfirmType}
             onFinishPress={() => {
               if (okToPress) {
-                let t = activeTask;
+                const task = activeTask;
                 setAssignedTasks((assigned) => {
                   assigned.delete(activeUser);
                   return new Map(assigned);
                 });
-                if (t) {
-                  scheduler.finishTask(t, activeUser);
+                if (task) {
+                  scheduler.finishTask(task, activeUser);
+                  setLastFinishedTask(
+                    (last) => new Map(last.set(activeUser, task))
+                  );
                 }
+
                 setOkToPress(false);
                 setTimeout(() => setOkToPress(true), OK_TIME_BETWEEN_CLICK);
               }
@@ -445,7 +487,10 @@ export function Cooking({ navigation, route }: Props) {
             />
           </View>
         </View>
-        <View style={styles.buttonContainer}>{taskConfirmButtons}</View>
+        <View style={styles.buttonContainer}>
+            {undoButton}
+          {taskConfirmButtons}
+        </View>
       </SafeAreaView>
     );
   }
@@ -502,7 +547,14 @@ const styles = StyleSheet.create({
     right: 2,
   },
   buttonContainer: {
+    width: "100%",
     height: 100,
+    justifyContent: "center",
     alignItems: "center",
+    flexDirection: "row"
   },
+  undoContainer: {
+    height: 80,
+    width: 80,
+  }
 });

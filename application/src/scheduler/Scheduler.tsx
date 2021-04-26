@@ -1,5 +1,5 @@
 import { Recipe, Task } from "../data";
-import { BiDirectionalMap } from 'bi-directional-map/dist';
+import { BiDirectionalMap } from "bi-directional-map/dist";
 
 export type CookID = string;
 export type TaskID = string;
@@ -90,6 +90,8 @@ export interface Scheduler {
    * Hämtar nuvarande tasks
    */
   getTasks: () => Map<CookID, TaskID>;
+
+  undo: (task: TaskID) => void;
 
   // Subscription listor med alla subsribe funktioner
   passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[];

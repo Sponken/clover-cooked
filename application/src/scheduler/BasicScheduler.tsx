@@ -123,7 +123,12 @@ export function createBasicScheduler(recipe: Recipe,
       return (recipe.tasks.length - this.completedTasks.length) * 5
 
     },
-    getTasks: function(){return new Map(this.currentTasks.entries());}
+    getTasks: function(){return new Map(this.currentTasks.entries());},
+    undo : function(task: TaskID) {
+      if (this.completedTasks.includes(task)) {
+        undo(task, this);
+      }
+    }
   };
 
 

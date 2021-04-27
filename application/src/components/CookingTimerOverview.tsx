@@ -1,34 +1,76 @@
 import React from "react";
-import { View, Text, Pressable, FlatList, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  FlatList,
+  StyleSheet,
+  Image,
+} from "react-native";
 import { CookingTimer } from "./CookingTimer";
 import { Recipe, Task } from "../data";
 import { unsafeFind } from "../utils";
+import { StandardButton } from "./StandardButton";
 
 type Props = {
   passiveTasks: Map<string, Date>;
   recipe: Recipe;
   onPress: (taskId: string) => void;
+  extendTimer: (taskId: string) => void;
 };
 
-export function CookingTimerOverview({ passiveTasks, recipe, onPress }: Props) {
+export function CookingTimerOverview({
+  passiveTasks,
+  recipe,
+  onPress,
+  extendTimer,
+}: Props) {
   let passiveTaskIds: string[] = Array.from(passiveTasks.keys());
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={passiveTaskIds}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => (
-          <PassiveTaskCard
-            taskId={item}
-            recipe={recipe}
-            finish={passiveTasks.get(item)}
-            onPress={() => onPress(item)}
-          />
-        )}
-        ItemSeparatorComponent={() => <View style={{ height: 5 }} />}
-        contentContainerStyle={styles.cardListContainer}
-      />
+      {passiveTaskIds.length > 0 ? (
+        <FlatList
+          data={passiveTaskIds}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => (
+            <PassiveTaskCard
+              taskId={item}
+              recipe={recipe}
+              finish={passiveTasks.get(item)}
+              onPress={() => onPress(item)}
+              extendTimer={() => extendTimer(item)}
+            />
+          )}
+          ItemSeparatorComponent={() => (
+            <View
+              style={{
+                marginVertical: 10,
+                height: 2,
+                backgroundColor: "rgb(223, 223, 223)",
+              }}
+            />
+          )}
+          contentContainerStyle={styles.cardListContainer}
+        />
+      ) : (
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            flex: 1,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 32,
+              alignSelf: "center",
+            }}
+          >
+            Inga timers just nu
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -38,6 +80,7 @@ type PassiveTaskCardProps = {
   recipe: Recipe;
   finish: Date | undefined;
   onPress: () => void;
+  extendTimer: () => void;
 };
 
 const PassiveTaskCard = ({
@@ -45,28 +88,96 @@ const PassiveTaskCard = ({
   recipe,
   finish,
   onPress,
+  extendTimer,
 }: PassiveTaskCardProps) => {
   if (finish) {
     return (
-      <View>
-        <View style={{ flexDirection: "row" }}>
-          <CookingTimer
-            size="large"
-            finish={finish}
-            displayRemainingTime={"shown"}
-          />
-          <Text>"TODO: lägg Knapp här"</Text>
+      <View
+        style={{
+          flexDirection: "column",
+          height: 250,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            flex: 1,
+
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            // backgroundColor: "red",
+            height: 30,
+          }}
+        >
+          <View
+            style={{
+              padding: 10,
+              // paddingLeft: 10,
+              justifyContent: "center",
+              alignItems: "center",
+              // backgroundColor: "red",
+            }}
+          >
+            <Image
+              source={require("../../assets/image/time_icon.png")}
+              style={styles.smallIcon}
+            ></Image>
+          </View>
+          {/* TODO: Fixa så att timern är alignad till vänster, så den inte flyttar på sig när den går ner. */}
+          <View
+            style={{
+              alignItems: "flex-start",
+              justifyContent: "flex-start",
+              backgroundColor: "hotpink",
+            }}
+          >
+            <CookingTimer
+              size="large"
+              finish={finish}
+              displayRemainingTime={"shown"}
+            />
+          </View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              // backgroundColor: "red",
+            }}
+          >
+            {/* TODO: ändra onPress till något annat, dvs förläng timer ist. */}
+            {/* TODO: Annan färg än standard button */}
+            <StandardButton
+              onPress={extendTimer}
+              buttonText="Förläng timer"
+              buttonType="secondary"
+            />
+          </View>
+        </View>
+        <View
+          style={{
+            margin: 2,
+            minHeight: 100,
+            // backgroundColor: "red",
+            justifyContent: "flex-start",
+          }}
+        >
+          <Text style={styles.taskText}>
+            {
+              unsafeFind(recipe.tasks, (t: Task) => t.id === taskId)
+                .instructions
+            }
+          </Text>
         </View>
 
-        <Text style={styles.taskText} numberOfLines={1}>
-          {unsafeFind(recipe.tasks, (t: Task) => t.id === taskId).instructions}
-        </Text>
-
-        <Pressable
-          // knapp för att säga att timern är klar
+        {/* 
+        TODO: Ifall timern är klar, buttonText= "Klar"
+        */}
+        {/* TODO: Antagligen inte vara grön om det är avbryt i förtid, bara när det står "Klar" */}
+        <StandardButton
+          style={{ justifyContent: "flex-end" }}
           onPress={onPress}
-          style={styles.button}
-        ></Pressable>
+          buttonText="Avbryt timer i förtid"
+        />
       </View>
       // <Pressable onPress={onPress}>
       //   {({ pressed }) => (
@@ -87,6 +198,8 @@ const PassiveTaskCard = ({
   }
   return <></>;
 };
+
+const SMALL_ICON_SIZE = 35;
 
 const styles = StyleSheet.create({
   container: {
@@ -111,17 +224,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
   },
-  button: {
-    borderRadius: 8,
-    height: 70,
-    width: 160,
-    marginHorizontal: 8,
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
+  smallIcon: {
+    height: SMALL_ICON_SIZE,
+    width: SMALL_ICON_SIZE,
   },
   taskText: {
-    fontSize: 24,
+    fontSize: 28,
     flexGrow: 1,
     // backgroundColor: "blue",
 

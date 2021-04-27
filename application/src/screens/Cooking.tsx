@@ -28,7 +28,7 @@ import { FlatList } from "react-native-gesture-handler";
 
 import { schedulerContext } from "./scheduler-context";
 
-const OK_TIME_BETWEEN_CLICK = 700;
+const OK_TIME_BETWEEN_CLICK = 0;
 
 type CookingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -55,6 +55,8 @@ export function Cooking({ navigation, route }: Props) {
   const [passiveTasks, setPassiveTasks] = useState<Map<string, Date>>(
     new Map()
   ); //lista med passiva task som är frikopplade från användare
+
+  const [earliestInstr, setearliestInstr] = useState<String>();
 
   const [timerModalVisible, setTimerModalVisible] = useState(false);
   const [earliestTimer, setEarliestTimer] = useState<Date | undefined>(
@@ -95,15 +97,26 @@ export function Cooking({ navigation, route }: Props) {
 
   const updateEarliestTimer = (passiveTasks: Map<string, Date>) => {
     let _earliestTimer: undefined | Date = undefined;
-    passiveTasks.forEach((finish) => {
+    let _earliestInstr: undefined | String = undefined;
+    passiveTasks.forEach((finish, instr) => {
       if (_earliestTimer) {
         if (finish.getTime() < _earliestTimer.getTime()) {
+          _earliestInstr = instr;
           _earliestTimer = new Date(finish);
         }
       } else {
+        _earliestInstr = instr;
         _earliestTimer = new Date(finish);
       }
     });
+    let a: undefined | string;
+    if (recipe.tasks) {
+      let b = recipe.tasks.find((t) => t.id == _earliestInstr);
+      if (b) {
+        a = b.instructions;
+      }
+    }
+    setearliestInstr(a);
     setEarliestTimer(_earliestTimer);
   };
 
@@ -189,9 +202,10 @@ export function Cooking({ navigation, route }: Props) {
   }, []);
 
   useEffect(() => {
-    if (visiblePassiveTasks.length) {
-      setActiveTask(visiblePassiveTasks[0]);
-      setTaskConfirmType("extendOrFinish");
+    if (visiblePassiveTasks.length !== 0) {
+      // setActiveTask(visiblePassiveTasks[0]);
+      // setTaskConfirmType("extendOrFinish");
+      setTimerModalVisible(true);
     } else {
       setActiveTask(assignedTasks.get(activeUser));
       if (assignedTasks.get(activeUser)) {
@@ -207,15 +221,15 @@ export function Cooking({ navigation, route }: Props) {
     passiveTasks.forEach((pDate, pTask) => {
       //ta bort från modalen om tasket finns med i visiblepassivetasks
       visiblePassiveTasks.forEach((vTask) => {
-        if (vTask === pTask) {
+        /*if (vTask === pTask) {
           setPassiveTasksInModal((mTasks) => {
             mTasks.delete(vTask);
             return new Map(mTasks);
           });
-        }
+        }*/
       });
     });
-  }, [assignedTasks, activeUser, visiblePassiveTasks]);
+  }, [assignedTasks, activeUser, visiblePassiveTasks, passiveTasks]);
 
   // Fixar så det inte står en notis på den aktiva användaren
   if (undefinedToBoolean(userNotifications.get(activeUser))) {
@@ -239,42 +253,8 @@ export function Cooking({ navigation, route }: Props) {
     );
   }*/
 
-  //skapar en lista av alla task (ev passiva o ev aktiva) som ska visas som minimized
-  let minimizedTasks: string[] = [...visiblePassiveTasks];
-  const userTask = assignedTasks.get(activeUser);
-  if (userTask && visiblePassiveTasks.length > 0) {
-    minimizedTasks.push(userTask);
-  }
-  minimizedTasks = minimizedTasks.filter((taskId) => taskId !== activeTask);
-  const minimizedTasksComponent = (
-    <FlatList
-      data={minimizedTasks}
-      keyExtractor={(item) => item}
-      renderItem={({ item }) => (
-        <Pressable
-          onPress={() => {
-            setActiveTask(item);
-            setTaskConfirmType(
-              item !== assignedTasks.get(activeUser)
-                ? "extendOrFinish"
-                : "finish"
-            );
-          }}
-        >
-          <TaskCard
-            taskId={item}
-            recipe={recipe}
-            userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
-            userColor={unsafeFind(users, (u: User) => u.id == activeUser).color}
-            minimized={true}
-          />
-        </Pressable>
-      )}
-    />
-  );
-
   if (scheduler) {
-    // Skapa rätt knappar
+    // Skapa rätt knappars
     let taskConfirmButtons;
     switch (taskConfirmType) {
       case "finish":
@@ -298,6 +278,7 @@ export function Cooking({ navigation, route }: Props) {
           />
         );
         break;
+      // Denna ska läggas i CookingTimerOverview
       case "extendOrFinish":
         taskConfirmButtons = (
           <TaskConfirm
@@ -328,6 +309,7 @@ export function Cooking({ navigation, route }: Props) {
           />
         );
         break;
+      // Denna behövs inte längre, utan är bara att en klickar utanför CookingTimerOverview
       case "interruptOrContinue":
         taskConfirmButtons = (
           <TaskConfirm
@@ -337,7 +319,6 @@ export function Cooking({ navigation, route }: Props) {
               if (okToPress) {
                 let t = activeTask;
                 if (t) {
-                  scheduler.finishPassiveTask(t);
                 }
                 setOkToPress(false);
                 setTimeout(() => setOkToPress(true), OK_TIME_BETWEEN_CLICK);
@@ -381,9 +362,11 @@ export function Cooking({ navigation, route }: Props) {
                 passiveTasks={passiveTasksInModal}
                 recipe={recipe}
                 onPress={(taskId: string) => {
+                  scheduler.finishPassiveTask(taskId);
                   setTimerModalVisible(false);
-                  setActiveTask(taskId);
-                  setTaskConfirmType("interruptOrContinue");
+                }}
+                extendTimer={(taskId: string) => {
+                  scheduler.extendPassive(taskId);
                 }}
               />
             </Pressable>
@@ -396,22 +379,58 @@ export function Cooking({ navigation, route }: Props) {
               /*styles.timerContainer*/
             }}
           >
-            <View
+            <Pressable
+              onPress={() => setTimerModalVisible(true)}
               style={{
                 margin: 10,
                 padding: 5,
                 borderWidth: 1,
-                borderColor: "grey",
-                borderRadius: 10,
+                borderColor: "rgb(223, 223, 223)",
+                borderRadius: 15,
+                flexDirection: "row",
               }}
             >
-              <CookingTimer
-                onPress={() => setTimerModalVisible(true)}
-                finish={earliestTimer}
-                displayRemainingTime="shown"
-                size="small"
-              />
-            </View>
+              <View
+                style={{
+                  padding: 0,
+                  // paddingLeft: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  // backgroundColor: "red",
+                }}
+              >
+                <Image
+                  source={require("../../assets/image/time_icon.png")}
+                  style={styles.smallIcon}
+                ></Image>
+              </View>
+              <View style={{ justifyContent: "center", marginLeft: 10 }}>
+                <CookingTimer
+                  onPress={() => setTimerModalVisible(true)}
+                  finish={earliestTimer}
+                  displayRemainingTime="shown"
+                  size="small"
+                />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: "gray",
+                  }}
+                >
+                  Inga timers just nu
+                </Text>
+                <Text>
+                  {
+                    earliestInstr
+                    //let a =
+                    /*
+                    recipe.tasks.filter((t) => t.id == earliestInstr)
+                    unsafeFind(recipe.tasks, (t: any) => t.id == earliestInstr)
+                      .instructions*/
+                  }
+                </Text>
+              </View>
+            </Pressable>
           </View>
           <View
             style={{
@@ -455,9 +474,7 @@ export function Cooking({ navigation, route }: Props) {
         </View>
         <View style={styles.contentContainer}>
           <View style={styles.spacingWithNoContent} />
-          <View style={styles.minimizedTasksFlatListContainer}>
-            {minimizedTasksComponent}
-          </View>
+
           <View style={styles.activeTaskCardContainer}>
             <TaskCard
               taskId={activeTask}
@@ -484,6 +501,8 @@ export function Cooking({ navigation, route }: Props) {
   return <></>;
 }
 
+const SMALL_ICON_SIZE = 30;
+
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
@@ -499,6 +518,7 @@ const styles = StyleSheet.create({
   },
   timerModalContainer: {
     height: "50%",
+    maxHeight: "70%",
     width: "95%",
     marginTop: 90,
   },
@@ -524,7 +544,7 @@ const styles = StyleSheet.create({
     width: "95%",
   },
   spacingWithNoContent: {
-    height: "6%",
+    height: "20%",
   },
   minimizedTasksFlatListContainer: {
     width: "95%",
@@ -538,5 +558,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     height: 100,
     alignItems: "center",
+  },
+  smallIcon: {
+    height: SMALL_ICON_SIZE,
+    width: SMALL_ICON_SIZE,
   },
 });

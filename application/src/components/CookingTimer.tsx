@@ -8,11 +8,6 @@ import {
 } from "../utils";
 
 const TIME_FINSIHED_TEXT = "Klar";
-const SMALL_ICON_SIZE = 33;
-const SMALL_NOTIFICATTION_DOT_SIZE = SMALL_ICON_SIZE / 3;
-const LARGE_ICON_SIZE = 60;
-const LARGE_NOTIFICATTION_DOT_SIZE = LARGE_ICON_SIZE / 3;
-
 
 type Props = {
   onPress?: () => void;
@@ -106,15 +101,15 @@ export const CookingTimer = ({
     return (
       <Pressable onPress={onPress} style={styles.container}>
         <View>
-          <Image
+          {/*<Image
             source={require("../../assets/image/time_icon.png")}
             style={size === "large" ? styles.largeIcon : styles.smallIcon}
-          ></Image>
-          <View style={styles.notificationContainer}>
+          ></Image>*/}
+          {/*<View style={styles.notificationContainer}>
             <Notification visable={timerFinished} size={size} />
-          </View>
+        </View>*/}
         </View>
-        <Text>{timeText}</Text>
+        <Text style={size === "large" ? {fontSize: 50} : {fontSize: 12}}>{timeText}</Text>
       </Pressable>
     );
   } else {
@@ -122,19 +117,6 @@ export const CookingTimer = ({
   }
 };
 
-type NotificationProps = {
-  visable: boolean;
-  size: "small" | "large";
-};
-
-const Notification = ({ visable, size }: NotificationProps) => (
-  <View
-    style={[
-      size === "large" ? styles.largeNotificationDot : styles.smallNotificationDot,
-      visable ? styles.notificationDotVisable : styles.notificationDotInvisable,
-    ]}
-  />
-);
 
 /**
  *
@@ -142,7 +124,7 @@ const Notification = ({ visable, size }: NotificationProps) => (
  * @returns tids text, "Klar" om tiden har passerats
  */
 export const finishTimeText = (finish: Date) =>
-  getMinutesTo(finish) >= 0
+getMinutesTo(finish) >= 0
     ? getMinutesTo(finish)
         .toString()
         .padStart(2, "0") +
@@ -158,33 +140,5 @@ const styles = StyleSheet.create({
     
 
   },
-  smallIcon: {
-    height: SMALL_ICON_SIZE,
-    width: SMALL_ICON_SIZE,
-  },
-  notificationContainer: {
-    position: "absolute",
-    right: 0,
-    top: 0,
-  },
-  smallNotificationDot: {
-    borderRadius: SMALL_NOTIFICATTION_DOT_SIZE / 2,
-    width: SMALL_NOTIFICATTION_DOT_SIZE,
-    height: SMALL_NOTIFICATTION_DOT_SIZE,
-    overflow: "hidden",
-  },
-  largeIcon: {
-    height: LARGE_ICON_SIZE,
-    width: LARGE_ICON_SIZE,
-  },
-  largeNotificationDot: {
-    borderRadius: LARGE_NOTIFICATTION_DOT_SIZE / 2,
-    width: LARGE_NOTIFICATTION_DOT_SIZE,
-    height: LARGE_NOTIFICATTION_DOT_SIZE,
-    overflow: "hidden",
-  },
-  notificationDotVisable: {
-    backgroundColor: "red",
-  },
-  notificationDotInvisable: {},
+  
 });

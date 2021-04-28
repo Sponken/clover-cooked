@@ -25,7 +25,7 @@ import {
   RecipeFinishedSubscriber,
 } from "../scheduler";
 import { FlatList } from "react-native-gesture-handler";
-
+import * as Progress from 'react-native-progress';
 import { schedulerContext } from "./scheduler-context";
 
 const OK_TIME_BETWEEN_CLICK = 700;
@@ -71,6 +71,7 @@ export function Cooking({ navigation, route }: Props) {
     Map<string, string | undefined>
   >(new Map());
   const { scheduler, setScheduler } = useContext(schedulerContext);
+  const [ progress, setProgress ] = useState<number>(0);
 
   //lista med de passiva tasks som visas som taskCards, både i små o stor storlek
   //(om de är klara kommer de upp för att säga ok avsluta passive task men även
@@ -146,6 +147,9 @@ export function Cooking({ navigation, route }: Props) {
       ]);
     }
   };
+  const progressSubscriber = (progress: number) => {
+    setProgress(progress)
+  };
 
   useEffect(() => {
     updateEarliestTimer(passiveTasks);
@@ -164,6 +168,7 @@ export function Cooking({ navigation, route }: Props) {
     ssss.subscribePassiveTaskFinished(passiveTaskFinishedSubscriber);
     ssss.subscribePassiveTaskCheckFinished(passiveTaskCheckFinishedSubscriber);
     ssss.subscribeRecipeFinished(recipeFinishedSubscriber);
+    ssss.subscribeProgress(progressSubscriber);
     setAssignedTasks(ssss.getTasks());
     setPassiveTasks(ssss.getPassiveTasks());
 
@@ -185,6 +190,7 @@ export function Cooking({ navigation, route }: Props) {
         passiveTaskCheckFinishedSubscriber
       );
       ssss.unsubscribeRecipeFinished(recipeFinishedSubscriber);
+      ssss.unsubscribeProgress(progressSubscriber);
     };
   }, []);
 
@@ -238,6 +244,8 @@ export function Cooking({ navigation, route }: Props) {
       />
     );
   }*/
+
+  
 
   //skapar en lista av alla task (ev passiva o ev aktiva) som ska visas som minimized
   let minimizedTasks: string[] = [...visiblePassiveTasks];
@@ -448,6 +456,8 @@ export function Cooking({ navigation, route }: Props) {
           </View>
         </View>
         <View style={styles.buttonContainer}>{taskConfirmButtons}</View>
+        <Progress.Bar color="green" unfilledColor="grey" borderWidth={0} progress={progress}/>
+        
       </SafeAreaView>
     );
   }

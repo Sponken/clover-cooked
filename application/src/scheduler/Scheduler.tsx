@@ -11,7 +11,7 @@ export type TaskAssignedSubscriber = (
   cook: CookID
 ) => void;
 export type RecipeFinishedSubscriber = () => void;
-
+export type ProgressSubscriber = (progress: number) => void;
 /** Detta representerar en schemaläggare som har koll på och delar ut tasks.
  * Enbart metoderna bör användas. Ändra inte i de övriga fälten
  */
@@ -67,6 +67,11 @@ export interface Scheduler {
   subscribeRecipeFinished: (f: RecipeFinishedSubscriber) => void;
   unsubscribeRecipeFinished: (f: RecipeFinishedSubscriber) => void;
   /**
+   * TODO
+   */
+  subscribeProgress: (f: ProgressSubscriber) => void;
+  unsubscribeProgress: (f: ProgressSubscriber) => void;
+  /**
    * Utöker tiden på en pågående passiv task
    */
   extendPassive: (task: TaskID, add?: number) => void;
@@ -94,13 +99,15 @@ export interface Scheduler {
    * Hämtar nuvarande tasks
    */
   getTasks: () => Map<CookID, TaskID>;
+  getCompletedTasks: () => TaskID[];
 
   // Subscription listor med alla subsribe funktioner
   passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[];
   passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[];
   passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[];
   taskAssignedSubscribers: TaskAssignedSubscriber[];
-  readonly recipeFinishedSubscribers: RecipeFinishedSubscriber[];
+  recipeFinishedSubscribers: RecipeFinishedSubscriber[];
+  progressSubscribers: ProgressSubscriber[];
 
   /**
    * När en user inte har något att göra så läggs den in här med datumet som den las in

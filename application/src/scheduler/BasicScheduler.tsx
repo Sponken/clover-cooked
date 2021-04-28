@@ -1,5 +1,5 @@
 import { Recipe, Task } from "../data";
-import {Scheduler, CookID, PassiveTaskStartedSubscriber, PassiveTaskFinishedSubscriber, PassiveTaskCheckFinishedSubscriber, TaskAssignedSubscriber,RecipeFinishedSubscriber} from "./Scheduler"
+import {Scheduler, CookID, PassiveTaskStartedSubscriber, PassiveTaskFinishedSubscriber, PassiveTaskCheckFinishedSubscriber, TaskAssignedSubscriber,RecipeFinishedSubscriber, ProgressSubscriber} from "./Scheduler"
 import {includesAll, removeElement} from "../utils"
 
 type TaskID = string
@@ -22,6 +22,7 @@ export function createBasicScheduler(recipe: Recipe,
   const passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[] = [];
   const passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[] = [];
   const recipeFinishedSubscribers: RecipeFinishedSubscriber[] =[];
+  const progressSubscribers: ProgressSubscriber[] =[];
 
   let lastFinished : Map<CookID, Date> = new Map();
   // alla kockar läggs till i lastFinished kockar (inkluderar då även de som ej blev tilldelade vid start)
@@ -35,6 +36,7 @@ export function createBasicScheduler(recipe: Recipe,
     passiveTaskFinishedSubscribers: passiveTaskFinishedSubscribers,
     passiveTaskCheckFinishedSubscribers: passiveTaskCheckFinishedSubscribers,
     recipeFinishedSubscribers: recipeFinishedSubscribers,
+    progressSubscribers: progressSubscribers,
 
     // Detta fältet representerar hur många gånger en task har blivit förlängd.
     // I `[number, number]` är det första värdet hur många gånger den blivit
@@ -49,6 +51,9 @@ export function createBasicScheduler(recipe: Recipe,
     currentTasks: new Map<CookID, TaskID>(),
     currentPassiveTasks: new Map<TaskID, {finish: Date, timeout: NodeJS.Timeout}>(),
     
+    getCompletedTasks: function () {
+      return this.completedTasks
+    },
     //en user klickar klar
     finishTask: function (task: TaskID, cook: CookID) {
       //lägger in kocken med datumet när den klickade klar (den kanske får ett nytt task några rader ner)
@@ -61,7 +66,7 @@ export function createBasicScheduler(recipe: Recipe,
         return;
       }
       assignTasks(scheduler, cook);
-      
+      updateProgress(scheduler)
     },
     finishPassiveTask: function (task: TaskID) {
       
@@ -75,6 +80,7 @@ export function createBasicScheduler(recipe: Recipe,
         this.passiveTaskFinishedSubscribers.forEach((fn) => fn(task));
         // När en passiv task är klar kan nya tasks bli tillgängliga. Fördela dem.
         assignTasks(this);
+        updateProgress(scheduler)
       }
     },
     checkPassiveTaskFinished: function (task: TaskID) {
@@ -99,6 +105,10 @@ export function createBasicScheduler(recipe: Recipe,
     subscribeRecipeFinished: function (f: RecipeFinishedSubscriber) { this.recipeFinishedSubscribers.push(f) },
     unsubscribeRecipeFinished: function (f: RecipeFinishedSubscriber) {
       this.recipeFinishedSubscribers = this.recipeFinishedSubscribers.filter((value) => value !== f)
+    },
+    subscribeProgress: function (f: ProgressSubscriber) { this.progressSubscribers.push(f) },
+    unsubscribeProgress: function (f: ProgressSubscriber) {
+      this.progressSubscribers = this.progressSubscribers.filter((value) => value !== f)
     },
 
     /**
@@ -162,6 +172,11 @@ export function createBasicScheduler(recipe: Recipe,
   assignTasks(scheduler);
   
   return scheduler;
+}
+
+function updateProgress(scheduler:Scheduler) {
+  let progress = scheduler.completedTasks.length / scheduler.recipe.tasks.length;
+  scheduler.progressSubscribers.forEach(f => f(progress));
 }
 
 /**

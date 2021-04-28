@@ -91,7 +91,7 @@ export interface Scheduler {
    */
   getTasks: () => Map<CookID, TaskID>;
 
-  undo: (task: TaskID) => void;
+  undo: (task: TaskID, cook?: CookID) => void;
 
   // Subscription listor med alla subsribe funktioner
   passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[];

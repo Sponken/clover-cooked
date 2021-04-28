@@ -17,7 +17,7 @@ import {
   UndoButton,
 } from "../components";
 import { User } from "../data";
-import { unsafeFind, undefinedToBoolean } from "../utils";
+import { unsafeFind, undefinedToBoolean, clearTimeoutOrUndefined } from "../utils";
 import {
   createBasicScheduler,
   Scheduler,
@@ -119,7 +119,6 @@ export function Cooking({ navigation, route }: Props) {
   };
 
   const taskAssignedSubscriber = (task: string | undefined, cook: string) => {
-    console.log("task assigned " + task + " to " + cook);
     setAssignedTasks((assigned) => new Map(assigned.set(cook, task)));
     if (task !== undefined) {
       setUserNotifications(
@@ -129,7 +128,6 @@ export function Cooking({ navigation, route }: Props) {
   };
 
   const recipeFinishedSubscriber: RecipeFinishedSubscriber = () => {
-    console.log("recipe finished");
     navigation.navigate("RecipeFinished");
   };
 
@@ -238,16 +236,23 @@ export function Cooking({ navigation, route }: Props) {
 
   // undoar activeUsers senaste avklarade task
   const undo = () => {
-    let task = lastFinishedTask.get(activeUser);
+    const user = activeUser;
+    const task = lastFinishedTask.get(user);
     if (task && scheduler) {
-      scheduler.undo(task);
+      setUndoData(
+        (old) => {
+          clearTimeoutOrUndefined(old.get(user)?.timeout);
+          return new Map(old.set(user, { available: false }));
+        }
+      )
+      scheduler.undo(task, user);
     }
   };
 
   // undo knapp
   let undoButton = <></>;
+
   if (undoData.get(activeUser)?.available) {
-    console.log(undoData.get(activeUser))
     // Vi kollar inte `okToPress` på den här `onPress` för personer kanske vilja undo:a på direkten
     undoButton = <View style={styles.undoContainer}><UndoButton onPress={undo}/></View>
   }
@@ -259,7 +264,7 @@ export function Cooking({ navigation, route }: Props) {
       if (oldData && oldData.timeout) {
         clearTimeout(oldData.timeout);
       }
-      const buttonClearTimeout = setTimeout(
+      const removeUndoBtnTimeout = setTimeout(
         () =>
           setUndoData(
             (old) => new Map(old.set(activeUser, { available: false }))
@@ -269,10 +274,10 @@ export function Cooking({ navigation, route }: Props) {
       setUndoData(
         (old) =>
           new Map(
-            old.set(activeUser, { available: true, timeout: buttonClearTimeout })
+            old.set(activeUser, { available: true, timeout: removeUndoBtnTimeout })
           )
       );
-      return () => clearTimeout(buttonClearTimeout);
+      return () => clearTimeout(removeUndoBtnTimeout);
     }
   }, [lastFinishedTask]);
 

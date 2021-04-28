@@ -25,6 +25,7 @@ export interface Scheduler {
     TaskID,
     { finish: Date; timeout: NodeJS.Timeout }
   >;
+  readonly branches: Map<string, TaskID[]>;
   /**
    * Avslutar en given, ej passiv, task för en användare.
    */
@@ -100,6 +101,8 @@ export interface Scheduler {
    */
   getTasks: () => Map<CookID, TaskID>;
   getCompletedTasks: () => TaskID[];
+  getProgress: () => number;
+  getBranchProgress: () => [string, number][];
 
   // Subscription listor med alla subsribe funktioner
   passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[];

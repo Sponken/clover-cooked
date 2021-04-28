@@ -4,10 +4,12 @@ import {
   Image,
   View,
   Modal,
-  Pressable
+  Pressable,
+  FlatList
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import * as Progress from 'react-native-progress';
 
 import React, { useState, useContext } from "react";
 
@@ -49,7 +51,7 @@ export function SessionStart({ navigation, route }: Props) {
   let initScheduler: Boolean;
   const {scheduler, setScheduler} = useContext(schedulerContext);
 
-  
+  let progressListComponent: JSX.Element;
 
   //Kolla om vi har en scheduler, i nuläget testar den bara om vi startat recept
   if(route.params?.initScheduler === undefined){
@@ -102,6 +104,7 @@ export function SessionStart({ navigation, route }: Props) {
     }
   }
 
+
   function schedulerExist() {
     if(scheduler){
       return true;
@@ -109,6 +112,37 @@ export function SessionStart({ navigation, route }: Props) {
     else {
       return false;
     }
+  }
+
+  if(scheduler){
+    progressListComponent = (
+      <View>
+      <FlatList
+          data={scheduler.getBranchProgress()}
+          keyExtractor={([branch, progress]) => branch}
+          renderItem={({ item }) => (
+            <View>
+              <View style={{flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center"}}>
+              <Text style={{width: "25%"}}>{item[0]}</Text>
+              <Progress.Bar color="green" height={15} unfilledColor="grey" borderWidth={0} progress={item[1]} width={null} style={{width:"65%"}}/>
+              <Text style={{width: "10%", paddingLeft: 5 }}>{Math.round(item[1]*100)}%</Text>
+            </View>
+            </View>
+          )}
+          ItemSeparatorComponent={() => (
+            <View
+              style={{
+                height: 5,
+              }}
+            />
+          )}
+          contentContainerStyle={{}}
+        />
+      </View>
+    )
+  }
+  else{
+    progressListComponent = <></>
   }
   
   return (
@@ -156,7 +190,9 @@ export function SessionStart({ navigation, route }: Props) {
             />
           </View>
         </Pressable>
+
         <View style={styles.topContainerSpace}></View>
+
         <Pressable
           onPress={() =>{{
             setDeleteSessionModalVisible(true)}}}>
@@ -176,25 +212,27 @@ export function SessionStart({ navigation, route }: Props) {
 
       {/* Conditional: ska visa "Fortsätt" om det redan är startat */}
       {/* när schedulen inte skickas med: "börja om" istället för fortsätt */}
-      <View style={styles.buttonContainer}>
-      
-      <Pressable disabled={startButtonSessionCheck()} 
-        style={startButtonSessionCheck() ? styles.cannotBePressed : styles.canBePressed} 
-        onPress={() =>{
-            if(!schedulerExist()){setRecipeInSession(recipe)} // Om ett recept redan är startat
-            {navigation.navigate("Cooking", {recipe, users})};
-          }
-        }
-      >
-        <Image
-          style={{height: 32, width: 24, margin: 15, marginLeft: 40}}
-          source={require("../../assets/image/play-button.png")} //TODO: chef.image
-          // check chef.color to decide color of border
-        />
-        <Text style={{color: "white", fontSize: 32}}>{scheduler ? "Fortsätt" : "Starta"}</Text>
-      </Pressable>
-      </View>
 
+      {progressListComponent}
+
+      <View style={styles.buttonContainer}>
+        <Pressable disabled={startButtonSessionCheck()} 
+          style={startButtonSessionCheck() ? styles.cannotBePressed : styles.canBePressed} 
+          onPress={() =>{
+              if(!schedulerExist()){setRecipeInSession(recipe)} // Om ett recept redan är startat
+              {navigation.navigate("Cooking", {recipe, users})};
+            }
+          }
+        >
+          <Image
+            style={{height: 32, width: 24, margin: 15, marginLeft: 40}}
+            source={require("../../assets/image/play-button.png")} //TODO: chef.image
+            // check chef.color to decide color of border
+          />
+          <Text style={{color: "white", fontSize: 32}}>{scheduler ? "Fortsätt" : "Starta"}</Text>
+        </Pressable>
+      </View>
+      
       {/*<StatusBar style="auto" />*/}
     </SafeAreaView>
   );
@@ -285,7 +323,7 @@ const styles = StyleSheet.create({
     marginTop:8,
   },
   chefsContainer:{ 
-    height: "50%",
+    height: "40%",
     width: "80%",
     alignSelf: "center",
     justifyContent: "center",

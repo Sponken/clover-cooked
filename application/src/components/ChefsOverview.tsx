@@ -52,6 +52,9 @@ export function ChefsOverview({ users, nav, recipeActivated }: ChefListProps) {
               </View>
             );
           }
+          if (item.id === "editChef") {
+            return <></>;
+          }
           return <ChefItem chef={item} />; //remove chef/edit chef instead?
         }}
       />

@@ -30,6 +30,20 @@ export function createBasicScheduler(recipe: Recipe,
   for (const cook of cooks) {
     lastFinished.set(cook, now)
   }
+
+  let branches = new Map<string, TaskID[]>();
+  for (const task of recipe.tasks) {
+    if (task.branch) {
+      let tasks = branches.get(task.branch);
+      if (tasks) {
+        // TODO: Does this work?
+        tasks.push(task.id);
+      } else {
+        branches.set(task.branch, [task.id])
+      }
+    }
+  }
+
   let scheduler: Scheduler = {
     taskAssignedSubscribers: taskAssignedSubscribers,
     passiveTaskStartedSubscribers: passiveTaskStartedSubscribers,
@@ -50,6 +64,7 @@ export function createBasicScheduler(recipe: Recipe,
     completedTasks: [],
     currentTasks: new Map<CookID, TaskID>(),
     currentPassiveTasks: new Map<TaskID, {finish: Date, timeout: NodeJS.Timeout}>(),
+    branches: branches,
     
     getCompletedTasks: function () {
       return this.completedTasks
@@ -165,7 +180,26 @@ export function createBasicScheduler(recipe: Recipe,
       return (recipe.tasks.length - this.completedTasks.length) * 5
 
     },
-    getTasks: function(){return new Map(this.currentTasks);}
+    getTasks: function(){return new Map(this.currentTasks);},
+    getProgress: function () {
+      return this.completedTasks.length / this.recipe.tasks.length;
+    },
+    getBranchProgress: function () {
+      let ratio = this.completedTasks.length / this.recipe.tasks.length;
+      let ret: [string, number][] = [["Måltiden", ratio]];
+      for (const [branch, tasks] of Array.from(this.branches.entries())) {
+        let done = 0;
+        for (const task of tasks) {
+          // TODO: quadratic complexity
+          if (this.completedTasks.includes(task)) {
+            done += 1;
+          }
+        }
+        let ratio = done / tasks.length;
+        ret.push([branch, ratio])
+      }
+      return ret;
+    }
   };
 
 
@@ -175,7 +209,7 @@ export function createBasicScheduler(recipe: Recipe,
 }
 
 function updateProgress(scheduler:Scheduler) {
-  let progress = scheduler.completedTasks.length / scheduler.recipe.tasks.length;
+  let progress = scheduler.getProgress();
   scheduler.progressSubscribers.forEach(f => f(progress));
 }
 

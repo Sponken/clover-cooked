@@ -456,7 +456,12 @@ export function Cooking({ navigation, route }: Props) {
           </View>
         </View>
         <View style={styles.buttonContainer}>{taskConfirmButtons}</View>
-        <Progress.Bar color="green" unfilledColor="grey" borderWidth={0} progress={progress}/>
+        <View style={{flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", paddingBottom: 20}}>
+          <View style={{width: "10%"}}></View>
+          <Progress.Bar color="green" height={15} unfilledColor="grey" borderWidth={0} progress={progress} width={null} style={{width:"80%"}}/>
+          <Text style={{width: "10%", paddingLeft: 5 }}>{Math.round(progress*100)}%</Text>
+        </View>
+        
         
       </SafeAreaView>
     );

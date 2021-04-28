@@ -7,13 +7,14 @@ import {
   clearTimeoutOrUndefined,
 } from "../utils";
 
-const TIME_FINSIHED_TEXT = "Klar";
+const TIME_FINSIHED_TEXT = "00:00";
 
 type Props = {
   onPress?: () => void;
   finish?: Date;
   displayRemainingTime: "hidden" | "shown" | "hiddenUntilLow";
-  size?: "small" | "large";
+  size?: "small" |  "large";
+  onTimerComplete?: ()=>void
 };
 
 
@@ -31,6 +32,7 @@ export const CookingTimer = ({
   finish: finishArg,
   displayRemainingTime: displayRemainingTimeArg,
   size: sizeArg,
+  onTimerComplete
 }: Props) => {
   if (finishArg) {
     const [onPress, setOnPress] = useState(() => onPressArg);
@@ -62,6 +64,7 @@ export const CookingTimer = ({
         clearIntervalOrUndefined(timeTextUpdateInterval);
         if (displayRemainingTime !== "hidden") {
           setTimeText(TIME_FINSIHED_TEXT);
+          onTimerComplete?onTimerComplete():""
         }
         setTimerFinished(true);
       }, finish.getTime() - Date.now());
@@ -99,18 +102,11 @@ export const CookingTimer = ({
     }, [finish, setDisplayRemainingTime]);
 
     return (
-      <Pressable onPress={onPress} style={styles.container}>
-        <View>
-          {/*<Image
-            source={require("../../assets/image/time_icon.png")}
-            style={size === "large" ? styles.largeIcon : styles.smallIcon}
-          ></Image>*/}
-          {/*<View style={styles.notificationContainer}>
-            <Notification visable={timerFinished} size={size} />
-        </View>*/}
+      //<Pressable onPress={onPress} style={styles.container}>
+        <View style={styles.container}>
+          <Text style={[timeText === TIME_FINSIHED_TEXT ? {color: "red"} : {color: "black"}, size === "large" ? {fontSize: 50} : {fontSize: 24}]}>{timeText}</Text>
         </View>
-        <Text style={size === "large" ? {fontSize: 50} : {fontSize: 12}}>{timeText}</Text>
-      </Pressable>
+      //</Pressable>
     );
   } else {
     return <></>;
@@ -136,7 +132,7 @@ const styles = StyleSheet.create({
   container: { 
     alignItems: "center",
     flexDirection: "row", 
-    backgroundColor: "white",
+   
     
 
   },

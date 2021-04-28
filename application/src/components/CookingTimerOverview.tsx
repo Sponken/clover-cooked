@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -15,20 +15,93 @@ import { StandardButton } from "./StandardButton";
 type Props = {
   passiveTasks: Map<string, Date>;
   recipe: Recipe;
-  onPress: (taskId: string) => void;
+  endTimer: (taskId: string) => void;
   extendTimer: (taskId: string) => void;
+  closeModal: () => void;
 };
 
 export function CookingTimerOverview({
   passiveTasks,
   recipe,
-  onPress,
+  endTimer,
   extendTimer,
+  closeModal,
 }: Props) {
   let passiveTaskIds: string[] = Array.from(passiveTasks.keys());
 
   return (
     <View style={styles.container}>
+      <View
+        style={{
+          flexDirection: "row",
+
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          // backgroundColor: "red",
+          height: 50,
+        }}
+      >
+        <View
+          style={{
+            justifyContent: "space-between",
+            alignItems: "center",
+            // backgroundColor: "red",
+            flexDirection: "row",
+
+            flex: 1,
+          }}
+        >
+          <View
+            style={{
+              margin: 10,
+              height: 30,
+              width: 30,
+              // paddingLeft: 10,
+              justifyContent: "center",
+              alignItems: "center",
+              // backgroundColor: "red",
+            }}
+          >
+            <Image
+              source={require("../../assets/image/time_icon.png")}
+              style={styles.smallIcon}
+            ></Image>
+          </View>
+
+          <Text
+            style={{
+              fontSize: 32,
+            }}
+          >
+            Timers
+          </Text>
+          <Pressable
+            onPress={closeModal}
+            style={{
+              padding: 15,
+              // backgroundColor: "red",
+              alignSelf: "flex-end",
+            }}
+          >
+            <Image
+              // TODO: add close-button icon, maybe a cross?
+
+              source={require("../../assets/image/cross_icon.png")}
+              style={{
+                height: 20,
+                width: 20,
+              }}
+            ></Image>
+          </Pressable>
+        </View>
+      </View>
+      <View
+        style={{
+          borderBottomWidth: 1,
+          borderBottomColor: "rgba(160, 160, 160, 0.5)",
+          marginHorizontal: 10,
+        }}
+      ></View>
       {passiveTaskIds.length > 0 ? (
         <FlatList
           data={passiveTaskIds}
@@ -38,7 +111,7 @@ export function CookingTimerOverview({
               taskId={item}
               recipe={recipe}
               finish={passiveTasks.get(item)}
-              onPress={() => onPress(item)}
+              onPress={() => endTimer(item)}
               extendTimer={() => extendTimer(item)}
             />
           )}
@@ -91,6 +164,8 @@ const PassiveTaskCard = ({
   extendTimer,
 }: PassiveTaskCardProps) => {
   if (finish) {
+    let [isFinished, setIsFinished] = useState(finish.getTime() < Date.now());
+
     return (
       <View
         style={{
@@ -109,32 +184,20 @@ const PassiveTaskCard = ({
             height: 30,
           }}
         >
-          <View
-            style={{
-              padding: 10,
-              // paddingLeft: 10,
-              justifyContent: "center",
-              alignItems: "center",
-              // backgroundColor: "red",
-            }}
-          >
-            <Image
-              source={require("../../assets/image/time_icon.png")}
-              style={styles.smallIcon}
-            ></Image>
-          </View>
           {/* TODO: Fixa så att timern är alignad till vänster, så den inte flyttar på sig när den går ner. */}
           <View
             style={{
               alignItems: "flex-start",
               justifyContent: "flex-start",
-              backgroundColor: "hotpink",
+              marginHorizontal: 10,
+              // backgroundColor: "hotpink",
             }}
           >
             <CookingTimer
               size="large"
               finish={finish}
               displayRemainingTime={"shown"}
+              onTimerComplete={() => setIsFinished(true)}
             />
           </View>
           <View
@@ -144,10 +207,11 @@ const PassiveTaskCard = ({
               // backgroundColor: "red",
             }}
           >
-            {/* TODO: ändra onPress till något annat, dvs förläng timer ist. */}
-            {/* TODO: Annan färg än standard button */}
             <StandardButton
-              onPress={extendTimer}
+              onPress={() => {
+                extendTimer();
+                setIsFinished(false);
+              }}
               buttonText="Förläng timer"
               buttonType="secondary"
             />
@@ -175,8 +239,9 @@ const PassiveTaskCard = ({
         {/* TODO: Antagligen inte vara grön om det är avbryt i förtid, bara när det står "Klar" */}
         <StandardButton
           style={{ justifyContent: "flex-end" }}
+          buttonType={isFinished ? "primary" : "secondary"}
           onPress={onPress}
-          buttonText="Avbryt timer i förtid"
+          buttonText={isFinished ? "Färdigt" : "Avbryt timer i förtid"}
         />
       </View>
       // <Pressable onPress={onPress}>
@@ -199,7 +264,7 @@ const PassiveTaskCard = ({
   return <></>;
 };
 
-const SMALL_ICON_SIZE = 35;
+const SMALL_ICON_SIZE = 30;
 
 const styles = StyleSheet.create({
   container: {

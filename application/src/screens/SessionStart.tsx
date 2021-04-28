@@ -212,8 +212,9 @@ export function SessionStart({ navigation, route }: Props) {
 
       {/* Conditional: ska visa "Fortsätt" om det redan är startat */}
       {/* när schedulen inte skickas med: "börja om" istället för fortsätt */}
-
-      {progressListComponent}
+      <View style={{height: "20%"}}>
+        {progressListComponent}
+      </View>
 
       <View style={styles.buttonContainer}>
         <Pressable disabled={startButtonSessionCheck()} 
@@ -241,8 +242,10 @@ export function SessionStart({ navigation, route }: Props) {
 
 const styles = StyleSheet.create({
   container: {
+    height: "100%",
     flex: 1,
     backgroundColor: "white",
+    alignItems: "center",
   },
   modalBackground: {
     flex: 1,
@@ -264,16 +267,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
   },
-  drawer: {
-    margin: 10,
-    height: 30,
-    width: 30,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 30 * 2,
-    flexDirection: "row",
-  },
-
   topContainer: {
     height: 30,
     flexDirection: "row",
@@ -310,6 +303,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: "25%",
+    width: "80%",
     margin: 10,
   },
   recipeContainer:{
@@ -323,9 +317,8 @@ const styles = StyleSheet.create({
     marginTop:8,
   },
   chefsContainer:{ 
-    height: "40%",
+    height: "30%",
     width: "80%",
-    alignSelf: "center",
     justifyContent: "center",
   },
     
@@ -336,7 +329,6 @@ const styles = StyleSheet.create({
   buttonContainer:{ 
     alignItems: "center", 
     justifyContent: "center", 
-    margin: 20,
   },
   startButton: {
     height: 30,

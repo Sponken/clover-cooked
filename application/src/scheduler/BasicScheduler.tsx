@@ -334,7 +334,7 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
 
     }
     
-    for (const cook of idleCooks.filter(c => !scheduler.currentTasks.hasValue(c))){
+    for (const cook of idleCooks.filter(c => !scheduler.currentTasks.hasKey(c))){
       scheduler.currentTasks.set(cook, helpOrRestTaskID)
       scheduler.taskAssignedSubscribers.forEach(s => s(helpOrRestTaskID, cook))
     }

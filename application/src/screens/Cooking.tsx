@@ -355,7 +355,7 @@ export function Cooking({ navigation, route }: Props) {
               onPress={() => setTimerModalVisible(true)}
               style={{
                 margin: 10,
-                height: 50,
+                height: 60,
                 maxWidth: "100%",
                 padding: 5,
                 borderWidth: 1,

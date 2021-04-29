@@ -177,7 +177,7 @@ export function createBasicScheduler(recipe: Recipe,
     },
     getTasks: function(){return new Map(this.currentTasks.entries());},
     undo : function(task: TaskID, cook?: CookID) {
-      if (this.completedTasks.includes(task)) {
+      if (this.completedTasks.includes(task) || task === doDishesTaskID || task === setTableTaskID) {
         undo(task, this, cook);
       }
     }

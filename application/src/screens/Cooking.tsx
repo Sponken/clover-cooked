@@ -493,8 +493,8 @@ export function Cooking({ navigation, route }: Props) {
           </View>
         </View>
         <View style={styles.buttonContainer}>
-            {undoButton}
           {taskConfirmButtons}
+          {undoButton}
         </View>
       </SafeAreaView>
     );
@@ -561,5 +561,8 @@ const styles = StyleSheet.create({
   undoContainer: {
     height: 80,
     width: 80,
+    position: "absolute",
+    left: 0,
+    top: "auto",
   }
 });

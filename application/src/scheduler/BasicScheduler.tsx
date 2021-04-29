@@ -427,11 +427,8 @@ function assignGivenTasks(scheduler: Scheduler, tasksToAssign: TaskID[], justFin
   //assigna task från våran skapade lista
   for (const task of tasksToAssign) {
     const cook = sortedCooks.pop()
-    console.log(cook)
     if (cook) {
-      scheduler.currentTasks.set(cook, task);
-      
-      scheduler.taskAssignedSubscribers.forEach((fn) => fn(task, cook))
+      assignTask(scheduler, cook, task);
     } else {
       break
     }

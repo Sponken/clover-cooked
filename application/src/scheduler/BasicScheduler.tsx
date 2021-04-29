@@ -1,6 +1,7 @@
 import { Recipe, Task, idleTaskIDs, isIdleTaskID, doDishesTaskID, setTableTaskID, helpOrRestTaskID } from "../data";
 import {Scheduler, CookID, PassiveTaskStartedSubscriber, PassiveTaskFinishedSubscriber, PassiveTaskCheckFinishedSubscriber, TaskAssignedSubscriber,RecipeFinishedSubscriber} from "./Scheduler"
 import {includesAll, removeElement} from "../utils"
+import { BiDirectionalMap } from 'bi-directional-map/dist';
 
 
 type TaskID = string
@@ -49,53 +50,49 @@ export function createBasicScheduler(recipe: Recipe,
     cooks: cooks,
     recipe: recipe,
     completedTasks: [],
-    currentTasks: new Map<CookID, TaskID>(),
+    currentTasks: new BiDirectionalMap<CookID, TaskID>(),
     currentPassiveTasks: new Map<TaskID, {finish: Date, timeout: NodeJS.Timeout}>(),
     
     //en user klickar klar
     finishTask: function (task: TaskID, cook: CookID) {
-      if (recipe.tasks.some(t => t.id===task)) {
-        this.lastFinished.set(cook, new Date(Date.now()));
-        
-        this.completedTasks.push(task);
-        this.currentTasks.delete(cook);
-        this.possibleDishesRemaining = true;
-        if(isRecipeFinished(this)){
-          this.recipeFinishedSubscribers.forEach((fn) => fn()); 
-          return;
+      if (this.currentTasks.getValue(cook) === task) {
+        if (recipe.tasks.some(t => t.id===task)) {
+          this.lastFinished.set(cook, new Date(Date.now()));
+          
+          this.completedTasks.push(task);
+          this.currentTasks.deleteKey(cook);
+          this.possibleDishesRemaining = true;
+          if(isRecipeFinished(this)){
+            this.recipeFinishedSubscribers.forEach((fn) => fn()); 
+            return;
+          }
+          assignTasks(scheduler, cook);
+        } else if (isIdleTaskID(task)) {
+          switch (task) {
+            case doDishesTaskID:
+              this.currentTasks.deleteKey(cook);
+              this.possibleDishesRemaining = false;
+              assignTasks(scheduler, cook);
+              break;
+            case setTableTaskID:
+              this.currentTasks.deleteKey(cook);
+              this.tableIsSet = true;
+              assignTasks(scheduler, cook);
+              break;
+            case helpOrRestTaskID:
+              // Gör ingenting för nu
+              break;
+          }
         }
         assignTasks(scheduler, cook);
-      } else if (isIdleTaskID(task)) {
-        switch (task) {
-          case doDishesTaskID:
-            this.currentTasks.delete(cook);
-            this.possibleDishesRemaining = false;
-            assignTasks(scheduler, cook);
-            break;
-          case setTableTaskID:
-            this.currentTasks.delete(cook);
-            this.tableIsSet = true;
-            assignTasks(scheduler, cook);
-            break;
-          case helpOrRestTaskID:
-            // Gör ingenting för nu
-            break;
-        }
       }
-      assignTasks(scheduler, cook);
-      console.log("endOfAssign")
-    
     },
     finishPassiveTask: function (task: TaskID) {
       
       const taskProps = this.currentPassiveTasks.get(task)
       if (taskProps) {
-        clearTimeout(taskProps.timeout);
-        console.log("COMPLETED PASSIVE TASK: " + task);
-        this.completedTasks.push(task);
-        
-        this.currentPassiveTasks.delete(task);
-        this.passiveTaskFinishedSubscribers.forEach((fn) => fn(task));
+        finishPassiveTaskNotAssign(this, task, taskProps);
+
         // När en passiv task är klar kan nya tasks bli tillgängliga. Fördela dem.
         assignTasks(this);
       }
@@ -170,7 +167,7 @@ export function createBasicScheduler(recipe: Recipe,
 
     },
     removeCook: function(cook: CookID){
-      this.currentTasks.delete(cook)
+      this.currentTasks.deleteKey(cook)
       removeElement(cooks, cook)
     },
     // Enkel implementation som antar att varje task tar 5 minuter
@@ -178,7 +175,12 @@ export function createBasicScheduler(recipe: Recipe,
       return (recipe.tasks.length - this.completedTasks.length) * 5
 
     },
-    getTasks: function(){return new Map(this.currentTasks);}
+    getTasks: function(){return new Map(this.currentTasks.entries());},
+    undo : function(task: TaskID, cook?: CookID) {
+      if (this.completedTasks.includes(task)) {
+        undo(task, this, cook);
+      }
+    }
   };
 
 
@@ -187,12 +189,19 @@ export function createBasicScheduler(recipe: Recipe,
   return scheduler;
 }
 
+function finishPassiveTaskNotAssign(scheduler: Scheduler, task: TaskID, taskProps: { finish: Date; timeout: NodeJS.Timeout }) {
+  clearTimeout(taskProps.timeout);
+  scheduler.completedTasks.push(task);
+  
+  scheduler.currentPassiveTasks.delete(task);
+  scheduler.passiveTaskFinishedSubscribers.forEach((fn) => fn(task));
+}
+
 /**
  * Startar eller förnyar ett passivt task. 
  * @timeLeft Tid i minuter tills task förväntas vara färdigt
  */
 function startPassiveTask(timeLeft: number, scheduler: Scheduler, task: TaskID) {
-  console.log("NEW PASSIVE TASK STARTED: " + task + " for " + new String(timeLeft));
   const finish = new Date(Date.now() + timeLeft*MINUTE)
   const timeout = setTimeout(() => scheduler.checkPassiveTaskFinished(task), timeLeft*MINUTE)
   scheduler.currentPassiveTasks.set(task, {finish: finish, timeout: timeout});
@@ -236,7 +245,7 @@ function getEligibleTasks(
   scheduler: Scheduler): [TaskID[], TaskID[][]] {
   let recipe: Recipe = scheduler.recipe
   let completedTasks: TaskID[] = scheduler.completedTasks
-  let currentTasks: TaskID[] = Array.from(scheduler.currentTasks.values())
+  let currentTasks: BiDirectionalMap<CookID, TaskID> = scheduler.currentTasks
   let currentPassiveTasks = scheduler.currentPassiveTasks
     
   let eligibleTasks: TaskID[] = [];
@@ -246,7 +255,7 @@ function getEligibleTasks(
   let [depMap, strongDepMap] = getDependencyMaps(recipe);
 
   for (const task of recipe.tasks) {
-    if (completedTasks.includes(task.id) || currentTasks.includes(task.id) || currentPassiveTasks.has(task.id)) {
+    if (completedTasks.includes(task.id) || currentTasks.hasValue(task.id) || currentPassiveTasks.has(task.id)) {
       continue
     }
     if (!(includesAll(completedTasks, depMap.get(task.id) ?? []) && includesAll(completedTasks, strongDepMap.get(task.id) ?? []))) {
@@ -306,7 +315,7 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
   // Delar ut idle uppgifter till alla som inte lagar mat
   function assignIdleTasks(scheduler: Scheduler){
 
-    let idleCooks = getIdleCooks(scheduler).filter(c => scheduler.currentTasks.get(c) === helpOrRestTaskID || !scheduler.currentTasks.has(c))
+    let idleCooks = getIdleCooks(scheduler).filter(c => scheduler.currentTasks.getValue(c) === helpOrRestTaskID || !scheduler.currentTasks.hasKey(c))
     // Om det är odukat och ingen dukar, ge någon i uppgift att duka
     if (idleCooks.length > 0 && !scheduler.tableIsSet && !Array.from(scheduler.currentTasks.values()).some(t => t===setTableTaskID)){
       const nextIdleCook = idleCooks.pop()
@@ -325,7 +334,7 @@ function assignTasks(scheduler: Scheduler, cook?: CookID) {
 
     }
     
-    for (const cook of idleCooks.filter(c => !scheduler.currentTasks.has(c))){
+    for (const cook of idleCooks.filter(c => !scheduler.currentTasks.hasValue(c))){
       scheduler.currentTasks.set(cook, helpOrRestTaskID)
       scheduler.taskAssignedSubscribers.forEach(s => s(helpOrRestTaskID, cook))
     }
@@ -355,6 +364,13 @@ function prioritizeAndAssignTasks(scheduler: Scheduler, eligibleTasks: TaskID[],
   assignGivenTasks(scheduler, paths, cook, toPreviousUser);
 }
 
+/**
+ * Tilldelar ett givet task till en given cook
+ */
+function assignTask(scheduler:Scheduler, cook: CookID, task: TaskID) {
+  scheduler.currentTasks.set(cook, task);
+  scheduler.taskAssignedSubscribers.forEach((fn) => fn(task, cook))
+}
 
 
 
@@ -438,7 +454,7 @@ function getIdleCooks(scheduler: Scheduler): CookID[] {
     cooksWithIdleTasks.push(cook);
   })
   
-  return  cooksWithIdleTasks.concat(scheduler.cooks.filter(cook => !scheduler.currentTasks.has(cook)))
+  return  cooksWithIdleTasks.concat(scheduler.cooks.filter(cook => !scheduler.currentTasks.hasValue(cook)))
 }
 
 
@@ -492,4 +508,87 @@ function longestPath(start: TaskID, graph: Map<TaskID, [number, TaskID[]]>): num
     return value + Math.max(...values);
   }
   throw "longestPath failed, node not in graph"
+}
+
+// TODO: första currentTask är "finishedTask" och ska tas hand om utanför funktionen
+function findActiveTasks(currentTask: TaskID, deps: Map<TaskID, TaskID[]>, scheduler: Scheduler): [TaskID[], TaskID[], TaskID[]]  {
+  let currentPassiveTasks: TaskID[] = [];
+  let currentTasks: TaskID[] = [];
+  let finishedTasks: TaskID[] = [];
+  let below = deps.get(currentTask) ?? [];
+
+
+  for (const task of below) {
+    let cur = scheduler.currentTasks.hasValue(task);
+    let fin = scheduler.completedTasks.includes(task);
+    let curPas = scheduler.currentPassiveTasks.has(task);
+    if (cur) {
+      currentTasks.push(task);
+    } else if (fin) {
+      finishedTasks.push(task);
+    } else if (curPas) {
+      currentPassiveTasks.push(task);
+    }
+    if (cur || fin || curPas) {
+      let [newPas, newCur, newFin] = findActiveTasks(task, deps, scheduler);
+      currentPassiveTasks = currentPassiveTasks.concat(newPas);
+      currentTasks = currentTasks.concat(newCur);
+      finishedTasks = finishedTasks.concat(newFin);
+    }
+  }
+  return [currentPassiveTasks, currentTasks, finishedTasks];
+}
+
+// Undo a completed task. All dependencies that are
+// - finished will be undone
+// - ongoing will be canceled
+function undo(mainTask: TaskID, scheduler: Scheduler, cook?: CookID) {
+  let deps_pre = makeDepGraph(scheduler.recipe);
+  let deps = filteredMap(deps_pre, (aa) => aa[1])
+
+
+  // Find all tasks that should be cancelled/undone
+  let [endPas, endCur, endFin] = findActiveTasks(mainTask, deps, scheduler);
+
+  // Cancel them
+  for (const task of endPas) {
+    let passiveProps = scheduler.currentPassiveTasks.get(task);
+    if (passiveProps) {
+      finishPassiveTaskNotAssign(scheduler, task, passiveProps);
+      removeItem(scheduler.completedTasks, task);
+    }
+  }
+
+  for (const task of endCur) {
+    let cook = scheduler.currentTasks.getKey(task);
+    scheduler.taskAssignedSubscribers.forEach((fn) => fn(undefined, cook))
+    scheduler.currentTasks.deleteValue(task);
+  }
+  for (const task of endFin) {
+    removeItem(scheduler.completedTasks, task);
+  }
+  // TODO: We assume that mainTask is completed. Is that correct?
+  removeItem(scheduler.completedTasks, mainTask);
+
+  if (cook) {
+    assignTask(scheduler, cook, mainTask)
+  }
+
+  // Some peoples tasks have been canceled and must then be started again.
+  assignTasks(scheduler);
+}
+
+// HACK: We shouldn't use arrays.
+function removeItem<T>(arr: Array<T>, value: T): Array<T> { 
+  const index = arr.indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
+}
+
+function filteredMap<T, V, W>(m : Map<T, V>, f: (v: V) => W ): Map<T, W> {
+  let m2 = new Map();
+  m.forEach((value, key) => m2.set(key, f(value)))
+  return m2
 }

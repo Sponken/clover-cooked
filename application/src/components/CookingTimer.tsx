@@ -16,11 +16,21 @@ const LARGE_NOTIFICATTION_DOT_SIZE = LARGE_ICON_SIZE / 3;
 
 type Props = {
   onPress?: () => void;
-  finish: Date | undefined;
+  finish?: Date;
   displayRemainingTime: "hidden" | "shown" | "hiddenUntilLow";
   size?: "small" | "large";
 };
 
+
+/**
+ * Komponent som visar timer för Cooking skärmen
+ * Tar ett antal argument:
+ *   onPress: en funktion som körs vid tryck på timern. 
+ *   finish: slut date för timern om det utelämnas så visas ej timern.
+ *   displayRemainingTime: ett läge för visning av tid där "hidden" döljer tiden, "shown" visar tiden och "hiddenUntilLow" visar tiden när
+ *    det återstår en minut eller mindre.
+ *   size: läge för storlek på timern, om utelämnas är default "small".
+ */
 export const CookingTimer = ({
   onPress: onPressArg,
   finish: finishArg,

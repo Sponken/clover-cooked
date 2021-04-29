@@ -454,7 +454,7 @@ function getIdleCooks(scheduler: Scheduler): CookID[] {
     cooksWithIdleTasks.push(cook);
   })
   
-  return  cooksWithIdleTasks.concat(scheduler.cooks.filter(cook => !scheduler.currentTasks.hasValue(cook)))
+  return cooksWithIdleTasks.concat(scheduler.cooks.filter(cook => !scheduler.currentTasks.hasKey(cook)))
 }
 
 

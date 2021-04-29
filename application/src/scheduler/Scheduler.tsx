@@ -1,4 +1,5 @@
 import { Recipe, Task } from "../data";
+import { BiDirectionalMap } from "bi-directional-map/dist";
 
 export type CookID = string;
 export type TaskID = string;
@@ -20,7 +21,7 @@ export interface Scheduler {
   readonly cooks: CookID[];
   readonly recipe: Recipe;
   readonly completedTasks: TaskID[];
-  readonly currentTasks: Map<CookID, TaskID>;
+  readonly currentTasks: BiDirectionalMap<CookID, TaskID>;
   readonly currentPassiveTasks: Map<
     TaskID,
     { finish: Date; timeout: NodeJS.Timeout }
@@ -95,12 +96,14 @@ export interface Scheduler {
    */
   getTasks: () => Map<CookID, TaskID>;
 
+  undo: (task: TaskID, cook?: CookID) => void;
+
   // Subscription listor med alla subsribe funktioner
   passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[];
   passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[];
   passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[];
   taskAssignedSubscribers: TaskAssignedSubscriber[];
-  readonly recipeFinishedSubscribers: RecipeFinishedSubscriber[];
+  recipeFinishedSubscribers: RecipeFinishedSubscriber[];
 
   /**
    * När en user inte har något att göra så läggs den in här med datumet som den las in

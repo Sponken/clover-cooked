@@ -205,6 +205,7 @@ export function createBasicScheduler(recipe: Recipe,
     undo : function(task: TaskID, cook?: CookID) {
       if (this.completedTasks.includes(task) || task === doDishesTaskID || task === setTableTaskID) {
         undo(task, this, cook);
+        updateProgress(scheduler)
       }
     },
     getProgress: function () {

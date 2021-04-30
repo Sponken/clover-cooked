@@ -458,8 +458,8 @@ export function Cooking({ navigation, route }: Props) {
                 maxWidth: "100%",
                 padding: 5,
                 borderWidth: 1,
-                borderColor: "rgb(197, 197, 196)",
-                // borderColor: "rgb(223, 223, 223)",
+                // borderColor: "rgb(197, 197, 196)",
+                borderColor: "rgb(223, 223, 223)",
                 borderRadius: 15,
                 flexDirection: "row",
               }}
@@ -488,7 +488,9 @@ export function Cooking({ navigation, route }: Props) {
           >
             <Pressable onPress={() => navigation.navigate("SessionStart", {})}>
               <Image
-                source={require("../../assets/image/editChef.png")}
+                resizeMethod={"scale"}
+                resizeMode={"center"}
+                source={require("../../assets/image/showMenuButton_icon.png")}
                 style={styles.topBarRightMenuIcon}
               />
             </Pressable>
@@ -575,9 +577,11 @@ const styles = StyleSheet.create({
     margin: 15, //det här är bara temp när vi har en avbryt knapp istället
   },
   topBarRightMenuIcon: {
-    width: 44,
-    height: 44,
-    margin: 3,
+    // width: 8,
+    // height: 30,
+    // padding: 5, 
+    marginHorizontal: 20,
+    // marginTop: 17
   },
   contentContainer: {
     flex: 1,

@@ -26,7 +26,7 @@
     {
       "id": "ugn",
       "name": "Sätt på ugn",
-      "instructions": "Sätt på ugnen på 220 grader",
+      "instructions": "Sätt på ugnen på 220°C. \n\n(Klar startar timer)",
       "initalTask": true,
       "branch": "Bröd",
       "estimatedTime": 1,
@@ -34,8 +34,17 @@
       "resources": []
     },
     {
+      "id": "ugnVärms",
+      "name": "Ugnen värms",
+      "instructions": "Ugnen värms",
+      "passive": true,
+      "estimatedTime": 7,
+      "ingredients": [],
+      "resources": []
+    },
+    {
       "id": "hackaLök",
-      "name": "Hacka lölk",
+      "name": "Hacka lök",
       "instructions": "Skala och grovhacka gullöken",
       "branch": "Soppa",
       "estimatedTime": 4,
@@ -45,7 +54,7 @@
     {
       "id": "skalaPotatis",
       "name": "Skala potatis",
-      "instructions": "Skala potatisen om den är grov. Skölj ananrs av de",
+      "instructions": "Skala potatisen om den är grov. Skölj annars av dem.",
       "branch": "Soppa",
       "estimatedTime": 10,
       "ingredients": [{ "ingredientId": "potatis", "amount": 1 }],
@@ -147,7 +156,7 @@
     {
       "id": "börjaKoka",
       "name": "Koka upp grytan",
-      "instructions": "Rör runt i kastrullen, sätt på lock och koka upp",
+      "instructions": "Rör runt i kastrullen, sätt på lock och koka upp. \n\n(Klar startar timer)",
       "branch": "Soppa",
       "estimatedTime": 2,
       "ingredients": [],
@@ -175,7 +184,7 @@
     {
       "id": "låtSjuda",
       "name": "Låt sjuda",
-      "instructions": "Låt soppan sjuda tills potatisen är mjuk",
+      "instructions": "Låt soppan sjuda tills potatisen är mjuk. \n\n(Klar startar timer)",
       "passive": true,
       "branch": "Soppa",
       "estimatedTime": 8,
@@ -224,7 +233,7 @@
     {
       "id": "brödUgn",
       "name": "Ställ in brödet",
-      "instructions": "Ställ in plåten med bröd i mitten av ugnen",
+      "instructions": "Ställ in plåten med bröd i mitten av ugnen. \n\n(Klar startar timer)",
       "branch": "Bröd",
       "estimatedTime": 1,
       "ingredients": [],
@@ -345,6 +354,10 @@
   ],
   "taskDependencies": [
     {
+      "taskId": "ugnVärms",
+      "strongDependsOn": ["ugn"]
+    },
+    {
       "taskId": "tärnaPotatis",
       "strongDependsOn": ["skalaPotatis"]
     },
@@ -410,7 +423,7 @@
     },
     {
       "taskId": "brödUgn",
-      "dependsOn": ["kryddaBröd", "ugn"]
+      "dependsOn": ["kryddaBröd", "ugnVärms"]
     },
     {
       "taskId": "brödGräddas",

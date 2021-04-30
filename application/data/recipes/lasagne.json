@@ -13,7 +13,7 @@
     { "id": "rosmarin", "name": "Rosmarin", "unit": "tsk" },
     { "id": "krossTomat", "name": "Krossade tomater", "unit": "g" },
     { "id": "buljong", "name": "Köttbuljongtärning", "unit": "st" },
-    { "id": "smör", "name": "Smör", "unit": "msk" },
+    { "id": "smör", "name": "Smör", "unit": "gram" },
     { "id": "vetemjöl", "name": "Mjöl", "unit": "msk" },
     { "id": "mjölk", "name": "Mjölk", "unit": "l" },
     { "id": "lasagneplattor", "name": "Lasagneplattor", "unit": "paket" },
@@ -35,7 +35,7 @@
     {
       "id": "ugn",
       "name": "Sätt på ugn",
-      "instructions": "Sätt på ugnen på 175 grader",
+      "instructions": "Sätt på ugnen på 175 grader. \n\n(Klar startar timer)",
       "initalTask": true,
       "branch": "Tillaga lasagne",
       "estimatedTime": 1,
@@ -43,9 +43,18 @@
       "resources": [{ "resourceId": "ugn", "amount": 1 }]
     },
     {
+      "id": "ugnVärms",
+      "name": "Ugnen värms",
+      "instructions": "Ugnen värms",
+      "passive": true,
+      "estimatedTime": 7,
+      "ingredients": [],
+      "resources": []
+    },
+    {
       "id": "hackaLök",
       "name": "Hacka lök",
-      "instructions": "Skala och hacka gullöken fint",
+      "instructions": "Skala och finhacka den gula löken",
       "branch": "Köttfärsås",
       "estimatedTime": 2,
       "ingredients": [{ "ingredientId": "lök", "amount": 2 }],
@@ -61,15 +70,38 @@
       "resources": []
     },
     {
+      "id": "fläkt",
+      "name": "Sätt på fläkten",
+      "instructions": "Sätt på fläkten",
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "olivIStekpanna",
+      "name": "Fräs lök och färs",
+      "instructions": "Häll olivolja i en stor stekpanna eller liten gryta på medelhög värme.",
+      "estimatedTime": 1,
+      "ingredients": [{ "ingredientId": "olivolja", "amount": 1 }],
+      "resources": [],
+      "branch": "Köttfärsås"
+    },
+    {
+      "id": "lökOFärs",
+      "name": "Fräs lök och färs",
+      "instructions": "Häll ner färsen och den hackade löken i stekpannan/grytan med olivolja",
+      "estimatedTime": 1,
+      "ingredients": [{ "ingredientId": "färs", "amount": 500 }],
+      "resources": [],
+      "branch": "Köttfärsås"
+    },
+    {
       "id": "fräs",
       "name": "Fräs lök och färs",
-      "instructions": "Häll olivolja i en stor stekpanna eller liten stekgryta på medelhög värme. Fräs färs tillsammans med den hackade gul- och vitlök på medelhög värme i olivolja tills det fått färg",
+      "instructions": "Fräs färsen och löken på medelhög värme tills den fått färg",
       "branch": "Köttfärsås",
       "estimatedTime": 8,
-      "ingredients": [
-        { "ingredientId": "färs", "amount": 500 },
-        { "ingredientId": "olivolja", "amount": 1 }
-      ],
+      "ingredients": [],
       "resources": []
     },
     {
@@ -105,7 +137,7 @@
     {
       "id": "buljong",
       "name": "Tillsätt buljong",
-      "instructions": "Smula ner buljongtärning i köttfärsåsen",
+      "instructions": "Smula ner buljongtärning i köttfärsåsen och rör runt",
       "branch": "Köttfärsås",
       "estimatedTime": 1,
       "ingredients": [{ "ingredientId": "buljong", "amount": 1 }],
@@ -114,7 +146,7 @@
     {
       "id": "börjaKoka",
       "name": "Koka upp köttfärsåsen",
-      "instructions": "Rör runt i köttfärsåsen, sätt på lock och koka upp",
+      "instructions": "Koka upp under lock. \n\n(Klar startar timer)",
       "branch": "Köttfärsås",
       "estimatedTime": 2,
       "ingredients": [],
@@ -149,12 +181,21 @@
       "resources": []
     },
     {
+      "id": "delaKörsbärs",
+      "name": "Dela körsbärstomaterna",
+      "instructions": "Skär körsbärstomaterna i 2 delar",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "gulaKörsbärstomater", "amount": 1 }],
+      "resources": [],
+      "branch": "Sallad"
+    },
+    {
       "id": "läggPåFat",
       "name": "Lägg på fat",
-      "instructions": "Lägg rödlöken på ett fat tillsammans med körsbärstomater. Blanda försiktigt",
+      "instructions": "Lägg rödlöken på ett fat tillsammans med körsbärstomaterna. Blanda försiktigt",
       "branch": "Sallad",
       "estimatedTime": 5,
-      "ingredients": [{ "ingredientId": "gulaKörsbärstomater", "amount": 1 }],
+      "ingredients": [],
       "resources": []
     },
     {
@@ -178,7 +219,7 @@
       "instructions": "Häll upp smör i en kastrull på medelhög värme",
       "branch": "Sås",
       "estimatedTime": 3,
-      "ingredients": [{ "ingredientId": "smör", "amount": 6 }],
+      "ingredients": [{ "ingredientId": "smör", "amount": 80 }],
       "resources": []
     },
     {
@@ -193,11 +234,20 @@
     {
       "id": "rörNerMjölk",
       "name": "Rör ner mjölk",
-      "instructions": "Vispa ner mjölken i kastrullen med smör och mjöl, lite i taget. Låt koka upp och koka några minuter under omrörning.",
+      "instructions": "Vispa ner mjölken, lite i taget, i kastrullen med smör och mjölk.",
       "branch": "Sås",
       "estimatedTime": 8,
       "ingredients": [{ "ingredientId": "mjölk", "amount": 1 }],
       "resources": []
+    },
+    {
+      "id": "kokaSås",
+      "name": "Koka såsen",
+      "instructions": "Låt såsen i kastrullen koka upp och sedan koka några minuter under omrörning.",
+      "estimatedTime": 8,
+      "ingredients": [],
+      "resources": [],
+      "branch": "Sås"
     },
     {
       "id": "smakaAvSP",
@@ -206,8 +256,8 @@
       "branch": "Sås",
       "estimatedTime": 4,
       "ingredients": [
-        { "ingredientId": "salt", "amount": 0 },
-        { "ingredientId": "peppar", "amount": 0 }
+        { "ingredientId": "salt", "amount": 2 },
+        { "ingredientId": "peppar", "amount": 0.5 }
       ],
       "resources": []
     },
@@ -226,13 +276,13 @@
       "instructions": "Smörj en ugnssäker form",
       "branch": "Bygg lasagne",
       "estimatedTime": 3,
-      "ingredients": [{ "ingredientId": "smör", "amount": 0.5 }],
+      "ingredients": [{ "ingredientId": "smör", "amount": 10 }],
       "resources": []
     },
     {
       "id": "täckBotten",
       "name": "Täck botten med lasagneplattor",
-      "instructions": "Täck botten med ett lager lasagneplattor och den vita såsen",
+      "instructions": "Täck botten med ett lager lasagneplattor och lite av den vita såsen",
       "branch": "Bygg lasagne",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "lasagneplattor", "amount": 1 }],
@@ -241,7 +291,7 @@
     {
       "id": "varva",
       "name": "Varva lager med plattor, sås och köttfärsås",
-      "instructions": "Varva lager med plattor, sås och köttfärssås. Upprepa tills köttfärssåsen är slut, eller formen nästan full.",
+      "instructions": "Spara lite av den vita såsen till nästa steg. Varva sedan lager med plattor, sås och köttfärssås. Upprepa tills köttfärssåsen är slut, eller formen nästan full.",
       "branch": "Bygg lasagne",
       "estimatedTime": 8,
       "ingredients": [],
@@ -250,7 +300,7 @@
     {
       "id": "avslutaBygge",
       "name": "Avsluta lasagnen",
-      "instructions": "Häll över resterande såsen och den rivna osten",
+      "instructions": "Häll över resterande av den vita såsen och den rivna osten",
       "branch": "Bygg lasagne",
       "estimatedTime": 3,
       "ingredients": [],
@@ -297,11 +347,23 @@
   "taskDependencies": [
     {
       "taskId": "läggPåFat",
-      "dependsOn": ["finhackRödlök"]
+      "dependsOn": ["finhackRödlök", "delaKörsbärs"]
+    },
+    {
+      "taskId": "ugnVärms",
+      "strongDependsOn": ["ugn"]
+    },
+    {
+      "taskId": "olivIStekpanna",
+      "strongDependsOn": ["fläkt"]
+    },
+    {
+      "taskId": "lökOFärs",
+      "dependsOn": ["hackaLök", "hackaVitlök", "olivIStekpanna"]
     },
     {
       "taskId": "fräs",
-      "dependsOn": ["hackaLök", "hackaVitlök"]
+      "dependsOn": ["lökOFärs"]
     },
     {
       "taskId": "tomatpure",
@@ -332,6 +394,10 @@
       "dependsOn": ["kokaUpp"]
     },
     {
+      "taskId": "hettaKastrull",
+      "strongDependsOn": ["fläkt"]
+    },
+    {
       "taskId": "pudraVetemjöl",
       "strongDependsOn": ["hettaKastrull"]
     },
@@ -340,8 +406,12 @@
       "strongDependsOn": ["pudraVetemjöl"]
     },
     {
-      "taskId": "smakaAvSP",
+      "taskId": "kokaSås",
       "strongDependsOn": ["rörNerMjölk"]
+    },
+    {
+      "taskId": "smakaAvSP",
+      "strongDependsOn": ["kokaSås"]
     },
     {
       "taskId": "avslutaBygge",
@@ -357,7 +427,7 @@
     },
     {
       "taskId": "ställInIUgn",
-      "dependsOn": ["avslutaBygge", "ugn"]
+      "dependsOn": ["avslutaBygge", "ugnVärms"]
     },
     {
       "taskId": "tillagaLasagne",

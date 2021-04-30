@@ -177,7 +177,7 @@ const Ingredient = ({ ingredient, recipe }: IngredientsProps) => (
     <Text style={styles.ingredientName}>
       {getIngredientName(ingredient.ingredientId, recipe)}
     </Text>
-    <Text>
+    <Text style={styles.ingredientName}>
       {ingredient.amount +
         " " +
         getIngredientUnit(ingredient.ingredientId, recipe)}
@@ -287,9 +287,9 @@ const styles = StyleSheet.create({
   },
   bigText: {
     paddingTop: 5,
-    lineHeight: 25,
+    lineHeight: 30, //25,
     fontSize: 25,
-    fontWeight: "600",
+    fontWeight: "400",
   },
   instructionsContainer: {
     marginBottom: 5,
@@ -298,8 +298,9 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   ingredientName: {
-    fontSize: 15,
+    fontSize: 22,
     marginRight: 7,
+    fontWeight: "300",
   },
   ingredientContainer: {
     flex: 1,

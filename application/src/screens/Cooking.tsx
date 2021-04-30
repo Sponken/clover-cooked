@@ -22,7 +22,7 @@ import {
   RecipeFinishedSubscriber,
 } from "../scheduler";
 import { FlatList } from "react-native-gesture-handler";
-
+import * as Progress from 'react-native-progress';
 import { schedulerContext } from "./scheduler-context";
 
 const OK_TIME_BETWEEN_CLICK = 700;
@@ -85,6 +85,7 @@ export function Cooking({ navigation, route }: Props) {
     Map<string, string | undefined>
   >(new Map());
   const { scheduler, setScheduler } = useContext(schedulerContext);
+  const [ progress, setProgress ] = useState<number>(0);
 
   //taskId för det task som visas
   const [activeTask, setActiveTask] = useState<string>();
@@ -151,6 +152,9 @@ export function Cooking({ navigation, route }: Props) {
   const passiveTaskCheckFinishedSubscriber = (task: string) => {
     setTimerModalVisible(true);
   };
+  const progressSubscriber = (progress: number) => {
+    setProgress(progress)
+  };
 
   useEffect(() => {
     updateEarliestTimer(passiveTasks);
@@ -165,18 +169,15 @@ export function Cooking({ navigation, route }: Props) {
       temporaryScheduler = createBasicScheduler(recipe, userIds);
     }
     temporaryScheduler.subscribeTaskAssigned(taskAssignedSubscriber);
-    temporaryScheduler.subscribePassiveTaskStarted(
-      passiveTaskStartedSubscriber
-    );
-    temporaryScheduler.subscribePassiveTaskFinished(
-      passiveTaskFinishedSubscriber
-    );
-    temporaryScheduler.subscribePassiveTaskCheckFinished(
-      passiveTaskCheckFinishedSubscriber
-    );
+    temporaryScheduler.subscribePassiveTaskStarted(passiveTaskStartedSubscriber);
+    temporaryScheduler.subscribePassiveTaskFinished(passiveTaskFinishedSubscriber);
+    temporaryScheduler.subscribePassiveTaskCheckFinished(passiveTaskCheckFinishedSubscriber);
     temporaryScheduler.subscribeRecipeFinished(recipeFinishedSubscriber);
+    temporaryScheduler.subscribeProgress(progressSubscriber);
     setAssignedTasks(temporaryScheduler.getTasks());
     setPassiveTasks(temporaryScheduler.getPassiveTasks());
+
+    setProgress(temporaryScheduler.getProgress())
 
     let _userNotifications = new Map<string, boolean>();
     temporaryScheduler
@@ -200,6 +201,7 @@ export function Cooking({ navigation, route }: Props) {
         passiveTaskCheckFinishedSubscriber
       );
       temporaryScheduler.unsubscribeRecipeFinished(recipeFinishedSubscriber);
+      temporaryScheduler.unsubscribeProgress(progressSubscriber);
     };
   }, []);
 
@@ -530,6 +532,13 @@ export function Cooking({ navigation, route }: Props) {
           {taskConfirmButtons}
           {undoButton}
         </View>
+        <View style={{flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", paddingBottom: 20}}>
+          <View style={{width: "10%"}}></View>
+          <Progress.Bar color="green" height={15} unfilledColor="lightgrey" borderWidth={0} progress={progress} width={null} style={{width:"80%"}}/>
+          <Text style={{width: "10%", paddingLeft: 5 }}>{Math.round(progress*100)}%</Text>
+        </View>
+        
+        
       </SafeAreaView>
     );
   }

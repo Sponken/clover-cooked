@@ -34,7 +34,7 @@
     {
       "id": "ugn",
       "name": "Sätt på ugn",
-      "instructions": "Sätt på ugnen på 175 grader. (Klar startar timer)",
+      "instructions": "Sätt på ugnen på 175 grader. \n\n(Klar startar timer)",
       "initalTask": true,
       "estimatedTime": 1,
       "ingredients": [],
@@ -52,7 +52,7 @@
     {
       "id": "hackaLök",
       "name": "Hacka lök",
-      "instructions": "Skala och hacka den gula löken fint",
+      "instructions": "Skala och finhacka den gula löken",
       "estimatedTime": 2,
       "ingredients": [{ "ingredientId": "lök", "amount": 2 }],
       "resources": []
@@ -135,7 +135,7 @@
     {
       "id": "börjaKoka",
       "name": "Koka upp köttfärsåsen",
-      "instructions": "Koka upp under lock. (Klar startar timer)",
+      "instructions": "Koka upp under lock. \n\n(Klar startar timer)",
       "estimatedTime": 2,
       "ingredients": [],
       "resources": []

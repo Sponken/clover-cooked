@@ -25,7 +25,7 @@
     {
       "id": "ugn",
       "name": "Sätt på ugn",
-      "instructions": "Sätt på ugnen på 220°C. (Klar startar timer)",
+      "instructions": "Sätt på ugnen på 220°C. \n\n(Klar startar timer)",
       "initalTask": true,
       "estimatedTime": 1,
       "ingredients": [],
@@ -142,7 +142,7 @@
     {
       "id": "börjaKoka",
       "name": "Koka upp grytan",
-      "instructions": "Rör runt i kastrullen, sätt på lock och koka upp. (Klar startar timer)",
+      "instructions": "Rör runt i kastrullen, sätt på lock och koka upp. \n\n(Klar startar timer)",
       "estimatedTime": 2,
       "ingredients": [],
       "resources": []
@@ -167,7 +167,7 @@
     {
       "id": "låtSjuda",
       "name": "Låt sjuda",
-      "instructions": "Låt soppan sjuda tills potatisen är mjuk. (Klar startar timer)",
+      "instructions": "Låt soppan sjuda tills potatisen är mjuk. \n\n(Klar startar timer)",
       "passive": true,
       "estimatedTime": 8,
       "ingredients": [],
@@ -211,7 +211,7 @@
     {
       "id": "brödUgn",
       "name": "Ställ in brödet",
-      "instructions": "Ställ in plåten med bröd i mitten av ugnen. (Klar startar timer)",
+      "instructions": "Ställ in plåten med bröd i mitten av ugnen. \n\n(Klar startar timer)",
       "estimatedTime": 1,
       "ingredients": [],
       "resources": [{ "resourceId": "ugn", "amount": 1 }]

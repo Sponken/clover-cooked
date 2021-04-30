@@ -43,7 +43,7 @@
     {
       "id": "ugn",
       "name": "Sätt på ugn",
-      "instructions": "Sätt på ugnen på 225°C. (Klar startar timer)",
+      "instructions": "Sätt på ugnen på 225°C. \n\n(Klar startar timer)",
       "initalTask": true,
       "estimatedTime": 1,
       "ingredients": [],
@@ -123,15 +123,38 @@
       "resources": []
     },
     {
-      "id": "fräsStekgryta",
-      "name": "Fräs i stekgryta",
-      "instructions": "Lägg skivad lök, hackad paprika, pressad vitlöken, hackad rosmarin, tomatpure, chiliflakes och kanel i grytan och fräs i 4-5 minuter: ",
-      "estimatedTime": 8,
+      "id": "läggILökOchPaprika",
+      "name": "läggILökOchPaprika",
+      "instructions": "Tillsätt skivad lök och hackad paprika i grytan.",
+      "estimatedTime": 2,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "läggIVitlökOchRosmarin",
+      "name": "läggIVitlökOchRosmarin",
+      "instructions": "Tillsätt pressad vitlök och hackad rosmarin i grytan.",
+      "estimatedTime": 2,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "läggITomatpureOchChiliflakes",
+      "name": "läggITomatpureOchChiliflakes",
+      "instructions": "Tillsätt tomatpure och chiliflakes i grytan.",
+      "estimatedTime": 2,
       "ingredients": [
         { "ingredientId": "tomatpure", "amount": 2 },
-        { "ingredientId": "chiliflakes", "amount": 2 },
-        { "ingredientId": "kanel", "amount": 1 }
+        { "ingredientId": "chiliflakes", "amount": 2 }
       ],
+      "resources": []
+    },
+    {
+      "id": "fräsStekgryta",
+      "name": "fräsStekgryta",
+      "instructions": "Tillsätt kanel i grytan och fräs i 4-5 minuter.",
+      "estimatedTime": 2,
+      "ingredients": [{ "ingredientId": "kanel", "amount": 1 }],
       "resources": []
     },
     {
@@ -143,19 +166,42 @@
       "resources": []
     },
     {
-      "id": "tillsättStekgryta",
-      "name": "Tillsätt till gryta",
-      "instructions": "Tillsätt till grytan aubergine, röda linser, konserverade tomater, vatten och salt. Låt sjuda. (Klar startar timer)",
+      "id": "tillsättStekgrytaAubergineLinser",
+      "name": "Tillsätt till gryta Aubergine och Linser",
+      "instructions": "Tillsätt till grytan aubergine och röda linser.",
+      "estimatedTime": 3,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "tillsättStekgrytaTomaterVatten",
+      "name": "Tillsätt till gryta salt",
+      "instructions": "Tillsätt till grytan konserverade tomater och vatten.",
       "estimatedTime": 3,
       "ingredients": [
         { "ingredientId": "konserveradeTomater", "amount": 1 },
-        { "ingredientId": "vatten", "amount": 2 },
-        { "ingredientId": "salt", "amount": 1 }
+        { "ingredientId": "vatten", "amount": 2 }
       ],
       "resources": []
     },
     {
+      "id": "tillsättStekgrytaSalt",
+      "name": "Tillsätt till gryta Tomat och vatten",
+      "instructions": "Salta grytans innehåll",
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "salt", "amount": 1 }],
+      "resources": []
+    },
+    {
       "id": "sjudGryta",
+      "name": "Låt grytans inneåll sjuda",
+      "instructions": "Låt grytans innehåll sjuda. \n\n(Klar startar timer)",
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "sjudGrytaPassive",
       "name": "Låt grytans inneåll sjuda",
       "instructions": "Låt sjuda i 8 minuter",
       "estimatedTime": 8,
@@ -206,15 +252,23 @@
     {
       "id": "smulaTärning",
       "name": "Tillsätt buljong",
-      "instructions": "Smula ner grönsaksbuljong i den vita såsen. Låt sjuda. (Klar startar timer)",
+      "instructions": "Smula ner grönsaksbuljong i den vita såsen.",
       "estimatedTime": 6,
       "ingredients": [{ "ingredientId": "grönsaksbuljong", "amount": 1 }],
       "resources": []
     },
     {
       "id": "sjudaSås",
-      "name": "Låt såsen sjuda",
-      "instructions": "Låt den vita såsen sjuda i 5 min",
+      "name": "Låt såsen sjuda.",
+      "instructions": "Låt den vita såsen sjuda i 5 minuter. \n\n(Klar startar timer)",
+      "estimatedTime": 5,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "sjudaSåsPassive",
+      "name": "Låt såsen sjuda.",
+      "instructions": "Låt den vita såsen sjuda i 5 minuter.",
       "estimatedTime": 5,
       "passive": true,
       "ingredients": [],
@@ -271,7 +325,7 @@
     {
       "id": "ställInIUgn",
       "name": "Ställ in lasagnen i ugn",
-      "instructions": "Ställ in lasagnen mitt i ugnen. (Klar startar timer)",
+      "instructions": "Ställ in lasagnen mitt i ugnen. \n\n(Klar startar timer)",
       "estimatedTime": 2,
       "ingredients": [],
       "resources": []
@@ -352,7 +406,7 @@
       "strongDependsOn": ["hettaPanna"]
     },
     {
-      "taskId": "fräsStekgryta",
+      "taskId": "läggILökOchPaprika",
       "dependsOn": [
         "hackaLök",
         "tärnaPaprika",
@@ -362,17 +416,56 @@
       "strongDependsOn": ["hettaStekgryta"]
     },
     {
-      "taskId": "tillsättStekgryta",
+      "taskId": "läggIVitlökOchRosmarin",
+      "dependsOn": [],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "läggITomatpureOchChiliflakes",
+      "dependsOn": [],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "fräsStekgryta",
+      "dependsOn": [
+        "läggILökOchPaprika",
+        "läggIVitlökOchRosmarin",
+        "läggITomatpureOchChiliflakes"
+      ],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "tillsättStekgrytaAubergineLinser",
       "dependsOn": ["brynaAubergine", "fräsStekgryta", "sköljRödaLinser"],
       "strongDependsOn": []
     },
     {
+      "taskId": "tillsättStekgrytaTomaterVatten",
+      "dependsOn": [],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "tillsättStekgrytaSalt",
+      "dependsOn": [],
+      "strongDependsOn": []
+    },
+    {
       "taskId": "sjudGryta",
-      "strongDependsOn": ["tillsättStekgryta"]
+      "dependsOn": [
+        "tillsättStekgrytaSalt",
+        "tillsättStekgrytaTomaterVatten",
+        "tillsättStekgrytaAubergineLinser"
+      ],
+      "strongDependsOn": []
+    },
+    {
+      "taskId": "sjudGrytaPassive",
+      "dependsOn": [],
+      "strongDependsOn": ["sjudGryta"]
     },
     {
       "taskId": "stängAvGryta",
-      "strongDependsOn": ["sjudGryta"]
+      "strongDependsOn": ["sjudGrytaPassive"]
     },
     {
       "taskId": "pudraVetemjöl",
@@ -391,8 +484,12 @@
       "strongDependsOn": ["smulaTärning"]
     },
     {
-      "taskId": "ställAv",
+      "taskId": "sjudaSåsPassive",
       "strongDependsOn": ["sjudaSås"]
+    },
+    {
+      "taskId": "ställAv",
+      "strongDependsOn": ["sjudaSåsPassive"]
     },
     {
       "taskId": "rörNerOst",

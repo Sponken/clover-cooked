@@ -121,13 +121,11 @@ export function SessionStart({ navigation, route }: Props) {
           data={scheduler.getBranchProgress()}
           keyExtractor={([branch, progress]) => branch}
           renderItem={({ item }) => (
-            <View>
               <View style={{flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center"}}>
-              <Text style={{width: "25%"}}>{item[0]}</Text>
-              <Progress.Bar color="green" height={15} unfilledColor="grey" borderWidth={0} progress={item[1]} width={null} style={{width:"65%"}}/>
-              <Text style={{width: "10%", paddingLeft: 5 }}>{Math.round(item[1]*100)}%</Text>
-            </View>
-            </View>
+                <Text style={{width: "25%"}}>{item[0]}</Text>
+                <Progress.Bar color="green" height={15} unfilledColor="lightgrey" borderWidth={0} progress={item[1]} width={null} style={{width:"50%"}}/>
+                <Text style={{width: "15%", paddingLeft: 5 }}>{Math.round(item[1]*100)}%</Text>
+              </View>
           )}
           ItemSeparatorComponent={() => (
             <View

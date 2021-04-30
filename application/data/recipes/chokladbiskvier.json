@@ -74,6 +74,7 @@
       "id": "vispSockVita",
       "name": "Vispa sockret och äggvitan",
       "instructions": "Vispa sockret och äggvitan",
+      "branch": "Bottnar",
       "estimatedTime": 4,
       "ingredients": [],
       "resources": []
@@ -156,6 +157,7 @@
       "id": "läggISmörIBunken",
       "name": "läggISmörIBunken",
       "instructions": "Tillsätt det rumsvarma smöret i bunken med äggulorna.",
+      "branch": "Topping",
       "estimatedTime": 1,
       "ingredients": [],
       "resources": []
@@ -176,6 +178,7 @@
       "id": "blandaKräm",
       "name": "Blanda ihop smörkrämen",
       "instructions": "Rör om innehållet i bunken med smörkräm till en jämn smet.",
+      "branch": "Topping",
       "estimatedTime": 3,
       "ingredients": [],
       "resources": []
@@ -202,6 +205,7 @@
       "id": "kalltPass",
       "name": "Biskvierna kyls",
       "instructions": "Biskvierna kyls",
+      "branch": "Topping",
       "passive": true,
       "estimatedTime": 10,
       "ingredients": [],
@@ -238,6 +242,7 @@
       "id": "förvara",
       "name": "Förvara svalt",
       "instructions": "Om biskvierna inte ska ätas direkt, förvara dem svalt",
+      "branch": "Dopp",
       "estimatedTime": 1,
       "finalTask": true,
       "ingredients": [],

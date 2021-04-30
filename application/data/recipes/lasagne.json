@@ -83,7 +83,8 @@
       "instructions": "Häll olivolja i en stor stekpanna eller liten gryta på medelhög värme.",
       "estimatedTime": 1,
       "ingredients": [{ "ingredientId": "olivolja", "amount": 1 }],
-      "resources": []
+      "resources": [],
+      "branch": "Köttfärsås"
     },
     {
       "id": "lökOFärs",
@@ -91,7 +92,8 @@
       "instructions": "Häll ner färsen och den hackade löken i stekpannan/grytan med olivolja",
       "estimatedTime": 1,
       "ingredients": [{ "ingredientId": "färs", "amount": 500 }],
-      "resources": []
+      "resources": [],
+      "branch": "Köttfärsås"
     },
     {
       "id": "fräs",
@@ -184,7 +186,8 @@
       "instructions": "Skär körsbärstomaterna i 2 delar",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "gulaKörsbärstomater", "amount": 1 }],
-      "resources": []
+      "resources": [],
+      "branch": "Sallad"
     },
     {
       "id": "läggPåFat",
@@ -243,7 +246,8 @@
       "instructions": "Låt såsen i kastrullen koka upp och sedan koka några minuter under omrörning.",
       "estimatedTime": 8,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "branch": "Sås"
     },
     {
       "id": "smakaAvSP",

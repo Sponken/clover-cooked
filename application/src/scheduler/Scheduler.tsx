@@ -21,7 +21,7 @@ export interface Scheduler {
   readonly cooks: CookID[];
   readonly recipe: Recipe;
   readonly completedTasks: TaskID[];
-  readonly currentTasks: BiDirectionalMap<CookID, TaskID>;
+  readonly currentTasks: Map<CookID, TaskID>;
   readonly currentPassiveTasks: Map<
     TaskID,
     { finish: Date; timeout: NodeJS.Timeout }

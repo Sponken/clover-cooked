@@ -168,16 +168,16 @@ export function Cooking({ navigation, route }: Props) {
     } else {
       temporaryScheduler = createBasicScheduler(recipe, userIds);
     }
-    ssss.subscribeTaskAssigned(taskAssignedSubscriber);
-    ssss.subscribePassiveTaskStarted(passiveTaskStartedSubscriber);
-    ssss.subscribePassiveTaskFinished(passiveTaskFinishedSubscriber);
-    ssss.subscribePassiveTaskCheckFinished(passiveTaskCheckFinishedSubscriber);
-    ssss.subscribeRecipeFinished(recipeFinishedSubscriber);
-    ssss.subscribeProgress(progressSubscriber);
-    setAssignedTasks(ssss.getTasks());
-    setPassiveTasks(ssss.getPassiveTasks());
+    temporaryScheduler.subscribeTaskAssigned(taskAssignedSubscriber);
+    temporaryScheduler.subscribePassiveTaskStarted(passiveTaskStartedSubscriber);
+    temporaryScheduler.subscribePassiveTaskFinished(passiveTaskFinishedSubscriber);
+    temporaryScheduler.subscribePassiveTaskCheckFinished(passiveTaskCheckFinishedSubscriber);
+    temporaryScheduler.subscribeRecipeFinished(recipeFinishedSubscriber);
+    temporaryScheduler.subscribeProgress(progressSubscriber);
+    setAssignedTasks(temporaryScheduler.getTasks());
+    setPassiveTasks(temporaryScheduler.getPassiveTasks());
 
-    setProgress(ssss.getProgress())
+    setProgress(temporaryScheduler.getProgress())
 
     let _userNotifications = new Map<string, boolean>();
     temporaryScheduler
@@ -200,8 +200,8 @@ export function Cooking({ navigation, route }: Props) {
       temporaryScheduler.unsubscribePassiveTaskCheckFinished(
         passiveTaskCheckFinishedSubscriber
       );
-      ssss.unsubscribeRecipeFinished(recipeFinishedSubscriber);
-      ssss.unsubscribeProgress(progressSubscriber);
+      temporaryScheduler.unsubscribeRecipeFinished(recipeFinishedSubscriber);
+      temporaryScheduler.unsubscribeProgress(progressSubscriber);
     };
   }, []);
 

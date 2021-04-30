@@ -206,7 +206,7 @@ export function createBasicScheduler(recipe: Recipe,
       if (this.completedTasks.includes(task) || task === doDishesTaskID || task === setTableTaskID) {
         undo(task, this, cook);
       }
-    }
+    },
     getProgress: function () {
       return this.completedTasks.length / this.recipe.tasks.length;
     },
@@ -237,6 +237,14 @@ export function createBasicScheduler(recipe: Recipe,
 function updateProgress(scheduler:Scheduler) {
   let progress = scheduler.getProgress();
   scheduler.progressSubscribers.forEach(f => f(progress));
+}
+
+function finishPassiveTaskNotAssign(scheduler: Scheduler, task: TaskID, taskProps: { finish: Date; timeout: NodeJS.Timeout }) {
+  clearTimeout(taskProps.timeout);
+  scheduler.completedTasks.push(task);
+  
+  scheduler.currentPassiveTasks.delete(task);
+  scheduler.passiveTaskFinishedSubscribers.forEach((fn) => fn(task));
 }
 
 /**

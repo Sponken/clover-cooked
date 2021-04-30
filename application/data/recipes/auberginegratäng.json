@@ -3,6 +3,7 @@
   "name": "Auberginelasagne",
   "description": "A simple template for creating a recipe",
   "portions": 1,
+  "requiresSettingTable": true,
   "ingredients": [
     { "id": "lök", "name": "Gullök", "unit": "st" },
     { "id": "aubergine", "name": "aubergine", "unit": "st" },

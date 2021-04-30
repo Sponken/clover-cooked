@@ -8,13 +8,13 @@ import mexikans_bönsallad from "../../data/recipes/mexikans_bönsallad.json";
 import lasagne from "../../data/recipes/lasagne.json";
 
 export const recipes = [
-  gräddtårta,
-  ikeaköttbullar_med_snabbmakaroner,
-  ugnspannkaka,
-  chokladbiskvier,
   auberginegratäng,
-  mexikans_bönsallad,
   lasagne,
+  mexikans_bönsallad,
+  chokladbiskvier,
+  // gräddtårta,
+  // ikeaköttbullar_med_snabbmakaroner,
+  // ugnspannkaka,
 ];
 
 export type IngredientDecl = {
@@ -48,6 +48,7 @@ export type Task = {
   ingredients: IngredientUsage[];
   resources: ResourceUsage[];
   estimatedTime: number;
+  branch?: string;
 };
 
 export type TaskDependency = {

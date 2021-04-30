@@ -22,6 +22,7 @@ import {
   RecipeFinishedSubscriber,
 } from "../scheduler";
 import { FlatList } from "react-native-gesture-handler";
+import * as Progress from 'react-native-progress';
 import { Audio } from 'expo-av';
 
 import { schedulerContext } from "./scheduler-context";
@@ -122,6 +123,7 @@ export function Cooking({ navigation, route }: Props) {
     Map<string, string | undefined>
   >(new Map());
   const { scheduler, setScheduler } = useContext(schedulerContext);
+  const [ progress, setProgress ] = useState<number>(0);
 
   //taskId för det task som visas
   const [activeTask, setActiveTask] = useState<string>();
@@ -192,6 +194,9 @@ export function Cooking({ navigation, route }: Props) {
     notify("long", "alarm");
     setTimerModalVisible(true);
   };
+  const progressSubscriber = (progress: number) => {
+    setProgress(progress)
+  };
 
   useEffect(() => {
     updateEarliestTimer(passiveTasks);
@@ -206,18 +211,15 @@ export function Cooking({ navigation, route }: Props) {
       temporaryScheduler = createBasicScheduler(recipe, userIds);
     }
     temporaryScheduler.subscribeTaskAssigned(taskAssignedSubscriber);
-    temporaryScheduler.subscribePassiveTaskStarted(
-      passiveTaskStartedSubscriber
-    );
-    temporaryScheduler.subscribePassiveTaskFinished(
-      passiveTaskFinishedSubscriber
-    );
-    temporaryScheduler.subscribePassiveTaskCheckFinished(
-      passiveTaskCheckFinishedSubscriber
-    );
+    temporaryScheduler.subscribePassiveTaskStarted(passiveTaskStartedSubscriber);
+    temporaryScheduler.subscribePassiveTaskFinished(passiveTaskFinishedSubscriber);
+    temporaryScheduler.subscribePassiveTaskCheckFinished(passiveTaskCheckFinishedSubscriber);
     temporaryScheduler.subscribeRecipeFinished(recipeFinishedSubscriber);
+    temporaryScheduler.subscribeProgress(progressSubscriber);
     setAssignedTasks(temporaryScheduler.getTasks());
     setPassiveTasks(temporaryScheduler.getPassiveTasks());
+
+    setProgress(temporaryScheduler.getProgress())
 
     let _userNotifications = new Map<string, boolean>();
     temporaryScheduler
@@ -241,6 +243,7 @@ export function Cooking({ navigation, route }: Props) {
         passiveTaskCheckFinishedSubscriber
       );
       temporaryScheduler.unsubscribeRecipeFinished(recipeFinishedSubscriber);
+      temporaryScheduler.unsubscribeProgress(progressSubscriber);
     };
   }, []);
 
@@ -497,8 +500,8 @@ export function Cooking({ navigation, route }: Props) {
                 maxWidth: "100%",
                 padding: 5,
                 borderWidth: 1,
-                borderColor: "rgb(197, 197, 196)",
-                // borderColor: "rgb(223, 223, 223)",
+                // borderColor: "rgb(197, 197, 196)",
+                borderColor: "rgb(223, 223, 223)",
                 borderRadius: 15,
                 flexDirection: "row",
               }}
@@ -527,7 +530,9 @@ export function Cooking({ navigation, route }: Props) {
           >
             <Pressable onPress={() => navigation.navigate("SessionStart", {})}>
               <Image
-                source={require("../../assets/image/editChef.png")}
+                resizeMethod={"scale"}
+                resizeMode={"center"}
+                source={require("../../assets/image/showMenuButton_icon.png")}
                 style={styles.topBarRightMenuIcon}
               />
             </Pressable>
@@ -571,6 +576,13 @@ export function Cooking({ navigation, route }: Props) {
           {taskConfirmButtons}
           {undoButton}
         </View>
+        <View style={{flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", paddingBottom: 20}}>
+          <View style={{width: "10%"}}></View>
+          <Progress.Bar color="green" height={15} unfilledColor="lightgrey" borderWidth={0} progress={progress} width={null} style={{width:"80%"}}/>
+          <Text style={{width: "10%", paddingLeft: 5 }}>{Math.round(progress*100)}%</Text>
+        </View>
+        
+        
       </SafeAreaView>
     );
   }
@@ -607,9 +619,11 @@ const styles = StyleSheet.create({
     margin: 15, //det här är bara temp när vi har en avbryt knapp istället
   },
   topBarRightMenuIcon: {
-    width: 44,
-    height: 44,
-    margin: 3,
+    // width: 8,
+    // height: 30,
+    // padding: 5, 
+    marginHorizontal: 20,
+    // marginTop: 17
   },
   contentContainer: {
     flex: 1,

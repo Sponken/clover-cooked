@@ -1,5 +1,5 @@
 import { Recipe, Task, idleTaskIDs, isIdleTaskID, doDishesTaskID, setTableTaskID, helpOrRestTaskID } from "../data";
-import {Scheduler, CookID, PassiveTaskStartedSubscriber, PassiveTaskFinishedSubscriber, PassiveTaskCheckFinishedSubscriber, TaskAssignedSubscriber,RecipeFinishedSubscriber} from "./Scheduler"
+import {Scheduler, CookID, PassiveTaskStartedSubscriber, PassiveTaskFinishedSubscriber, PassiveTaskCheckFinishedSubscriber, TaskAssignedSubscriber,RecipeFinishedSubscriber, ProgressSubscriber} from "./Scheduler"
 import {includesAll, removeElement} from "../utils"
 
 
@@ -24,6 +24,7 @@ export function createBasicScheduler(recipe: Recipe,
   const passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[] = [];
   const passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[] = [];
   const recipeFinishedSubscribers: RecipeFinishedSubscriber[] =[];
+  const progressSubscribers: ProgressSubscriber[] =[];
 
   let lastFinished : Map<CookID, Date> = new Map();
   // alla kockar läggs till i lastFinished kockar (inkluderar då även de som ej blev tilldelade vid start)
@@ -31,6 +32,20 @@ export function createBasicScheduler(recipe: Recipe,
   for (const cook of cooks) {
     lastFinished.set(cook, now)
   }
+
+  let branches = new Map<string, TaskID[]>();
+  for (const task of recipe.tasks) {
+    if (task.branch) {
+      let tasks = branches.get(task.branch);
+      if (tasks) {
+        // TODO: Does this work?
+        tasks.push(task.id);
+      } else {
+        branches.set(task.branch, [task.id])
+      }
+    }
+  }
+
   let scheduler: Scheduler = {
     tableIsSet: !recipe.requiresSettingTable??false,
     possibleDishesRemaining: false,
@@ -39,6 +54,8 @@ export function createBasicScheduler(recipe: Recipe,
     passiveTaskFinishedSubscribers: passiveTaskFinishedSubscribers,
     passiveTaskCheckFinishedSubscribers: passiveTaskCheckFinishedSubscribers,
     recipeFinishedSubscribers: recipeFinishedSubscribers,
+    progressSubscribers: progressSubscribers,
+
     // Detta fältet representerar hur många gånger en task har blivit förlängd.
     // I `[number, number]` är det första värdet hur många gånger den blivit
     // "klar" och det andra värdet är hur många gånger den förlängts och en ny
@@ -51,7 +68,11 @@ export function createBasicScheduler(recipe: Recipe,
     completedTasks: [],
     currentTasks: new Map<CookID, TaskID>(),
     currentPassiveTasks: new Map<TaskID, {finish: Date, timeout: NodeJS.Timeout}>(),
+    branches: branches,
     
+    getCompletedTasks: function () {
+      return this.completedTasks
+    },
     //en user klickar klar
     finishTask: function (task: TaskID, cook: CookID) {
       if (this.currentTasks.get(cook) === task) {
@@ -85,6 +106,7 @@ export function createBasicScheduler(recipe: Recipe,
         }
         assignTasks(scheduler, cook);
       }
+      updateProgress(scheduler)
     },
     finishPassiveTask: function (task: TaskID) {
       
@@ -94,6 +116,7 @@ export function createBasicScheduler(recipe: Recipe,
 
         // När en passiv task är klar kan nya tasks bli tillgängliga. Fördela dem.
         assignTasks(this);
+        updateProgress(scheduler)
       }
     },
     checkPassiveTaskFinished: function (task: TaskID) {
@@ -118,6 +141,10 @@ export function createBasicScheduler(recipe: Recipe,
     subscribeRecipeFinished: function (f: RecipeFinishedSubscriber) { this.recipeFinishedSubscribers.push(f) },
     unsubscribeRecipeFinished: function (f: RecipeFinishedSubscriber) {
       this.recipeFinishedSubscribers = this.recipeFinishedSubscribers.filter((value) => value !== f)
+    },
+    subscribeProgress: function (f: ProgressSubscriber) { this.progressSubscribers.push(f) },
+    unsubscribeProgress: function (f: ProgressSubscriber) {
+      this.progressSubscribers = this.progressSubscribers.filter((value) => value !== f)
     },
 
     /**
@@ -178,7 +205,27 @@ export function createBasicScheduler(recipe: Recipe,
     undo : function(task: TaskID, cook?: CookID) {
       if (this.completedTasks.includes(task) || task === doDishesTaskID || task === setTableTaskID) {
         undo(task, this, cook);
+        updateProgress(scheduler)
       }
+    },
+    getProgress: function () {
+      return this.completedTasks.length / this.recipe.tasks.length;
+    },
+    getBranchProgress: function () {
+      let ratio = this.completedTasks.length / this.recipe.tasks.length;
+      let ret: [string, number][] = [["Måltiden", ratio]];
+      for (const [branch, tasks] of Array.from(this.branches.entries())) {
+        let done = 0;
+        for (const task of tasks) {
+          // TODO: quadratic complexity
+          if (this.completedTasks.includes(task)) {
+            done += 1;
+          }
+        }
+        let ratio = done / tasks.length;
+        ret.push([branch, ratio])
+      }
+      return ret;
     }
   };
 
@@ -186,6 +233,11 @@ export function createBasicScheduler(recipe: Recipe,
   assignTasks(scheduler);
   
   return scheduler;
+}
+
+function updateProgress(scheduler:Scheduler) {
+  let progress = scheduler.getProgress();
+  scheduler.progressSubscribers.forEach(f => f(progress));
 }
 
 function finishPassiveTaskNotAssign(scheduler: Scheduler, task: TaskID, taskProps: { finish: Date; timeout: NodeJS.Timeout }) {

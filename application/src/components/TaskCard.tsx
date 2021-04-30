@@ -47,6 +47,7 @@ export const TaskCard = ({
   let infoComponent: JSX.Element;
   let instructionsComponent: JSX.Element;
   let ingredientComponent: JSX.Element;
+  let branchComponent: JSX.Element;
 
   /**
    * För alla task som visas vill vi sätta userNameComponent, userIndicatorComponent
@@ -69,6 +70,7 @@ export const TaskCard = ({
     else {
       userIndicator = <UserColorIndicator color={userColor} />;
     }
+    branchComponent = <></>;
   }
   //stort task
   else {
@@ -77,6 +79,22 @@ export const TaskCard = ({
         {userName}
       </Text>
     );
+    let branch = task.branch;
+    if (branch) {
+      branchComponent = (
+        <View style={styles.branchContainer}>
+          <View style={{width: 10, height: 15, marginRight: 5}}>
+            <Image
+              style={{maxWidth: "100%", maxHeight: "100%"}}
+              source={require("../../assets/image/branch.png")}
+            />
+          </View>
+          <Text >{task.branch}</Text>
+        </View>
+      )
+    } else {
+      branchComponent = <></>;
+    }
     userIndicator = <UserColorIndicator color={userColor} />;
     //stort och passivt
     if (task.passive) {
@@ -132,7 +150,10 @@ export const TaskCard = ({
       >
         {userIndicator}
         <View style={styles.taskBody}>
-          {userNameComponent}
+          <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+            {userNameComponent}
+            {branchComponent}
+          </View>
           <View style={styles.taskInfoContainer}>{infoComponent}</View>
         </View>
       </View>
@@ -156,7 +177,7 @@ const Ingredient = ({ ingredient, recipe }: IngredientsProps) => (
     <Text style={styles.ingredientName}>
       {getIngredientName(ingredient.ingredientId, recipe)}
     </Text>
-    <Text>
+    <Text style={styles.ingredientName}>
       {ingredient.amount +
         " " +
         getIngredientUnit(ingredient.ingredientId, recipe)}
@@ -188,6 +209,10 @@ const Notification = ({ visable }: NotificationProps) => (
 );
 
 const styles = StyleSheet.create({
+  branchContainer: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
   taskCompleteContainer: {
     width: "100%",
   },
@@ -262,9 +287,9 @@ const styles = StyleSheet.create({
   },
   bigText: {
     paddingTop: 5,
-    lineHeight: 25,
+    lineHeight: 30, //25,
     fontSize: 25,
-    fontWeight: "600",
+    fontWeight: "400",
   },
   instructionsContainer: {
     marginBottom: 5,
@@ -273,8 +298,9 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   ingredientName: {
-    fontSize: 15,
+    fontSize: 22,
     marginRight: 7,
+    fontWeight: "300",
   },
   ingredientContainer: {
     flex: 1,

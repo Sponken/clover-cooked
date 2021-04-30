@@ -3,6 +3,7 @@
   "name": "IKEAköttbullar med snabbmakaroner",
   "description": "Den ultimata snabbmiddagen. Du kommer känna dig mättad och lycklig över att vara svensk. Denna mäktiga middag kommer gå hem på en dejt så väl som på julafton!",
   "portions": 1,
+  "requiresSettingTable": true,
   "ingredients": [
     { "id": "kbull", "name": "Köttbullar", "unit": "st" },
     { "id": "makaron", "name": "Snabbmakaroner", "unit": "gram" },

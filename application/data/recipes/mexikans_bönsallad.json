@@ -3,6 +3,7 @@
   "name": "Mexikansk bönsoppa",
   "description": "En Mexikansk bönsoppa med en blandning av ingredienser",
   "portions": 4,
+  "requiresSettingTable": true,
   "ingredients": [
     { "id": "lök", "name": "lök", "unit": "st" },
     { "id": "potatis", "name": "bakpotatis", "unit": "st" },

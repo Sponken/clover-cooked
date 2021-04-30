@@ -65,4 +65,5 @@ export type Recipe = {
   taskDependencies: TaskDependency[];
   portions: number;
   id: string;
+  requiresSettingTable: boolean;
 };

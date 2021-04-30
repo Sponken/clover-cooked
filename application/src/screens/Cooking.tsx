@@ -14,7 +14,7 @@ import {
   TaskConfirmType,
   UndoButton,
 } from "../components";
-import { User } from "../data";
+import { User, helpOrRestTaskID } from "../data";
 import { unsafeFind, undefinedToBoolean, clearTimeoutOrUndefined } from "../utils";
 import {
   createBasicScheduler,
@@ -205,9 +205,13 @@ export function Cooking({ navigation, route }: Props) {
 
   useEffect(() => {
     setActiveTask(assignedTasks.get(activeUser));
-    if (assignedTasks.get(activeUser)) {
+    // För tillfället den enda task som inte går att avsluta
+    if (assignedTasks.get(activeUser) === helpOrRestTaskID) {
+      setTaskConfirmType("unavailable");
+    } else if (assignedTasks.get(activeUser)) {
       setTaskConfirmType("finish");
     } else {
+      //om ett task är undefined/"du har paus", så visas en grå knapp
       setTaskConfirmType("unavailable");
     }
   }, [assignedTasks, activeUser]);

@@ -18,6 +18,10 @@
       "description": "unique id used to identify the recipe",
       "type": "string"
     },
+    "requiresSettingTable": {
+      "description": "True if the recipe requires setting the table in any way",
+      "type": "boolean"
+    },
     "name": {
       "description": "The name of the meal",
       "type": "string"

@@ -3,6 +3,7 @@
   "name": "Auberginelasagne",
   "description": "A simple template for creating a recipe",
   "portions": 1,
+  "requiresSettingTable": true,
   "ingredients": [
     { "id": "lök", "name": "Gullök", "unit": "st" },
     { "id": "aubergine", "name": "aubergine", "unit": "st" },
@@ -47,7 +48,8 @@
       "initalTask": true,
       "estimatedTime": 1,
       "ingredients": [],
-      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+      "resources": [{ "resourceId": "ugn", "amount": 1 }],
+      "branch": "lasagne"
     },
     {
       "id": "ugnVärms",
@@ -64,7 +66,8 @@
       "instructions": "Skala och skiva gullöken",
       "estimatedTime": 5,
       "ingredients": [{ "ingredientId": "lök", "amount": 1 }],
-      "resources": []
+      "resources": [],
+      "branch": "auberginblandning"
     },
     {
       "id": "tärnaAubergine",
@@ -72,7 +75,8 @@
       "instructions": "Tärna auberginen",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "aubergine", "amount": 1 }],
-      "resources": []
+      "resources": [],
+      "branch": "auberginblandning"
     },
     {
       "id": "tärnaPaprika",
@@ -80,7 +84,8 @@
       "instructions": "Tärna paprikan",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "paprika", "amount": 1 }],
-      "resources": []
+      "resources": [],
+      "branch": "auberginblandning"
     },
     {
       "id": "finhackaRosmarin",
@@ -88,7 +93,8 @@
       "instructions": "Finhacka rosmarin",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "rosmarin", "amount": 0.5 }],
-      "resources": []
+      "resources": [],
+      "branch": "auberginblandning"
     },
     {
       "id": "pressaVitlöksklyftor",
@@ -96,7 +102,8 @@
       "instructions": "Skala och pressa eller finhacka vitlökslyftorna",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "vitlök", "amount": 3 }],
-      "resources": []
+      "resources": [],
+      "branch": "auberginblandning"
     },
     {
       "id": "hettaPanna",
@@ -104,7 +111,8 @@
       "instructions": "Häll upp olivolja i en stekpanna på medelhög värme",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "olivolja", "amount": 1 }],
-      "resources": []
+      "resources": [],
+      "branch": "auberginblandning"
     },
     {
       "id": "brynaAubergine",
@@ -112,7 +120,8 @@
       "instructions": "Lägg den hackade auberginen i stekpannan. Bryn i 5-6 minuter, tills den fått fin färg. Vänd på auberginen regelbundet",
       "estimatedTime": 7,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "branch": "auberginblandning"
     },
     {
       "id": "hettaStekgryta",
@@ -120,7 +129,8 @@
       "instructions": "Häll upp olivolja i en gryta på medelhög värme",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "olivolja", "amount": 1 }],
-      "resources": []
+      "resources": [],
+      "branch": "auberginblandning"
     },
     {
       "id": "läggILökOchPaprika",
@@ -147,7 +157,8 @@
         { "ingredientId": "tomatpure", "amount": 2 },
         { "ingredientId": "chiliflakes", "amount": 2 }
       ],
-      "resources": []
+      "resources": [],
+      "branch": "auberginblandning"
     },
     {
       "id": "fräsStekgryta",
@@ -163,7 +174,8 @@
       "instructions": "Skölj röda linser, förslagsvis i en sil",
       "estimatedTime": 2,
       "ingredients": [{ "ingredientId": "rödaLinser", "amount": 1 }],
-      "resources": []
+      "resources": [],
+      "branch": "auberginblandning"
     },
     {
       "id": "tillsättStekgrytaAubergineLinser",
@@ -182,7 +194,8 @@
         { "ingredientId": "konserveradeTomater", "amount": 1 },
         { "ingredientId": "vatten", "amount": 2 }
       ],
-      "resources": []
+      "resources": [],
+      "branch": "auberginblandning"
     },
     {
       "id": "tillsättStekgrytaSalt",
@@ -207,7 +220,8 @@
       "estimatedTime": 8,
       "passive": true,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "branch": "auberginblandning"
     },
     {
       "id": "stängAvGryta",
@@ -215,7 +229,8 @@
       "instructions": "Stänga av plattan med grytan",
       "estimatedTime": 1,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "branch": "auberginblandning"
     },
     {
       "id": "grovrivFD",
@@ -231,7 +246,8 @@
       "instructions": "Häll upp smör i en kastrull på medelhög värme",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "smör", "amount": 2 }],
-      "resources": []
+      "resources": [],
+      "branch": "sås"
     },
     {
       "id": "pudraVetemjöl",
@@ -239,7 +255,8 @@
       "instructions": "Pudra vetemjöl över smöret i kastrullen",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "vetemjöl", "amount": 2 }],
-      "resources": []
+      "resources": [],
+      "branch": "sås"
     },
     {
       "id": "rörNerMjölk",
@@ -247,7 +264,8 @@
       "instructions": "Vispa ner mjölken, lite i taget, i kastrullen med smör och mjölk.",
       "estimatedTime": 8,
       "ingredients": [{ "ingredientId": "mjölk", "amount": 5 }],
-      "resources": []
+      "resources": [],
+      "branch": "sås"
     },
     {
       "id": "smulaTärning",
@@ -255,7 +273,8 @@
       "instructions": "Smula ner grönsaksbuljong i den vita såsen.",
       "estimatedTime": 6,
       "ingredients": [{ "ingredientId": "grönsaksbuljong", "amount": 1 }],
-      "resources": []
+      "resources": [],
+      "branch": "sås"
     },
     {
       "id": "sjudaSås",
@@ -272,7 +291,8 @@
       "estimatedTime": 5,
       "passive": true,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "branch": "sås"
     },
     {
       "id": "ställAv",
@@ -280,7 +300,8 @@
       "instructions": "Stäng av plattan och ställ av kastrullen",
       "estimatedTime": 2,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "branch": "sås"
     },
     {
       "id": "rörNerOst",
@@ -288,7 +309,8 @@
       "instructions": "Rör ner hälften av den rivna osten i den vita såsen",
       "estimatedTime": 3,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "branch": "sås"
     },
     {
       "id": "smörjForm",
@@ -296,7 +318,8 @@
       "instructions": "Ta fram och smörj en ugnssäker form med smör",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "smör", "amount": 0.5 }],
-      "resources": []
+      "resources": [],
+      "branch": "lasagne"
     },
     {
       "id": "täckBotten",
@@ -304,7 +327,8 @@
       "instructions": "Täck botten av formen med lasagneplattor och lite ostsås",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "lasagneplattor", "amount": 1 }],
-      "resources": []
+      "resources": [],
+      "branch": "lasagne"
     },
     {
       "id": "varva",
@@ -312,7 +336,8 @@
       "instructions": "Spara lite av den ostsåsen till nästa steg. Varva lager med plattor, ostsås och grönsakssås. Upprepa tills grönsakssåsen är slut, eller formen nästan full.",
       "estimatedTime": 5,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "branch": "lasagne"
     },
     {
       "id": "avslutaBygge",
@@ -320,7 +345,8 @@
       "instructions": "Häll över resterande ostsås och den rivna osten",
       "estimatedTime": 3,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "branch": "lasagne"
     },
     {
       "id": "ställInIUgn",
@@ -328,7 +354,8 @@
       "instructions": "Ställ in lasagnen mitt i ugnen. \n\n(Klar startar timer)",
       "estimatedTime": 2,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "branch": "lasagne"
     },
     {
       "id": "tillagaLasagne",
@@ -337,7 +364,8 @@
       "passive": true,
       "estimatedTime": 26,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "branch": "lasagne"
     },
     {
       "id": "taUtLasagne",
@@ -345,7 +373,8 @@
       "instructions": "Ta ut lasagnen ur ugnen. Stäng av ugnen",
       "estimatedTime": 1,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "branch": "lasagne"
     },
     {
       "id": "finhackRödlök",
@@ -353,7 +382,8 @@
       "instructions": "Skala och finhacka rödlöken",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "rödlök", "amount": 1 }],
-      "resources": []
+      "resources": [],
+      "branch": "sallad"
     },
     {
       "id": "delaKörsbärs",
@@ -369,7 +399,8 @@
       "instructions": "Lägg rödlöken på ett fat tillsammans med körsbärstomater. Blanda försiktigt",
       "estimatedTime": 5,
       "ingredients": [{ "ingredientId": "gulaKörsbärstomater", "amount": 1 }],
-      "resources": []
+      "resources": [],
+      "branch": "sallad"
     },
     {
       "id": "dressaFat",
@@ -383,7 +414,8 @@
         { "ingredientId": "salt", "amount": 1 },
         { "ingredientId": "peppar", "amount": 1 }
       ],
-      "resources": []
+      "resources": [],
+      "branch": "sallad"
     },
     {
       "id": "servera",

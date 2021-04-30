@@ -7,18 +7,14 @@ import {
   clearTimeoutOrUndefined,
 } from "../utils";
 
-const TIME_FINSIHED_TEXT = "Klar";
-const SMALL_ICON_SIZE = 33;
-const SMALL_NOTIFICATTION_DOT_SIZE = SMALL_ICON_SIZE / 3;
-const LARGE_ICON_SIZE = 60;
-const LARGE_NOTIFICATTION_DOT_SIZE = LARGE_ICON_SIZE / 3;
-
+const TIME_FINSIHED_TEXT = "00:00";
 
 type Props = {
   onPress?: () => void;
   finish?: Date;
   displayRemainingTime: "hidden" | "shown" | "hiddenUntilLow";
-  size?: "small" | "large";
+  size?: "small" |  "large";
+  onTimerComplete?: ()=>void
 };
 
 
@@ -36,6 +32,7 @@ export const CookingTimer = ({
   finish: finishArg,
   displayRemainingTime: displayRemainingTimeArg,
   size: sizeArg,
+  onTimerComplete
 }: Props) => {
   if (finishArg) {
     const [onPress, setOnPress] = useState(() => onPressArg);
@@ -67,6 +64,7 @@ export const CookingTimer = ({
         clearIntervalOrUndefined(timeTextUpdateInterval);
         if (displayRemainingTime !== "hidden") {
           setTimeText(TIME_FINSIHED_TEXT);
+          onTimerComplete?onTimerComplete():""
         }
         setTimerFinished(true);
       }, finish.getTime() - Date.now());
@@ -104,37 +102,17 @@ export const CookingTimer = ({
     }, [finish, setDisplayRemainingTime]);
 
     return (
-      <Pressable onPress={onPress} style={styles.container}>
-        <View>
-          <Image
-            source={require("../../assets/image/time_icon.png")}
-            style={size === "large" ? styles.largeIcon : styles.smallIcon}
-          ></Image>
-          <View style={styles.notificationContainer}>
-            <Notification visable={timerFinished} size={size} />
-          </View>
+      //<Pressable onPress={onPress} style={styles.container}>
+        <View style={styles.container}>
+          <Text style={[timeText === TIME_FINSIHED_TEXT ? {color: "red"} : {color: "black"}, size === "large" ? {fontSize: 50} : {fontSize: 24}]}>{timeText}</Text>
         </View>
-        <Text>{timeText}</Text>
-      </Pressable>
+      //</Pressable>
     );
   } else {
     return <></>;
   }
 };
 
-type NotificationProps = {
-  visable: boolean;
-  size: "small" | "large";
-};
-
-const Notification = ({ visable, size }: NotificationProps) => (
-  <View
-    style={[
-      size === "large" ? styles.largeNotificationDot : styles.smallNotificationDot,
-      visable ? styles.notificationDotVisable : styles.notificationDotInvisable,
-    ]}
-  />
-);
 
 /**
  *
@@ -142,7 +120,7 @@ const Notification = ({ visable, size }: NotificationProps) => (
  * @returns tids text, "Klar" om tiden har passerats
  */
 export const finishTimeText = (finish: Date) =>
-  getMinutesTo(finish) >= 0
+getMinutesTo(finish) >= 0
     ? getMinutesTo(finish)
         .toString()
         .padStart(2, "0") +
@@ -151,34 +129,12 @@ export const finishTimeText = (finish: Date) =>
     : TIME_FINSIHED_TEXT;
 
 const styles = StyleSheet.create({
-  container: { alignItems: "center" },
-  smallIcon: {
-    height: SMALL_ICON_SIZE,
-    width: SMALL_ICON_SIZE,
+  container: { 
+    alignItems: "center",
+    flexDirection: "row", 
+   
+    
+
   },
-  notificationContainer: {
-    position: "absolute",
-    right: 0,
-    top: 0,
-  },
-  smallNotificationDot: {
-    borderRadius: SMALL_NOTIFICATTION_DOT_SIZE / 2,
-    width: SMALL_NOTIFICATTION_DOT_SIZE,
-    height: SMALL_NOTIFICATTION_DOT_SIZE,
-    overflow: "hidden",
-  },
-  largeIcon: {
-    height: LARGE_ICON_SIZE,
-    width: LARGE_ICON_SIZE,
-  },
-  largeNotificationDot: {
-    borderRadius: LARGE_NOTIFICATTION_DOT_SIZE / 2,
-    width: LARGE_NOTIFICATTION_DOT_SIZE,
-    height: LARGE_NOTIFICATTION_DOT_SIZE,
-    overflow: "hidden",
-  },
-  notificationDotVisable: {
-    backgroundColor: "red",
-  },
-  notificationDotInvisable: {},
+  
 });

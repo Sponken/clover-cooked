@@ -48,6 +48,7 @@ export type Task = {
   ingredients: IngredientUsage[];
   resources: ResourceUsage[];
   estimatedTime: number;
+  branch?: string;
 };
 
 export type TaskDependency = {
@@ -65,4 +66,5 @@ export type Recipe = {
   taskDependencies: TaskDependency[];
   portions: number;
   id: string;
+  requiresSettingTable: boolean;
 };

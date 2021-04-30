@@ -3,6 +3,7 @@
   "name": "Klassisk lasagne",
   "description": "A simple template for creating a recipe",
   "portions": 4,
+  "requiresSettingTable": true,
   "ingredients": [
     { "id": "lök", "name": "Gullök", "unit": "st" },
     { "id": "vitlök", "name": "Vitlök", "unit": "klyftor" },
@@ -36,6 +37,7 @@
       "name": "Sätt på ugn",
       "instructions": "Sätt på ugnen på 175 grader. \n\n(Klar startar timer)",
       "initalTask": true,
+      "branch": "Tillaga lasagne",
       "estimatedTime": 1,
       "ingredients": [],
       "resources": [{ "resourceId": "ugn", "amount": 1 }]
@@ -53,6 +55,7 @@
       "id": "hackaLök",
       "name": "Hacka lök",
       "instructions": "Skala och finhacka den gula löken",
+      "branch": "Köttfärsås",
       "estimatedTime": 2,
       "ingredients": [{ "ingredientId": "lök", "amount": 2 }],
       "resources": []
@@ -61,6 +64,7 @@
       "id": "hackaVitlök",
       "name": "Hacka vitlöken",
       "instructions": "Skala och hacka vitlöken fint",
+      "branch": "Köttfärsås",
       "estimatedTime": 2,
       "ingredients": [{ "ingredientId": "vitlök", "amount": 2 }],
       "resources": []
@@ -93,6 +97,7 @@
       "id": "fräs",
       "name": "Fräs lök och färs",
       "instructions": "Fräs färsen och löken på medelhög värme tills den fått färg",
+      "branch": "Köttfärsås",
       "estimatedTime": 8,
       "ingredients": [],
       "resources": []
@@ -101,6 +106,7 @@
       "id": "tomatpure",
       "name": "Tillsätt tomatpuré",
       "instructions": "Tillsätt tomatpuré till färsen, blanda runt och låt fräsa en kort stund",
+      "branch": "Köttfärsås",
       "estimatedTime": 5,
       "ingredients": [{ "ingredientId": "tomatpure", "amount": 4 }],
       "resources": []
@@ -109,6 +115,7 @@
       "id": "krydda",
       "name": "Tillsätt örtkryddor",
       "instructions": "Krydda färsen med timjan och rosmarin",
+      "branch": "Köttfärsås",
       "estimatedTime": 2,
       "ingredients": [
         { "ingredientId": "timjan", "amount": 1 },
@@ -120,6 +127,7 @@
       "id": "krossadeTomater",
       "name": "Tillsätt krossade tomater",
       "instructions": "Tillsätt krossade tomater till färsen",
+      "branch": "Köttfärsås",
       "estimatedTime": 2,
       "ingredients": [{ "ingredientId": "krossTomat", "amount": 500 }],
       "resources": []
@@ -128,6 +136,7 @@
       "id": "buljong",
       "name": "Tillsätt buljong",
       "instructions": "Smula ner buljongtärning i köttfärsåsen och rör runt",
+      "branch": "Köttfärsås",
       "estimatedTime": 1,
       "ingredients": [{ "ingredientId": "buljong", "amount": 1 }],
       "resources": []
@@ -136,6 +145,7 @@
       "id": "börjaKoka",
       "name": "Koka upp köttfärsåsen",
       "instructions": "Koka upp under lock. \n\n(Klar startar timer)",
+      "branch": "Köttfärsås",
       "estimatedTime": 2,
       "ingredients": [],
       "resources": []
@@ -144,6 +154,7 @@
       "id": "kokaUpp",
       "name": "Låt köttfärsåsen koka",
       "instructions": "Låt köttfärsåsen koka",
+      "branch": "Köttfärsås",
       "passive": true,
       "estimatedTime": 10,
       "ingredients": [],
@@ -153,6 +164,7 @@
       "id": "smakaAvTomat",
       "name": "Smaka av köttfärsåsen",
       "instructions": "Stäng av platten med köttfärsås. Smaka av med salt och peppar",
+      "branch": "Köttfärsås",
       "estimatedTime": 3,
       "ingredients": [],
       "resources": []
@@ -161,6 +173,7 @@
       "id": "finhackRödlök",
       "name": "Finhacka rödlök",
       "instructions": "Skala och finhacka rödlök",
+      "branch": "Sallad",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "rödlök", "amount": 1 }],
       "resources": []
@@ -177,6 +190,7 @@
       "id": "läggPåFat",
       "name": "Lägg på fat",
       "instructions": "Lägg rödlöken på ett fat tillsammans med körsbärstomaterna. Blanda försiktigt",
+      "branch": "Sallad",
       "estimatedTime": 5,
       "ingredients": [],
       "resources": []
@@ -185,6 +199,7 @@
       "id": "dressaFat",
       "name": "Dressa salladen",
       "instructions": "Strö över bladen från basilika, olivolja, balsamvinäger, salt och peppar på tomatsalladen",
+      "branch": "Sallad",
       "estimatedTime": 5,
       "ingredients": [
         { "ingredientId": "basilika", "amount": 1 },
@@ -199,6 +214,7 @@
       "id": "hettaKastrull",
       "name": "Värm upp smör",
       "instructions": "Häll upp smör i en kastrull på medelhög värme",
+      "branch": "Sås",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "smör", "amount": 80 }],
       "resources": []
@@ -207,6 +223,7 @@
       "id": "pudraVetemjöl",
       "name": "Pudra över vetemjöl",
       "instructions": "Pudra vetemjöl över smöret i kastrullen",
+      "branch": "Sås",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "vetemjöl", "amount": 6 }],
       "resources": []
@@ -215,6 +232,7 @@
       "id": "rörNerMjölk",
       "name": "Rör ner mjölk",
       "instructions": "Vispa ner mjölken, lite i taget, i kastrullen med smör och mjölk.",
+      "branch": "Sås",
       "estimatedTime": 8,
       "ingredients": [{ "ingredientId": "mjölk", "amount": 1 }],
       "resources": []
@@ -231,6 +249,7 @@
       "id": "smakaAvSP",
       "name": "Smaka av med salt och peppar",
       "instructions": "Stäng av platten med kastrullen. Ställ av och smaka av med salt och peppar",
+      "branch": "Sås",
       "estimatedTime": 4,
       "ingredients": [
         { "ingredientId": "salt", "amount": 2 },
@@ -242,6 +261,7 @@
       "id": "rivOst",
       "name": "Riv parmesanost",
       "instructions": "Riv parmesanost",
+      "branch": "Bygg lasagne",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "parmesanost", "amount": 1 }],
       "resources": []
@@ -250,6 +270,7 @@
       "id": "smörjForm",
       "name": "Smörj en ugnssäker form",
       "instructions": "Smörj en ugnssäker form",
+      "branch": "Bygg lasagne",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "smör", "amount": 10 }],
       "resources": []
@@ -258,6 +279,7 @@
       "id": "täckBotten",
       "name": "Täck botten med lasagneplattor",
       "instructions": "Täck botten med ett lager lasagneplattor och lite av den vita såsen",
+      "branch": "Bygg lasagne",
       "estimatedTime": 3,
       "ingredients": [{ "ingredientId": "lasagneplattor", "amount": 1 }],
       "resources": []
@@ -266,6 +288,7 @@
       "id": "varva",
       "name": "Varva lager med plattor, sås och köttfärsås",
       "instructions": "Spara lite av den vita såsen till nästa steg. Varva sedan lager med plattor, sås och köttfärssås. Upprepa tills köttfärssåsen är slut, eller formen nästan full.",
+      "branch": "Bygg lasagne",
       "estimatedTime": 8,
       "ingredients": [],
       "resources": []
@@ -274,6 +297,7 @@
       "id": "avslutaBygge",
       "name": "Avsluta lasagnen",
       "instructions": "Häll över resterande av den vita såsen och den rivna osten",
+      "branch": "Bygg lasagne",
       "estimatedTime": 3,
       "ingredients": [],
       "resources": []
@@ -282,6 +306,7 @@
       "id": "ställInIUgn",
       "name": "Ställ in lasagnen i ugn",
       "instructions": "Ställ in lasagnen mitt i ugnen",
+      "branch": "Tillaga lasagne",
       "estimatedTime": 2,
       "ingredients": [],
       "resources": []
@@ -290,6 +315,7 @@
       "id": "tillagaLasagne",
       "name": "Låt stå i ugn tills gyllenbrun",
       "instructions": "Låt stå i ugn tills gyllenbrun",
+      "branch": "Tillaga lasagne",
       "passive": true,
       "estimatedTime": 40,
       "ingredients": [],
@@ -299,6 +325,7 @@
       "id": "taUtLasagne",
       "name": "Ta ut lasagnen ur ugnen",
       "instructions": "Ta ut lasagnen ur ugnen. Stäng av ugnen",
+      "branch": "Tillaga lasagne",
       "estimatedTime": 1,
       "ingredients": [],
       "resources": []

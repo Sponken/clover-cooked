@@ -3,6 +3,7 @@
   "name": "Chokladbiskvier",
   "description": "Goda chokladbiskvier för hela familjen",
   "portions": 1,
+  "requiresSettingTable": false,
   "ingredients": [
     { "id": "ägg", "name": "ägg", "unit": "st" },
     { "id": "socker", "name": "socker", "unit": "dl" },
@@ -36,6 +37,7 @@
       "id": "plåt",
       "name": "Förbered plåt",
       "instructions": "Förbered en plåt med bakplåtspapper",
+      "branch": "Bottnar",
       "estimatedTime": 3,
       "ingredients": [],
       "resources": []
@@ -44,6 +46,7 @@
       "id": "sepÄgg",
       "name": "Separera äggen",
       "instructions": "Knäck äggen och separera äggulorna från vitan genom att låta äggvitan rinna av genom dina fingrar. Spara både vitan och gulan i separata bunkar",
+      "branch": "Bottnar",
       "estimatedTime": 5,
       "nonInterruptable": true,
       "ingredients": [{ "ingredientId": "ägg", "amount": 3 }],
@@ -53,6 +56,7 @@
       "id": "vispaVita",
       "name": "Vispa vitan",
       "instructions": "Vispa äggvitan till ett löst skum, gärna med elvisp",
+      "branch": "Bottnar",
       "estimatedTime": 5,
       "ingredients": [],
       "resources": []
@@ -61,6 +65,7 @@
       "id": "sockerI",
       "name": "Vispa i socker",
       "instructions": "Häll i socker i den vispade äggvitan",
+      "branch": "Bottnar",
       "estimatedTime": 4,
       "ingredients": [{ "ingredientId": "socker", "amount": 1.5 }],
       "resources": []
@@ -77,6 +82,7 @@
       "id": "delaMandelMassa",
       "name": "Hacka mandelmassan grovt",
       "instructions": "Hacka mandelmassan grovt för att göra den lättare att blanda i smeten senare.",
+      "branch": "Bottnar",
       "estimatedTime": 5,
       "ingredients": [{ "ingredientId": "mandelmassa", "amount": 500 }],
       "resources": []
@@ -85,6 +91,7 @@
       "id": "blandaMandel",
       "name": "Blanda ner mandelmassan",
       "instructions": "Fördela mandelmassan i det vispade sockret och äggvitan. Vispa sedan till en jämn smet.",
+      "branch": "Bottnar",
       "estimatedTime": 5,
       "ingredients": [],
       "resources": []
@@ -93,6 +100,7 @@
       "id": "klickaSmet",
       "name": "Klicka ut smeten",
       "instructions": "Med hjälp av en sprits eller en sked, klicka ut smeten till runda biskviebottnar på plåten med bakplåtspapper. \n\nTips: Använd ett glas eller rund pepparkaksform (ca 7cm i diameter) för att rita cirklar på bakplåtspappret om du vill få jämnstora bottnar! ",
+      "branch": "Bottnar",
       "estimatedTime": 15,
       "ingredients": [],
       "resources": []
@@ -101,6 +109,7 @@
       "id": "inUgn",
       "name": "Grädda bottnarna",
       "instructions": "Stoppa in plåten med bottnarna i den varma ugnen. \n\n(Klar startar timer)",
+      "branch": "Bottnar",
       "estimatedTime": 1,
       "ingredients": [],
       "resources": []
@@ -110,6 +119,7 @@
       "name": "Bottnarna gräddas",
       "instructions": "Låt stå i ungnen 15-20 minuter, tills de har fått fin färg",
       "passive": true,
+      "branch": "Bottnar",
       "estimatedTime": 15,
       "ingredients": [],
       "resources": []
@@ -118,6 +128,7 @@
       "id": "utUgn",
       "name": "Ta ut bottnarna",
       "instructions": "Ta ut bottnarna ur ugnen om de är färdiggräddade. Stäng sedan av ugnen.",
+      "branch": "Bottnar",
       "estimatedTime": 2,
       "ingredients": [],
       "resources": []
@@ -126,6 +137,7 @@
       "id": "lossa",
       "name": "Lossa bottnarna",
       "instructions": "Lossa försiktigt bottnarna från pappret och lägg tillbaka dem upp och ner på sin plats igen. \n\nOm det är svårt att lossa, ställ in i frysen och försök igen om en stund.",
+      "branch": "Bottnar",
       "estimatedTime": 5,
       "ingredients": [],
       "resources": []
@@ -134,6 +146,7 @@
       "id": "smörFram",
       "name": "Ställ fram smör",
       "instructions": "Ställ fram smöret i rumstemperatur och tärna det i kuber om 2cm",
+      "branch": "Topping",
       "estimatedTime": 1,
       "initalTask": true,
       "ingredients": [{ "ingredientId": "smör", "amount": 600 }],
@@ -151,6 +164,7 @@
       "id": "tillsättFlorsockerOchKakao",
       "name": "Blanda ihop smörkrämen",
       "instructions": "Tillsätt florsocker och kakao i bunken med äggulorna.",
+      "branch": "Topping",
       "estimatedTime": 3,
       "ingredients": [
         { "ingredientId": "kakao", "amount": 6 },
@@ -170,6 +184,7 @@
       "id": "bredKräm",
       "name": "Bred kräm på bottnarna",
       "instructions": "Bred ut smörkrämen på bottnarnas släta sida, med en kniv. Se till att hela botten täcks, och gör den platt eller toppig efter eget tycke! \n\nOm smörkrämen smälter ställ in bottnarna i frysen och försök igen om en stund.",
+      "branch": "Topping",
       "estimatedTime": 10,
       "ingredients": [],
       "resources": []
@@ -178,6 +193,7 @@
       "id": "kallt",
       "name": "Ställ biskvierna kallt",
       "instructions": "Ställ biskvierna kallt. \n\n(Klar startar timer)",
+      "branch": "Topping",
       "estimatedTime": 1,
       "ingredients": [],
       "resources": []
@@ -195,6 +211,7 @@
       "id": "koka",
       "name": "Koka upp vatten",
       "instructions": "Sätt på en liten kastrull till hälften fylld med vatten på högsta värme",
+      "branch": "Dopp",
       "estimatedTime": 1,
       "ingredients": [],
       "resources": []
@@ -203,6 +220,7 @@
       "id": "choklad",
       "name": "Värm chokladen",
       "instructions": "Lägg chokladen i en värmetålig tallrik som du sedan lägger på kastrullen med vatten. Rör runt tills chokladen smällt. \n\nOm vattnet kokar, sänk värmen.",
+      "branch": "Dopp",
       "estimatedTime": 5,
       "ingredients": [{ "ingredientId": "choklad", "amount": 400 }],
       "resources": []
@@ -211,6 +229,7 @@
       "id": "doppa",
       "name": "Täck biskvierna med choklad",
       "instructions": "Doppa de kalla biskvierna i den smälta chokladen. Stäng sedan av spisen.",
+      "branch": "Dopp",
       "estimatedTime": 5,
       "ingredients": [],
       "resources": []

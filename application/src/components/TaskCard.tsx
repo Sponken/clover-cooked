@@ -6,6 +6,9 @@ import {
   IngredientUsage,
   getIngredientName,
   getIngredientUnit,
+  isIdleTaskID,
+  idleTasks,
+  getIdleTask,
 } from "../data";
 import { StyleSheet, Text, View, FlatList, Image } from "react-native";
 import { unsafeFind } from "../utils";
@@ -31,18 +34,12 @@ export const TaskCard = ({
   minimized,
 }: TaskCardProps) => {
   let task: TaskType;
-  if (taskId) {
+  if (taskId && isIdleTaskID(taskId)) {
+    task = getIdleTask(taskId);
+  } else if (taskId) {
     task = unsafeFind(recipe.tasks, (o: TaskType) => o.id == taskId);
   } else {
-    task = {
-      id: "__FÄRDIG__",
-      name: "Det finns inget att göra just nu",
-      instructions:
-        "Det finns inget att göra just nu. Kolla om du kan hjälpa någon annan eller diska, vila annars!",
-      ingredients: [],
-      resources: [],
-      estimatedTime: 9999,
-    };
+    return <></>;
   }
 
   let userIndicator: JSX.Element;
@@ -50,6 +47,7 @@ export const TaskCard = ({
   let infoComponent: JSX.Element;
   let instructionsComponent: JSX.Element;
   let ingredientComponent: JSX.Element;
+  let branchComponent: JSX.Element;
 
   /**
    * För alla task som visas vill vi sätta userNameComponent, userIndicatorComponent
@@ -72,6 +70,7 @@ export const TaskCard = ({
     else {
       userIndicator = <UserColorIndicator color={userColor} />;
     }
+    branchComponent = <></>;
   }
   //stort task
   else {
@@ -80,6 +79,22 @@ export const TaskCard = ({
         {userName}
       </Text>
     );
+    let branch = task.branch;
+    if (branch) {
+      branchComponent = (
+        <View style={styles.branchContainer}>
+          <View style={{width: 10, height: 15, marginRight: 5}}>
+            <Image
+              style={{maxWidth: "100%", maxHeight: "100%"}}
+              source={require("../../assets/image/branch.png")}
+            />
+          </View>
+          <Text >{task.branch}</Text>
+        </View>
+      )
+    } else {
+      branchComponent = <></>;
+    }
     userIndicator = <UserColorIndicator color={userColor} />;
     //stort och passivt
     if (task.passive) {
@@ -135,7 +150,10 @@ export const TaskCard = ({
       >
         {userIndicator}
         <View style={styles.taskBody}>
-          {userNameComponent}
+          <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+            {userNameComponent}
+            {branchComponent}
+          </View>
           <View style={styles.taskInfoContainer}>{infoComponent}</View>
         </View>
       </View>
@@ -191,6 +209,10 @@ const Notification = ({ visable }: NotificationProps) => (
 );
 
 const styles = StyleSheet.create({
+  branchContainer: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
   taskCompleteContainer: {
     width: "100%",
   },

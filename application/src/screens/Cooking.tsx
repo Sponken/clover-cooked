@@ -528,7 +528,10 @@ export function Cooking({ navigation, route }: Props) {
             />
           </View>
         </View>
-        <View style={styles.buttonContainer}>{taskConfirmButtons}</View>
+        <View style={styles.buttonContainer}>
+          {taskConfirmButtons}
+          {undoButton}
+        </View>
         <View style={{flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", paddingBottom: 20}}>
           <View style={{width: "10%"}}></View>
           <Progress.Bar color="green" height={15} unfilledColor="grey" borderWidth={0} progress={progress} width={null} style={{width:"80%"}}/>

@@ -12,8 +12,6 @@ import {
   CookingTimer,
   CookingTimerOverview,
   TaskConfirmType,
-  StandardText,
-  StandardButton,
   UndoButton,
 } from "../components";
 import { User, helpOrRestTaskID } from "../data";
@@ -21,8 +19,6 @@ import { unsafeFind, undefinedToBoolean, clearTimeoutOrUndefined } from "../util
 import {
   createBasicScheduler,
   Scheduler,
-  PassiveTaskSubscriber,
-  TaskAssignedSubscriber,
   RecipeFinishedSubscriber,
 } from "../scheduler";
 import { FlatList } from "react-native-gesture-handler";
@@ -57,6 +53,11 @@ export function Cooking({ navigation, route }: Props) {
     new Map()
   ); //lista med passiva task som är frikopplade från användare
 
+  // Lista med task som är slut men inte bekräftade av användaren
+  const [visiblePassiveTasks, setVisiblePassiveTasks] = useState<string[]>([]);
+
+  const [earliestInstr, setearliestInstr] = useState<String>();
+
   const [timerModalVisible, setTimerModalVisible] = useState(false);
   const [earliestTimer, setEarliestTimer] = useState<Date | undefined>(
     undefined
@@ -85,18 +86,7 @@ export function Cooking({ navigation, route }: Props) {
   >(new Map());
   const { scheduler, setScheduler } = useContext(schedulerContext);
 
-  //lista med de passiva tasks som visas som taskCards, både i små o stor storlek
-  //(om de är klara kommer de upp för att säga ok avsluta passive task men även
-  // om man trycker via modalen för att avsluta i förtid)
-  //(ett passivt task som ej är klart kommer ej läggas till här)
-  const [visiblePassiveTasks, setVisiblePassiveTasks] = useState<string[]>([]);
-
-  //passiva tasks som är igång med ännu ej är klara ska synas i modalen
-  const [passiveTasksInModal, setPassiveTasksInModal] = useState<
-    Map<string, Date>
-  >(new Map());
-
-  //taskId för det task som visas "stort", kommer oftast vara det assignedTask men ibland ett passivt task
+  //taskId för det task som visas
   const [activeTask, setActiveTask] = useState<string>();
   const [taskConfirmType, setTaskConfirmType] = useState<TaskConfirmType>(
     "finish"
@@ -108,15 +98,26 @@ export function Cooking({ navigation, route }: Props) {
 
   const updateEarliestTimer = (passiveTasks: Map<string, Date>) => {
     let _earliestTimer: undefined | Date = undefined;
-    passiveTasks.forEach((finish) => {
+    let _earliestInstr: undefined | String = undefined;
+    passiveTasks.forEach((finish, instr) => {
       if (_earliestTimer) {
         if (finish.getTime() < _earliestTimer.getTime()) {
+          _earliestInstr = instr;
           _earliestTimer = new Date(finish);
         }
       } else {
+        _earliestInstr = instr;
         _earliestTimer = new Date(finish);
       }
     });
+    let a: undefined | string;
+    if (recipe.tasks) {
+      let b = recipe.tasks.find((t) => t.id == _earliestInstr);
+      if (b) {
+        a = b.instructions;
+      }
+    }
+    setearliestInstr(a);
     setEarliestTimer(_earliestTimer);
   };
 
@@ -145,18 +146,10 @@ export function Cooking({ navigation, route }: Props) {
       tasks.delete(task);
       return new Map(tasks);
     });
-    setVisiblePassiveTasks((prevVisablePassiveTasks) =>
-      prevVisablePassiveTasks.filter((t) => t !== task)
-    );
   };
 
   const passiveTaskCheckFinishedSubscriber = (task: string) => {
-    if (!visiblePassiveTasks.includes(task)) {
-      setVisiblePassiveTasks((prevVisablePassiveTasks) => [
-        task,
-        ...prevVisablePassiveTasks,
-      ]);
-    }
+    setTimerModalVisible(true);
   };
 
   useEffect(() => {
@@ -165,72 +158,63 @@ export function Cooking({ navigation, route }: Props) {
 
   useEffect(() => {
     let userIds = users.map((u) => u.id);
-    let ssss: Scheduler;
+    let temporaryScheduler: Scheduler;
     if (scheduler) {
-      ssss = scheduler;
+      temporaryScheduler = scheduler;
     } else {
-      ssss = createBasicScheduler(recipe, userIds);
+      temporaryScheduler = createBasicScheduler(recipe, userIds);
     }
-    ssss.subscribeTaskAssigned(taskAssignedSubscriber);
-    ssss.subscribePassiveTaskStarted(passiveTaskStartedSubscriber);
-    ssss.subscribePassiveTaskFinished(passiveTaskFinishedSubscriber);
-    ssss.subscribePassiveTaskCheckFinished(passiveTaskCheckFinishedSubscriber);
-    ssss.subscribeRecipeFinished(recipeFinishedSubscriber);
-    setAssignedTasks(ssss.getTasks());
-    setPassiveTasks(ssss.getPassiveTasks());
+    temporaryScheduler.subscribeTaskAssigned(taskAssignedSubscriber);
+    temporaryScheduler.subscribePassiveTaskStarted(
+      passiveTaskStartedSubscriber
+    );
+    temporaryScheduler.subscribePassiveTaskFinished(
+      passiveTaskFinishedSubscriber
+    );
+    temporaryScheduler.subscribePassiveTaskCheckFinished(
+      passiveTaskCheckFinishedSubscriber
+    );
+    temporaryScheduler.subscribeRecipeFinished(recipeFinishedSubscriber);
+    setAssignedTasks(temporaryScheduler.getTasks());
+    setPassiveTasks(temporaryScheduler.getPassiveTasks());
 
     let _userNotifications = new Map<string, boolean>();
-    ssss
+    temporaryScheduler
       .getTasks()
       .forEach((task, user) =>
         _userNotifications.set(user, task !== undefined && user !== activeUser)
       );
     setUserNotifications(new Map(_userNotifications));
-    setScheduler(ssss);
+    setScheduler(temporaryScheduler);
 
     return () => {
-      console.log("UNSIBSCRIBING");
-      ssss.unsubscribeTaskAssigned(taskAssignedSubscriber);
-      ssss.unsubscribePassiveTaskStarted(passiveTaskStartedSubscriber);
-      ssss.unsubscribePassiveTaskFinished(passiveTaskFinishedSubscriber);
-      ssss.unsubscribePassiveTaskCheckFinished(
+      console.log("UNSUBSCRIBING");
+      temporaryScheduler.unsubscribeTaskAssigned(taskAssignedSubscriber);
+      temporaryScheduler.unsubscribePassiveTaskStarted(
+        passiveTaskStartedSubscriber
+      );
+      temporaryScheduler.unsubscribePassiveTaskFinished(
+        passiveTaskFinishedSubscriber
+      );
+      temporaryScheduler.unsubscribePassiveTaskCheckFinished(
         passiveTaskCheckFinishedSubscriber
       );
-      ssss.unsubscribeRecipeFinished(recipeFinishedSubscriber);
+      temporaryScheduler.unsubscribeRecipeFinished(recipeFinishedSubscriber);
     };
   }, []);
 
   useEffect(() => {
-    if (visiblePassiveTasks.length) {
-      setActiveTask(visiblePassiveTasks[0]);
-      setTaskConfirmType("extendOrFinish");
+    setActiveTask(assignedTasks.get(activeUser));
+    // För tillfället den enda task som inte går att avsluta
+    if (assignedTasks.get(activeUser) === helpOrRestTaskID) {
+      setTaskConfirmType("unavailable");
+    } else if (assignedTasks.get(activeUser)) {
+      setTaskConfirmType("finish");
     } else {
-      setActiveTask(assignedTasks.get(activeUser));
-      // För tillfället den enda task som inte går att avsluta
-      if (assignedTasks.get(activeUser) === helpOrRestTaskID) {
-        setTaskConfirmType("unavailable");
-      } else if (assignedTasks.get(activeUser)) {
-        setTaskConfirmType("finish");
-      } else {
-        //om ett task är undefined/"du har paus", så visas en grå knapp
-        setTaskConfirmType("unavailable");
-      }
+      //om ett task är undefined/"du har paus", så visas en grå knapp
+      setTaskConfirmType("unavailable");
     }
-
-    //lägg in alla passiva task i modalen
-    setPassiveTasksInModal(new Map(passiveTasks));
-    passiveTasks.forEach((pDate, pTask) => {
-      //ta bort från modalen om tasket finns med i visiblepassivetasks
-      visiblePassiveTasks.forEach((vTask) => {
-        if (vTask === pTask) {
-          setPassiveTasksInModal((mTasks) => {
-            mTasks.delete(vTask);
-            return new Map(mTasks);
-          });
-        }
-      });
-    });
-  }, [assignedTasks, activeUser, visiblePassiveTasks]);
+  }, [assignedTasks, activeUser]);
 
   // Fixar så det inte står en notis på den aktiva användaren
   if (undefinedToBoolean(userNotifications.get(activeUser))) {
@@ -321,7 +305,7 @@ export function Cooking({ navigation, route }: Props) {
   );
 
   if (scheduler) {
-    // Skapa rätt knappar
+    // Skapa rätt knappars
     let taskConfirmButtons;
     switch (taskConfirmType) {
       case "finish":
@@ -349,69 +333,80 @@ export function Cooking({ navigation, route }: Props) {
           />
         );
         break;
-      case "extendOrFinish":
-        taskConfirmButtons = (
-          <TaskConfirm
-            confirmType={taskConfirmType}
-            onFinishPress={() => {
-              if (okToPress) {
-                let t = activeTask;
-                if (t) {
-                  scheduler.finishPassiveTask(t);
-                }
-                setOkToPress(false);
-                setTimeout(() => setOkToPress(true), OK_TIME_BETWEEN_CLICK);
-              }
-            }}
-            onExtendPress={() => {
-              if (okToPress) {
-                let t = activeTask;
-                if (t) {
-                  scheduler.extendPassive(t);
-                }
-                setVisiblePassiveTasks((prevVisablePassiveTasks) =>
-                  prevVisablePassiveTasks.filter((task) => task !== t)
-                );
-                setOkToPress(false);
-                setTimeout(() => setOkToPress(true), OK_TIME_BETWEEN_CLICK);
-              }
-            }}
-          />
-        );
-        break;
-      case "interruptOrContinue":
-        taskConfirmButtons = (
-          <TaskConfirm
-            confirmType={taskConfirmType}
-            //klickat på interrupt/stäng av i förväg
-            onFinishPress={() => {
-              if (okToPress) {
-                let t = activeTask;
-                if (t) {
-                  scheduler.finishPassiveTask(t);
-                }
-                setOkToPress(false);
-                setTimeout(() => setOkToPress(true), OK_TIME_BETWEEN_CLICK);
-              }
-            }}
-            //klickat på fortsätt/låt vara/avbryt inte
-            onContinuePress={() => {
-              if (okToPress) {
-                //renderar om genom att kalla på något som startar useEffect
-                let t = activeTask;
-                setVisiblePassiveTasks((prevVisablePassiveTasks) =>
-                  prevVisablePassiveTasks.filter((task) => task !== t)
-                );
-                setOkToPress(false);
-                setTimeout(() => setOkToPress(true), OK_TIME_BETWEEN_CLICK);
-              }
-            }}
-          />
-        );
-        break;
       case "unavailable":
         taskConfirmButtons = <TaskConfirm confirmType={taskConfirmType} />;
         break;
+    }
+
+    let timersComponent: JSX.Element;
+    if (earliestInstr) {
+      timersComponent = (
+        <View
+          style={{
+            justifyContent: "center",
+            marginLeft: 10,
+            maxWidth: "70%",
+          }}
+        >
+          <CookingTimer
+            onPress={() => setTimerModalVisible(true)}
+            finish={earliestTimer}
+            displayRemainingTime="shown"
+            size="small"
+          />
+          <Text
+            numberOfLines={1}
+            style={{
+              fontSize: 16,
+            }}
+          >
+            {earliestInstr}
+          </Text>
+        </View>
+      );
+    } else {
+      timersComponent = (
+        <View
+          style={{
+            justifyContent: "center",
+            marginLeft: 10,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 14,
+              color: "gray",
+            }}
+          >
+            Inga timers just nu
+          </Text>
+        </View>
+      );
+    }
+
+    let clockImage: JSX.Element;
+    if (passiveTasks.size > 1) {
+      clockImage = (
+        <View style={{ flexDirection: "row" }}>
+          <Image
+            source={require("../../assets/image/time_icon.png")}
+            style={[styles.smallIcon, { marginRight: -23, zIndex: 1 }]}
+          />
+          <Image
+            source={require("../../assets/image/time_icon.png")}
+            style={[styles.smallIcon, { zIndex: 0 }]}
+          />
+        </View>
+      );
+    } else {
+      clockImage = (
+        <View>
+          <Image
+            source={require("../../assets/image/time_icon.png")}
+            style={styles.smallIcon}
+          />
+        </View>
+      );
     }
 
     return (
@@ -429,36 +424,66 @@ export function Cooking({ navigation, route }: Props) {
           >
             <Pressable style={styles.timerModalContainer} onPress={() => null}>
               <CookingTimerOverview
-                passiveTasks={passiveTasksInModal}
+                passiveTasks={passiveTasks}
                 recipe={recipe}
-                onPress={(taskId: string) => {
+                endTimer={(taskId: string) => {
+                  scheduler.finishPassiveTask(taskId);
+                  if (visiblePassiveTasks.length == 0)
+                    setTimerModalVisible(false);
+                }}
+                extendTimer={(taskId: string) => {
+                  scheduler.extendPassive(taskId);
+                }}
+                closeModal={() => {
                   setTimerModalVisible(false);
-                  setActiveTask(taskId);
-                  setTaskConfirmType("interruptOrContinue");
                 }}
               />
             </Pressable>
           </Pressable>
         </Modal>
-        <View style={styles.topBarContainer}>
-          <View style={{ flex: 1, flexDirection: "column-reverse" }}>
-            {/*printUsers*/}
-            <UserFastSwitcher
-              users={users}
-              activeUser={activeUser}
-              userNotifications={userNotifications}
-              onActiveUserSwitch={(userId: string) => {
-                setActiveUser(userId);
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View
+            style={{
+              flexGrow: 1,
+              /*styles.timerContainer*/
+            }}
+          >
+            <Pressable
+              onPress={() => setTimerModalVisible(true)}
+              style={{
+                margin: 10,
+                height: 60,
+                maxWidth: "100%",
+                padding: 5,
+                borderWidth: 1,
+                borderColor: "rgb(197, 197, 196)",
+                // borderColor: "rgb(223, 223, 223)",
+                borderRadius: 15,
+                flexDirection: "row",
               }}
-            />
+            >
+              <View
+                style={{
+                  padding: 0,
+                  paddingLeft: 5,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  // backgroundColor: "red",
+                }}
+              >
+                <View>{clockImage}</View>
+              </View>
+
+              {timersComponent}
+            </Pressable>
           </View>
-          <View style={styles.topBarRightMenu}>
-            {/* <StandardButton
-              buttonText={"Avbryt"}
-              buttonType={"grey"}
-              buttonSize={"small"}
-              onPress={() => navigation.navigate("SessionStart")}
-            /> */}
+          <View
+            style={{
+              marginRight: 10,
+              marginTop: 10,
+              /*styles.topBarRightMenu*/
+            }}
+          >
             <Pressable onPress={() => navigation.navigate("SessionStart", {})}>
               <Image
                 source={require("../../assets/image/editChef.png")}
@@ -474,11 +499,22 @@ export function Cooking({ navigation, route }: Props) {
             </Pressable>*/}
           </View>
         </View>
+        <View style={styles.topBarContainer}>
+          <View style={{ flex: 1, flexDirection: "column-reverse" }}>
+            {/*printUsers*/}
+            <UserFastSwitcher
+              users={users}
+              activeUser={activeUser}
+              userNotifications={userNotifications}
+              onActiveUserSwitch={(userId: string) => {
+                setActiveUser(userId);
+              }}
+            />
+          </View>
+        </View>
         <View style={styles.contentContainer}>
           <View style={styles.spacingWithNoContent} />
-          <View style={styles.minimizedTasksFlatListContainer}>
-            {minimizedTasksComponent}
-          </View>
+
           <View style={styles.activeTaskCardContainer}>
             <TaskCard
               taskId={activeTask}
@@ -487,14 +523,6 @@ export function Cooking({ navigation, route }: Props) {
               userColor={
                 unsafeFind(users, (u: User) => u.id == activeUser).color
               }
-            />
-          </View>
-          <View style={styles.timerContainer}>
-            <CookingTimer
-              onPress={() => setTimerModalVisible(true)}
-              finish={earliestTimer}
-              displayRemainingTime="shown"
-              size="large"
             />
           </View>
         </View>
@@ -508,6 +536,8 @@ export function Cooking({ navigation, route }: Props) {
   return <></>;
 }
 
+const SMALL_ICON_SIZE = 30;
+
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
@@ -517,12 +547,15 @@ const styles = StyleSheet.create({
   modalScreenContainer: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+
+    justifyContent: "flex-start",
     backgroundColor: "rgba(160, 160, 160, 0.5)",
   },
   timerModalContainer: {
-    height: "40%",
-    width: "85%",
+    height: "85%",
+    maxHeight: "90%",
+    width: "95%",
+    marginTop: 55, //90,
   },
   topBarContainer: {
     flexDirection: "row",
@@ -546,7 +579,7 @@ const styles = StyleSheet.create({
     width: "95%",
   },
   spacingWithNoContent: {
-    height: "6%",
+    height: "0%",
   },
   minimizedTasksFlatListContainer: {
     width: "95%",
@@ -555,7 +588,7 @@ const styles = StyleSheet.create({
   timerContainer: {
     position: "absolute",
     top: 2,
-    right: 2,
+    left: 20,
   },
   buttonContainer: {
     width: "100%",
@@ -570,5 +603,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     top: "auto",
-  }
+  },
+  smallIcon: {
+    height: SMALL_ICON_SIZE,
+    width: SMALL_ICON_SIZE,
+  },
 });

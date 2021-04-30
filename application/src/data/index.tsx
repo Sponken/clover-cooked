@@ -14,3 +14,12 @@ export {
 } from "./IngredientUtils";
 export { User } from "./User";
 export { getRecipeThumbnail } from "./RecipeThumbnailUtils";
+export {
+  idleTasks,
+  idleTaskIDs,
+  isIdleTaskID,
+  setTableTaskID,
+  doDishesTaskID,
+  helpOrRestTaskID,
+  getIdleTask,
+} from "./Task";

@@ -3,6 +3,7 @@
   "name": "Klassisk lasagne",
   "description": "A simple template for creating a recipe",
   "portions": 4,
+  "requiresSettingTable": true,
   "ingredients": [
     { "id": "lök", "name": "Gullök", "unit": "st" },
     { "id": "vitlök", "name": "Vitlök", "unit": "klyftor" },

@@ -1,4 +1,5 @@
 import { Recipe, Task } from "../data";
+import { BiDirectionalMap } from "bi-directional-map/dist";
 
 export type CookID = string;
 export type TaskID = string;
@@ -104,6 +105,8 @@ export interface Scheduler {
   getProgress: () => number;
   getBranchProgress: () => [string, number][];
 
+  undo: (task: TaskID, cook?: CookID) => void;
+
   // Subscription listor med alla subsribe funktioner
   passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[];
   passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[];
@@ -118,4 +121,9 @@ export interface Scheduler {
    * prioriteras denna user att få ett nytt task
    */
   readonly lastFinished: Map<CookID, Date>;
+
+  // Data för om bordet är dukat
+  tableIsSet: boolean;
+  // Data för om det kan finnas disk att diska
+  possibleDishesRemaining: boolean;
 }

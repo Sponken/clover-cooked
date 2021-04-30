@@ -1,9 +1,9 @@
 import { StyleSheet, View, Pressable, Image, Modal, Text } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { Vibration, Platform } from 'react-native';
 import { RootStackParamList } from "../navigation";
 import {
   UserFastSwitcher,
@@ -23,6 +23,8 @@ import {
 } from "../scheduler";
 import { FlatList } from "react-native-gesture-handler";
 import * as Progress from 'react-native-progress';
+import { Audio } from 'expo-av';
+
 import { schedulerContext } from "./scheduler-context";
 
 const OK_TIME_BETWEEN_CLICK = 700;
@@ -38,6 +40,42 @@ type Props = {
   navigation: CookingScreenNavigationProp;
   route: CookingRouteProp;
 };
+
+async function notify(vibrate: "short" | "long" | "none", sound?: string) {
+  if (sound) {
+    const eff = new Audio.Sound();
+    switch (sound) {
+      case "bell":
+        await eff.loadAsync(require('../../assets/sound/bell.mp3'));
+        break;
+      case "alarm":
+        await eff.loadAsync(require('../../assets/sound/alarm.mp3'));
+        break;
+    
+      default:
+        break;
+    }
+    await eff.playAsync();
+  }
+  switch (vibrate) {
+    case "short":
+      if (Platform.OS === 'ios') {
+        Vibration.vibrate();
+      } else {
+        Vibration.vibrate([0, 400, 4600]);
+      }
+      break;
+    case "long":
+      if (Platform.OS === 'ios') {
+        Vibration.vibrate([200, 200]);
+      } else {
+        Vibration.vibrate([0, 600, 200, 600, 4000]);
+      }
+      break;
+    default:
+      break;
+  }
+}
 
 /**
  * Cooking, skärmen som visas under tiden matlagningen sker
@@ -122,9 +160,12 @@ export function Cooking({ navigation, route }: Props) {
     setEarliestTimer(_earliestTimer);
   };
 
+  const stateRef = useRef<string>();
+  stateRef.current = activeUser;
   const taskAssignedSubscriber = (task: string | undefined, cook: string) => {
     setAssignedTasks((assigned) => new Map(assigned.set(cook, task)));
-    if (task !== undefined) {
+    if (task !== undefined && cook !== stateRef.current) {
+      notify("short", "bell");
       setUserNotifications(
         (notifications) => new Map(notifications.set(cook, true))
       );
@@ -150,6 +191,7 @@ export function Cooking({ navigation, route }: Props) {
   };
 
   const passiveTaskCheckFinishedSubscriber = (task: string) => {
+    notify("long", "alarm");
     setTimerModalVisible(true);
   };
   const progressSubscriber = (progress: number) => {

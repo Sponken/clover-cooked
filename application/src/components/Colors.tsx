@@ -11,8 +11,8 @@ export const chefColors = [
   "#F09CF4", //rosa
   "#F1873A", //orange
   "#F6CF00", //gul
-  "#97C271", //ljusgrön
-  "#609D7F", //grön
+  // "#97C271", //ljusgrön
+  // "#609D7F", //grön
   "#70AFDA", //ljusblå
   "#3654D5", //mörkblå
 ];

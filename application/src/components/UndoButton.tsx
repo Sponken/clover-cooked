@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    maxWidth: "100%",
-    maxHeight: "100%",
+    maxWidth: "70%",
+    maxHeight: "70%",
     aspectRatio: 1,
   },
 });

@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
   hamburgerContainer: {
     height: 30,
     width: 30,
+    marginLeft: 6,
   },
   titleContainer: {
     alignItems: "center",

@@ -180,7 +180,7 @@ export function SessionStart({ navigation, route }: Props) {
               </View>
               <View style={styles.modalButtonsContainer}>
                 <StandardButton buttonType={"secondary"} buttonText={"Avbryt"} onPress={() => setDeleteSessionModalVisible(!deleteSessionModalVisible)}/>
-                <View style={{width: "10%" }}/>
+                <View style={{width: "5%" }}/>
                 <StandardButton buttonText={"Avsluta receptet"} onPress={() => 
                 {{
                   setDeleteSessionModalVisible(false);
@@ -253,7 +253,7 @@ export function SessionStart({ navigation, route }: Props) {
                 {startButtonSessionCheck() ? setChefModalVisible(true): navigation.navigate("Cooking", {recipe, users})};
               }}
               buttonIcon={<Image
-                style={{marginLeft: 10}}
+                style={{marginLeft: 10, height: 25, width: 20}}
                 source={require("../../assets/image/play-button.png")}/>}
             />
           </View>
@@ -316,6 +316,7 @@ const styles = StyleSheet.create({
   hamburgerContainer: {
     height: 30,
     width: 30,
+    marginLeft: 6,
   },
   topContainerSpace: {
     alignItems: "center",
@@ -344,6 +345,7 @@ const styles = StyleSheet.create({
   },
   deleteContainer:{
     position: "absolute",
+    top: -5,
     alignSelf: "flex-end",
   },
   deleteIcon:{

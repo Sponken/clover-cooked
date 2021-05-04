@@ -13,6 +13,7 @@ import {
   CookingTimerOverview,
   TaskConfirmType,
   UndoButton,
+  StandardButton,
 } from "../components";
 import { User, helpOrRestTaskID } from "../data";
 import { unsafeFind, undefinedToBoolean, clearTimeoutOrUndefined } from "../utils";
@@ -496,19 +497,10 @@ export function Cooking({ navigation, route }: Props) {
           >
             <Pressable onPress={() => navigation.navigate("SessionStart", {})}>
               <Image
-                resizeMethod={"scale"}
-                resizeMode={"center"}
-                source={require("../../assets/image/showMenuButton_icon.png")}
+                source={require("../../assets/image/showMenuButton_icon.png")} // TODO: Placeholder tills ikon finns
                 style={styles.topBarRightMenuIcon}
               />
             </Pressable>
-            {/*
-            <Pressable>
-              <Image
-                source={require("../../assets/image/icon.png")} // TODO: Placeholder tills ikon finns
-                style={styles.topBarRightMenuIcon}
-              />
-            </Pressable>*/}
           </View>
         </View>
         <View style={styles.topBarContainer}>
@@ -539,8 +531,9 @@ export function Cooking({ navigation, route }: Props) {
           </View>
         </View>
         <View style={styles.buttonContainer}>
+          {undoButton}  
           {taskConfirmButtons}
-          {undoButton}
+          
         </View>
         <View style={{flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", paddingBottom: 20}}>
           <View style={{width: "10%"}}></View>
@@ -585,11 +578,11 @@ const styles = StyleSheet.create({
     margin: 15, //det här är bara temp när vi har en avbryt knapp istället
   },
   topBarRightMenuIcon: {
-    // width: 8,
-    // height: 30,
+     width: 30,
+     height: 35,
     // padding: 5, 
-    marginHorizontal: 20,
-    // marginTop: 17
+    margin: 6,
+    marginTop: 9,
   },
   contentContainer: {
     flex: 1,
@@ -622,7 +615,10 @@ const styles = StyleSheet.create({
     height: 80,
     width: 80,
     position: "absolute",
-    left: 0,
+    left: 25,
+    paddingTop: 17,
+
+    marginHorizontal: 10,
     top: "auto",
   },
   smallIcon: {

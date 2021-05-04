@@ -5,9 +5,9 @@ import { primaryColor, primaryColorVariant,passiveColor,passiveColorVariant } fr
 
 type StandardButtonProps = {
   onPress: () => void,
-  buttonType?: "primary" | "secondary" | "passive" | "black" | "transparent" | "chef",
+  buttonType?: "primary" | "secondary" | "passive" | "black" | "white" | "chef",
   buttonColor?: ColorValue;
-  buttonSize?: "normal" | "small" | "chef",
+  buttonSize?: "normal" | "small" | "chef" | "square",
   buttonText?: string,
   buttonIcon?: Image,
   textProps?: StandardTextProps,
@@ -50,11 +50,11 @@ export function StandardButton({ ...props }: StandardButtonProps) {
         buttonBorderColorPressed = "black";
         buttonTextColor = "white";
         break;
-    case "transparent":
-      buttonBackgroundColor = "rgba(255, 255, 255, 0.7)";
-      buttonBorderColor = "rgba(255, 255, 255, 0.1)";
-      buttonBackgroundColorPressed = "rgba(225, 225, 225, 0.7)";
-      buttonBorderColorPressed = "rgba(225, 225, 225, 0.7)";
+    case "white":
+      buttonBackgroundColor = "white";
+      buttonBorderColor = "white";
+      buttonBackgroundColorPressed = "white";
+      buttonBorderColorPressed = "white";
       buttonTextColor = "white";
       break;
     case "chef":
@@ -81,6 +81,12 @@ export function StandardButton({ ...props }: StandardButtonProps) {
     buttonsSize = { height: 72, width: 72, borderRadius: 100,};
     buttonTextSize= "medium";
     break;
+  case "square":
+    buttonsSize = { padding: 7, height: 30, width: 30, borderRadius: 8, borderWidth: 1.5};
+    buttonTextSize= "medium";
+    break;
+  
+
   }
 
   let buttonImage= <></>;;

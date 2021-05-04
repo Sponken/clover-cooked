@@ -104,8 +104,8 @@ export function RecipeOverview({ navigation, route }: Props) {
                       source={require("../../assets/image/backImg.png")}
                     />
                   }
-                  buttonType={"transparent"}
-                  buttonSize={"small"}
+                  buttonType={"white"}
+                  buttonSize={"square"}
                 />
               </View>
             </SafeAreaView>
@@ -174,9 +174,14 @@ const styles = StyleSheet.create({
   },
   backIconContainer: {
     alignSelf: "flex-start",
-    margin: 8,
+    marginVertical: 4,
+    marginLeft: 14,
   },
-  backIcon: { height: 18, width: 10 },
+  backIcon: {
+    height: 18,
+    width: 10,
+    marginRight: 3,
+  },
   timeContainer: {
     alignSelf: "flex-end",
     backgroundColor: "rgba(255, 255, 255, 0.5)",

@@ -3,10 +3,13 @@ import {
   Image,
   View,
   Modal,
-  Pressable
+  Pressable,
+  FlatList,
+  Text
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import * as Progress from 'react-native-progress';
 
 import React, { useState, useContext } from "react";
 
@@ -48,7 +51,7 @@ export function SessionStart({ navigation, route }: Props) {
   let initScheduler: Boolean;
   const {scheduler, setScheduler} = useContext(schedulerContext);
 
-  
+  let progressListComponent: JSX.Element;
 
   //Kolla om vi har en scheduler, i nuläget testar den bara om vi startat recept
   if(route.params?.initScheduler === undefined){
@@ -117,6 +120,7 @@ export function SessionStart({ navigation, route }: Props) {
     }
   }
 
+
   function schedulerExist() {
     if(scheduler){
       return true;
@@ -124,6 +128,35 @@ export function SessionStart({ navigation, route }: Props) {
     else {
       return false;
     }
+  }
+
+  if(scheduler){
+    progressListComponent = (
+      <View>
+      <FlatList
+          data={scheduler.getBranchProgress()}
+          keyExtractor={([branch, progress]) => branch}
+          renderItem={({ item }) => (
+              <View style={{flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center"}}>
+                <Text style={{width: "25%"}}>{item[0]}</Text>
+                <Progress.Bar color="green" height={15} unfilledColor="lightgrey" borderWidth={0} progress={item[1]} width={null} style={{width:"50%"}}/>
+                <Text style={{width: "15%", paddingLeft: 5 }}>{Math.round(item[1]*100)}%</Text>
+              </View>
+          )}
+          ItemSeparatorComponent={() => (
+            <View
+              style={{
+                height: 5,
+              }}
+            />
+          )}
+          contentContainerStyle={{}}
+        />
+      </View>
+    )
+  }
+  else{
+    progressListComponent = <></>
   }
   
   return (
@@ -193,6 +226,16 @@ export function SessionStart({ navigation, route }: Props) {
             />
           </View>
         </Pressable>
+
+        <View style={styles.topContainerSpace}></View>
+
+        <Pressable
+          onPress={() =>{{
+            setDeleteSessionModalVisible(true)}}}>
+          <View style={styles.deleteSession}>
+              <Text style={{color: "white", fontWeight: "bold"}}>Radera</Text>
+          </View>
+        </Pressable>
       </View>
 
       <View style={styles.allRecipesContainer}>
@@ -205,18 +248,30 @@ export function SessionStart({ navigation, route }: Props) {
 
       <View style={styles.buttonContainer}>
       
-      <StandardButton buttonText={scheduler ? "Fortsätt" :"Påbörja matlagning"}
-      textProps={{textWeight:"bold"}}
-      buttonType={startButtonSessionCheck() ? "passive" : "primary"}
-      onPress={() =>{
-        if(!schedulerExist()){setRecipeInSession(recipe)} // Om ett recept redan är startat
-        {startButtonSessionCheck() ? setChefModalVisible(true): navigation.navigate("Cooking", {recipe, users})};
-      }}
-      buttonIcon={<Image
-        style={{marginLeft: 10}}
-        source={require("../../assets/image/play-button.png")}/>}
-      />
+     
+
+      {/* Conditional: ska visa "Fortsätt" om det redan är startat */}
+      {/* när schedulen inte skickas med: "börja om" istället för fortsätt */}
+      <View style={{height: "20%"}}>
+        {progressListComponent}
       </View>
+
+      <View style={styles.buttonContainer}>
+        <StandardButton buttonText={scheduler ? "Fortsätt" :"Påbörja matlagning"}
+          textProps={{textWeight:"bold"}}
+          buttonType={startButtonSessionCheck() ? "passive" : "primary"}
+          onPress={() =>{
+            if(!schedulerExist()){setRecipeInSession(recipe)} // Om ett recept redan är startat
+            {startButtonSessionCheck() ? setChefModalVisible(true): navigation.navigate("Cooking", {recipe, users})};
+          }}
+          buttonIcon={<Image
+            style={{marginLeft: 10}}
+            source={require("../../assets/image/play-button.png")}/>}
+          />
+        </View>
+      </View>
+      
+      {/*<StatusBar style="auto" />*/}
     </SafeAreaView>
   );
 }
@@ -224,8 +279,10 @@ export function SessionStart({ navigation, route }: Props) {
 
 const styles = StyleSheet.create({
   container: {
+    height: "100%",
     flex: 1,
     backgroundColor: "white",
+    alignItems: "center",
   },
   modalBackground: {
     flex: 1,
@@ -275,6 +332,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: "25%",
+    width: "80%",
     margin: 10,
   },
   recipeContainer:{
@@ -301,9 +359,8 @@ const styles = StyleSheet.create({
   },
 
   chefsContainer:{ 
-    height: "50%",
+    height: "30%",
     width: "80%",
-    alignSelf: "center",
     justifyContent: "center",
   },
     
@@ -314,7 +371,6 @@ const styles = StyleSheet.create({
   buttonContainer:{ 
     alignItems: "center", 
     justifyContent: "center", 
-    margin: 20,
   },
   startButton: {
     height: 30,

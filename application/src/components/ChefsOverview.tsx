@@ -19,7 +19,7 @@ export function ChefsOverview({ users, nav, recipeActivated }: ChefListProps) {
   //TODO, store chefs somewhere? History? Like Smash Bros
 
   return (
-    <View>
+    <View style={{alignItems: "center", width: "100%"}}>
       <FlatList
         data={[...users, { id: "editChef" }]}
         keyExtractor={(item) => item.id}

@@ -106,7 +106,7 @@ export function SessionStart({ navigation, route }: Props) {
               </View>
           </View>
           <StandardText text={recipe.name} textWeight={"bold"}/>
-      </View>
+        </View>
       )
     }
   }
@@ -132,8 +132,9 @@ export function SessionStart({ navigation, route }: Props) {
 
   if(scheduler){
     progressListComponent = (
-      <View>
-      <FlatList
+      <View style={styles.progressContainer}>
+        <FlatList
+          style={{flexGrow: 0}}
           data={scheduler.getBranchProgress()}
           keyExtractor={([branch, progress]) => branch}
           renderItem={({ item }) => (
@@ -214,55 +215,51 @@ export function SessionStart({ navigation, route }: Props) {
           </Pressable>
         </Pressable>
         </Modal>
-
-      <View style={styles.topContainer}>
-        <Pressable
-          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-        >
-          <View>
-            <Image
-              style={styles.hamburgerContainer}
-              source={require("../../assets/image/hamburger.png")}
-            />
-          </View>
-        </Pressable>
+      <View style={styles.innerContainer}>
+        <View style={styles.topContainer}>
+          <Pressable
+          style={{justifyContent: "center"}}
+            onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+          >
+            <View>
+              <Image
+                style={styles.hamburgerContainer}
+                source={require("../../assets/image/hamburger.png")}
+              />
+            </View>
+          </Pressable>
 
           <View style={styles.topContainerSpace}></View>
-      </View>
-
-      <View style={styles.allRecipesContainer}>
-        <PrintRecipe />
-      </View>
-
-      <View style={styles.chefsContainer}>
-        <ChefsOverview users={users} nav={navigation} recipeActivated={schedulerExist()}/>
-      </View>      
-
-      <View style={styles.buttonContainer}>
-      
-     
-
-      {/* Conditional: ska visa "Fortsätt" om det redan är startat */}
-      {/* när schedulen inte skickas med: "börja om" istället för fortsätt */}
-      <View style={{height: "20%"}}>
-        {progressListComponent}
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <StandardButton buttonText={scheduler ? "Fortsätt" :"Påbörja matlagning"}
-          textProps={{textWeight:"bold"}}
-          buttonType={startButtonSessionCheck() ? "passive" : "primary"}
-          onPress={() =>{
-            if(!schedulerExist()){setRecipeInSession(recipe)} // Om ett recept redan är startat
-            {startButtonSessionCheck() ? setChefModalVisible(true): navigation.navigate("Cooking", {recipe, users})};
-          }}
-          buttonIcon={<Image
-            style={{marginLeft: 10}}
-            source={require("../../assets/image/play-button.png")}/>}
-          />
         </View>
-      </View>
+
+        <View style={styles.allRecipesContainer}>
+          <PrintRecipe />
+        </View>
+
+        <View style={styles.chefsContainer}>
+          <ChefsOverview users={users} nav={navigation} recipeActivated={schedulerExist()}/>
+        </View>      
+
+        {progressListComponent}
+        <View style={styles.buttonContainer}>
+          
+
+          <View style={styles.buttonContainer}>
+            <StandardButton buttonText={scheduler ? "Fortsätt" :"Påbörja matlagning"}
+              textProps={{textWeight:"bold"}}
+              buttonType={startButtonSessionCheck() ? "passive" : "primary"}
+              onPress={() =>{
+                if(!schedulerExist()){setRecipeInSession(recipe)} // Om ett recept redan är startat
+                {startButtonSessionCheck() ? setChefModalVisible(true): navigation.navigate("Cooking", {recipe, users})};
+              }}
+              buttonIcon={<Image
+                style={{marginLeft: 10}}
+                source={require("../../assets/image/play-button.png")}/>}
+            />
+          </View>
+        </View>
       
+      </View>
       {/*<StatusBar style="auto" />*/}
     </SafeAreaView>
   );
@@ -275,6 +272,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     alignItems: "center",
+  },
+  innerContainer: {
+    flexDirection:"column",
+    alignItems: "stretch",
+    width: "95%",
+    height: "100%"
   },
   modalBackground: {
     flex: 1,
@@ -306,9 +309,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   topContainer: {
-    height: 30,
+    flex: 0.3,
     flexDirection: "row",
-    margin: 10,
+    justifyContent: "center",
   },
   hamburgerContainer: {
     height: 30,
@@ -323,16 +326,14 @@ const styles = StyleSheet.create({
   allRecipesContainer:{
     alignItems: "center",
     justifyContent: "center",
-    height: "25%",
-    width: "80%",
-    margin: 10,
+    flex: 1,
   },
   recipeContainer:{
     width: "75%",
     height:"90%"
   },
   recipeImageAndDeleteContainer:{
-    height:"100%",
+    flex: 1
   },
   recipeImage:{
     height: "90%", 
@@ -350,9 +351,10 @@ const styles = StyleSheet.create({
     width: 17,
   },
 
-  chefsContainer:{ 
-    height: "30%",
-    width: "80%",
+  chefsContainer:{
+    flexShrink: 0,
+    flexGrow: 1.5,
+    flexBasis: 0,
     justifyContent: "center",
   },
     
@@ -360,7 +362,17 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
   },
-  buttonContainer:{ 
+
+  progressContainer: {
+    flexShrink: 3,
+    flexGrow: 0,
+    padding: 5,
+    justifyContent: "center",
+    alignItems: "center", 
+  },
+
+  buttonContainer:{
+    flex: 0.7,
     alignItems: "center", 
     justifyContent: "center", 
   },

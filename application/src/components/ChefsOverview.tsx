@@ -29,7 +29,7 @@ export function ChefsOverview({ users, nav, recipeActivated }: ChefListProps) {
               <View style={styles.flatListItemContainer}>
                 <StandardButton
                   buttonText={"Redigera kockar"}
-                  buttonType={"passive"}
+                  buttonType={"secondary"}
                   onPress={() =>
                     nav.navigate("ChefManagement", {
                       users,
@@ -38,7 +38,7 @@ export function ChefsOverview({ users, nav, recipeActivated }: ChefListProps) {
                   buttonIcon={
                     <Image
                       style={styles.editChefsIcon}
-                      source={require("../../assets/image/editChef.png")}
+                      source={require("../../assets/image/editChefGreen.png")}
                     />
                   }
                 />

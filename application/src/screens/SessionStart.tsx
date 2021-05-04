@@ -227,15 +227,7 @@ export function SessionStart({ navigation, route }: Props) {
           </View>
         </Pressable>
 
-        <View style={styles.topContainerSpace}></View>
-
-        <Pressable
-          onPress={() =>{{
-            setDeleteSessionModalVisible(true)}}}>
-          <View style={styles.deleteSession}>
-              <Text style={{color: "white", fontWeight: "bold"}}>Radera</Text>
-          </View>
-        </Pressable>
+          <View style={styles.topContainerSpace}></View>
       </View>
 
       <View style={styles.allRecipesContainer}>

@@ -314,40 +314,6 @@ export function Cooking({ navigation, route }: Props) {
     }
   }, [lastFinishedTask]);
 
-  //skapar en lista av alla task (ev passiva o ev aktiva) som ska visas som minimized
-  let minimizedTasks: string[] = [...visiblePassiveTasks];
-  const userTask = assignedTasks.get(activeUser);
-  if (userTask && visiblePassiveTasks.length > 0) {
-    minimizedTasks.push(userTask);
-  }
-  minimizedTasks = minimizedTasks.filter((taskId) => taskId !== activeTask);
-  const minimizedTasksComponent = (
-    <FlatList
-      data={minimizedTasks}
-      keyExtractor={(item) => item}
-      renderItem={({ item }) => (
-        <Pressable
-          onPress={() => {
-            setActiveTask(item);
-            setTaskConfirmType(
-              item !== assignedTasks.get(activeUser)
-                ? "extendOrFinish"
-                : "finish"
-            );
-          }}
-        >
-          <TaskCard
-            taskId={item}
-            recipe={recipe}
-            userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
-            userColor={unsafeFind(users, (u: User) => u.id == activeUser).color}
-            minimized={true}
-          />
-        </Pressable>
-      )}
-    />
-  );
-
   if (scheduler) {
     // Skapa rätt knappars
     let taskConfirmButtons;

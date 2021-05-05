@@ -14,6 +14,8 @@ import { StandardText } from "./StandardText";
 
 const ACTIVE_USER_BUBBLE_SIZE = 65;
 const INACTIVE_USER_BUBBLE_SIZE = 45;
+const ACTIVE_USER_ICON_SIZE = ACTIVE_USER_BUBBLE_SIZE - 27;
+const INACTIVE_USER_ICON_SIZE = INACTIVE_USER_BUBBLE_SIZE - 20;
 const ACTIVE_USER_NOTIFICATION_SIZE = ACTIVE_USER_BUBBLE_SIZE / 3;
 const INACTIVE_USER_NOTIFICATION_SIZE = INACTIVE_USER_BUBBLE_SIZE / 3;
 
@@ -93,13 +95,21 @@ const UserBubble = ({
       }
     >
       <Pressable onPress={() => onBubblePress(user.id)}>
-        <Image
+        <View
           style={[
-            isActiveUser ? styles.activeUserIcon : styles.inactiveUserIcon,
+            isActiveUser
+              ? styles.activeUserIconBubble
+              : styles.inactiveUserIconBubble,
             { borderColor: user.color, backgroundColor: user.color },
           ]}
-          source={user.icon}
-        />
+        >
+          <Image
+            style={[
+              isActiveUser ? styles.activeUserIcon : styles.inactiveUserIcon,
+            ]}
+            source={user.icon}
+          />
+        </View>
         <View
           style={
             isActiveUser
@@ -159,19 +169,31 @@ const styles = StyleSheet.create({
     marginLeft: 7,
     overflow: "hidden",
   },
-  activeUserIcon: {
+  activeUserIconBubble: {
     width: ACTIVE_USER_BUBBLE_SIZE,
     height: ACTIVE_USER_BUBBLE_SIZE,
     borderRadius: ACTIVE_USER_BUBBLE_SIZE / 2,
     overflow: "hidden",
     borderWidth: 3,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  inactiveUserIcon: {
+  inactiveUserIconBubble: {
     width: INACTIVE_USER_BUBBLE_SIZE,
     height: INACTIVE_USER_BUBBLE_SIZE,
     borderRadius: INACTIVE_USER_BUBBLE_SIZE / 2,
     overflow: "hidden",
     borderWidth: 3,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  activeUserIcon: {
+    width: ACTIVE_USER_ICON_SIZE,
+    height: ACTIVE_USER_ICON_SIZE,
+  },
+  inactiveUserIcon: {
+    width: INACTIVE_USER_ICON_SIZE,
+    height: INACTIVE_USER_ICON_SIZE,
   },
   activeUserNotification: {
     overflow: "hidden",

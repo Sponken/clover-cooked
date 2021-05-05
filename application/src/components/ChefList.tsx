@@ -51,7 +51,7 @@ export function ChefList({ chefList, setChefList }: ChefListProps) {
                     id: Date.now().toString(),
                     name: "",
                     color: chefColors[nextColorIndex], // TODO: randomize color from e.g. 8 ones, or always take the 4 ones that work best first
-                    icon: require("../../assets/image/chefHatSmall.png"),
+                    icon: require("../../assets/image/chefHat.png"),
                   },
                 ]);
                 setNextColorIndex((nextColorIndex + 1) % chefColors.length);
@@ -163,7 +163,10 @@ const ChefItem = ({ chef, chefList, setChefList }: ChefItemProps) => {
             setChefList(chefList.filter((c: User) => c.id !== chef.id))
           }
         >
-          <StandardText text={"X"} colorValue={"red"} textWeight={"bold"} />
+          <Image
+                source={require("../../assets/image/delete.png")} 
+                style={{height: 18, width: 18}}
+              />
         </Pressable>
       </View>
     </View>

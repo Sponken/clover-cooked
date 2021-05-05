@@ -87,11 +87,15 @@ export function ChefManagement({ navigation, route }: Props) {
           <ChefList chefList={users} setChefList={setUsers}/>
         </View>
       <View style={styles.buttonContainer}>
-      <StandardButton
-        onPress={() => {sparaButtonSessionCheck()? setModalVisible(true) : onSubmit()}}
-        buttonText={ "Spara"}
-        buttonType={sparaButtonSessionCheck() ? "passive" : "primary"}
-        />
+        {/* Fulhack pga tidsbrist */}
+        <View style = {{padding: 5}}>
+          <StandardButton
+            
+            onPress={() => {sparaButtonSessionCheck()? setModalVisible(true) : onSubmit()}}
+            buttonText={ "Spara"}
+            buttonType={sparaButtonSessionCheck() ? "passive" : "primary"}
+            />
+        </View>
       </View>
      <StatusBar style="auto" />
     </SafeAreaView>

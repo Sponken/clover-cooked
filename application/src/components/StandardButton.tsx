@@ -3,11 +3,13 @@ import { View, StyleSheet, Pressable, Image,ColorValue } from "react-native";
 import { StandardText, StandardTextProps } from "./StandardText";
 import { primaryColor, primaryColorVariant,passiveColor,passiveColorVariant } from "./Colors";
 
+const CHEF_BUBBLE_SIZE = 65;
+
 type StandardButtonProps = {
   onPress: () => void,
-  buttonType?: "primary" | "secondary" | "passive" | "black" | "white" | "chef",
+  buttonType?: "primary" | "secondary" | "passive" | "black" | "white" | "customColor",
   buttonColor?: ColorValue;
-  buttonSize?: "normal" | "small" | "chef" | "square",
+  buttonSize?: "normal" | "small" | "circleBig" | "square",
   buttonText?: string,
   buttonIcon?: Image,
   textProps?: StandardTextProps,
@@ -44,10 +46,10 @@ export function StandardButton({ ...props }: StandardButtonProps) {
       buttonTextColor = "white";
       break;
       case "black":
-        buttonBackgroundColor = "black";
-        buttonBorderColor = "black";
-        buttonBackgroundColorPressed = "black";
-        buttonBorderColorPressed = "black";
+        buttonBackgroundColor = "#292929";
+        buttonBorderColor = "#292929";
+        buttonBackgroundColorPressed = "#292929";
+        buttonBorderColorPressed = "#292929";
         buttonTextColor = "white";
         break;
     case "white":
@@ -57,7 +59,7 @@ export function StandardButton({ ...props }: StandardButtonProps) {
       buttonBorderColorPressed = "white";
       buttonTextColor = "white";
       break;
-    case "chef":
+    case "customColor":
       buttonBackgroundColor = props.buttonColor;
       buttonBorderColor = props.buttonColor;
       buttonBackgroundColorPressed = props.buttonColor;
@@ -77,8 +79,8 @@ export function StandardButton({ ...props }: StandardButtonProps) {
     buttonsSize = {padding: 7, borderRadius: 8, borderWidth: 1.5,};
     buttonTextSize = "SM";
     break;
-  case "chef":
-    buttonsSize = { height: 72, width: 72, borderRadius: 100,};
+  case "circleBig":
+    buttonsSize = { height: CHEF_BUBBLE_SIZE, width: CHEF_BUBBLE_SIZE, borderRadius: 100,};
     buttonTextSize= "medium";
     break;
   case "square":

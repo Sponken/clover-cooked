@@ -27,6 +27,7 @@ import { getRecipeThumbnail } from "../data";
 
 import { schedulerContext } from "./scheduler-context";
 
+
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
 type ChefManagementScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -88,7 +89,6 @@ export function SessionStart({ navigation, route }: Props) {
     } else {
       return (
         <View style={styles.recipeContainer}>
-          <View style={styles.recipeImageAndDeleteContainer}>
           
             <Image
             style={styles.recipeImage}
@@ -103,7 +103,6 @@ export function SessionStart({ navigation, route }: Props) {
                 buttonSize={"small"}
                 buttonType={"black"}
                 />
-              </View>
           </View>
           <StandardText text={recipe.name} textWeight={"bold"}/>
         </View>
@@ -134,14 +133,16 @@ export function SessionStart({ navigation, route }: Props) {
     progressListComponent = (
       <View style={styles.progressContainer}>
         <FlatList
-          style={{flexGrow: 0}}
+          style={{width: "100%"}}
           data={scheduler.getBranchProgress()}
           keyExtractor={([branch, progress]) => branch}
           renderItem={({ item }) => (
               <View style={{flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center"}}>
-                <Text style={{width: "25%"}}>{item[0]}</Text>
-                <Progress.Bar color="green" height={15} unfilledColor="lightgrey" borderWidth={0} progress={item[1]} width={null} style={{width:"50%"}}/>
-                <Text style={{width: "15%", paddingLeft: 5 }}>{Math.round(item[1]*100)}%</Text>
+                <View style={{left: 0, width: "25%"}}>
+                  <StandardText text={item[0]} size={"small"} textAlignment={"left"}/>
+                </View>
+                <Progress.Bar color="green" height={15} unfilledColor="lightgrey" borderWidth={0} progress={item[1]} width={null} style={{width:"63%"}}/>
+                <Text style={{width: "12%", paddingLeft: 5 }}>{Math.round(item[1]*100)}%</Text>
               </View>
           )}
           ItemSeparatorComponent={() => (
@@ -327,17 +328,13 @@ const styles = StyleSheet.create({
   allRecipesContainer:{
     alignItems: "center",
     justifyContent: "center",
-    flex: 1,
+    height: "25%",
   },
   recipeContainer:{
-    width: "75%",
-    height:"90%"
-  },
-  recipeImageAndDeleteContainer:{
-    flex: 1
+    width: "80%",
   },
   recipeImage:{
-    height: "90%", 
+    height: "82%", 
     width: "90%", 
     borderRadius: 4,
     alignSelf:"center",
@@ -352,51 +349,25 @@ const styles = StyleSheet.create({
     height: 17,
     width: 17,
   },
-
   chefsContainer:{
-    flexShrink: 0,
-    flexGrow: 1.5,
+    width: "75%",
+    flexShrink:0,
+    flexGrow: 1.1,
     flexBasis: 0,
     justifyContent: "center",
+    alignSelf: "center",
   },
-    
-  chefImageInList: {
-    height: 30,
-    width: 30,
-  },
-
   progressContainer: {
-    flexShrink: 3,
+    flexShrink:2,
     flexGrow: 0,
     padding: 5,
     justifyContent: "center",
     alignItems: "center", 
   },
-
   buttonContainer:{
-    flex: 0.7,
+    flex: 0.4,
     alignItems: "center", 
-    justifyContent: "center", 
-  },
-  startButton: {
-    height: 30,
-    width: 30,
-  },
-  canBePressed: {
-    height: 60,
-    width: 230,
-    alignItems: "center",
-    borderRadius: 10,
-    backgroundColor: "#186C3B",
-    flexDirection: "row",
-  },
-  cannotBePressed: {
-    height: 60,
-    width: 230,
-    alignItems: "center",
-    borderRadius: 10,
-    backgroundColor: "gray",
-    flexDirection: "row",
+    justifyContent: "center",
   },
 });
 

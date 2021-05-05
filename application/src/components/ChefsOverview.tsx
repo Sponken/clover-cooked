@@ -4,6 +4,8 @@ import { User } from "../data";
 import { StandardText } from "./StandardText";
 import { StandardButton } from "./StandardButton";
 
+const CHEF_ICON_SIZE = 38;
+
 type ChefListProps = {
   users: User[];
   nav: any;
@@ -19,39 +21,37 @@ export function ChefsOverview({ users, nav, recipeActivated }: ChefListProps) {
   //TODO, store chefs somewhere? History? Like Smash Bros
 
   return (
-    <View style={{alignItems: "center", width: "100%"}}>
-      <FlatList
-        data={[...users, { id: "editChef" }]}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          if (item.id === "editChef" && !recipeActivated) {
-            return (
-              <View style={styles.flatListItemContainer}>
-                <StandardButton
-                  buttonText={"Redigera kockar"}
-                  buttonType={"secondary"}
-                  onPress={() =>
-                    nav.navigate("ChefManagement", {
-                      users,
-                    })
-                  }
-                  buttonIcon={
-                    <Image
-                      style={styles.editChefsIcon}
-                      source={require("../../assets/image/editChefGreen.png")}
-                    />
-                  }
-                />
-              </View>
-            );
-          }
-          if (item.id === "editChef") {
-            return <></>;
-          }
-          return <ChefItem chef={item} />; //remove chef/edit chef instead?
-        }}
-      />
-    </View>
+    <FlatList
+      data={[...users, { id: "editChef" }]}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => {
+        if (item.id === "editChef" && !recipeActivated) {
+          return (
+            <View style={styles.flatListItemContainer}>
+              <StandardButton
+                buttonText={"Redigera kockar"}
+                buttonType={"secondary"}
+                onPress={() =>
+                  nav.navigate("ChefManagement", {
+                    users,
+                  })
+                }
+                buttonIcon={
+                  <Image
+                    style={styles.editChefsIcon}
+                    source={require("../../assets/image/editChefGreen.png")}
+                  />
+                }
+              />
+            </View>
+          );
+        }
+        if (item.id === "editChef") {
+          return <></>;
+        }
+        return <ChefItem chef={item} />; //remove chef/edit chef instead?
+      }}
+    />
   );
 }
 
@@ -69,13 +69,13 @@ const ChefItem = ({ chef }: ListRowProps) => {
     userCircleView = (
       <View style={styles.chefItemContainer}>
         <StandardButton
-          buttonSize={"chef"}
-          buttonType={"chef"}
+          buttonSize={"circleBig"}
+          buttonType={"customColor"}
           buttonColor={chef.color}
           buttonIcon={
             chef.color ? (
               <Image
-                style={{ height: 40, width: 45 }}
+                style={{ height: CHEF_ICON_SIZE, width: CHEF_ICON_SIZE }}
                 source={require("../../assets/image/chefHat.png")}
               />
             ) : (
@@ -102,11 +102,8 @@ const ChefItem = ({ chef }: ListRowProps) => {
 
 const styles = StyleSheet.create({
   flatListItemContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
     paddingVertical: 7,
-    paddingHorizontal: 20,
+    marginHorizontal: 10,
   },
   chefItemContainer: {
     flexDirection: "row",

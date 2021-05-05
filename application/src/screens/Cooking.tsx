@@ -466,9 +466,10 @@ export function Cooking({ navigation, route }: Props) {
                 height: 60,
                 maxWidth: "100%",
                 padding: 5,
-                borderWidth: 1,
+                borderWidth: 2,
                 // borderColor: "rgb(197, 197, 196)",
-                borderColor: "rgb(223, 223, 223)",
+                // borderColor: "rgb(223, 223, 223)",
+                borderColor: "rgb(243, 243, 243)",
                 borderRadius: 15,
                 flexDirection: "row",
               }}
@@ -565,7 +566,7 @@ const styles = StyleSheet.create({
   },
   timerModalContainer: {
     height: "85%",
-    maxHeight: "90%",
+    maxHeight: "84%", //"66.5%",
     width: "95%",
     marginTop: 55, //90,
   },
@@ -587,10 +588,12 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     alignItems: "center",
+    
     width: "100%",
   },
   activeTaskCardContainer: {
     width: "95%",
+    marginVertical: 20,
   },
   spacingWithNoContent: {
     height: "0%",

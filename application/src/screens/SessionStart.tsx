@@ -89,20 +89,21 @@ export function SessionStart({ navigation, route }: Props) {
     } else {
       return (
         <View style={styles.recipeContainer}>
-          
+          <View style={styles.recipeImageAndDeleteContainer}>
             <Image
             style={styles.recipeImage}
             source={getRecipeThumbnail(recipe.id)}
             />
-              <View style={styles.deleteContainer}>
-                <StandardButton onPress={() =>{scheduler ? setDeleteSessionModalVisible(true): navigation.navigate("RecipeLibrary", {
-              screen: "RecipeLibrary"
-              })}}
-                buttonIcon={<Image style={styles.deleteIcon}source={require("../../assets/image/deleteWhite.png")}
-                />}
-                buttonSize={"small"}
-                buttonType={"black"}
-                />
+            <View style={styles.deleteContainer}>
+              <StandardButton onPress={() =>{scheduler ? setDeleteSessionModalVisible(true): navigation.navigate("RecipeLibrary", {
+            screen: "RecipeLibrary"
+            })}}
+              buttonIcon={<Image style={styles.deleteIcon}source={require("../../assets/image/deleteWhite.png")}
+              />}
+              buttonSize={"small"}
+              buttonType={"black"}
+              />
+            </View>
           </View>
           <StandardText text={recipe.name} textWeight={"bold"}/>
         </View>
@@ -331,14 +332,17 @@ const styles = StyleSheet.create({
     height: "25%",
   },
   recipeContainer:{
+    height: "100%",
     width: "80%",
   },
+  recipeImageAndDeleteContainer: {
+    alignItems: "center",
+    flex: 1,
+  },
   recipeImage:{
-    height: "82%", 
+    height: "100%", 
     width: "90%", 
     borderRadius: 4,
-    alignSelf:"center",
-    marginTop:8,
   },
   deleteContainer:{
     position: "absolute",

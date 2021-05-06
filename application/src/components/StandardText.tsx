@@ -86,7 +86,7 @@ export function StandardText({ ...props }: StandardTextProps) {
     numbOfLines = 1;
   }
   else{
-    let numbOfLines=props.textNumbOfLines;
+    numbOfLines=props.textNumbOfLines;
   }
 
   

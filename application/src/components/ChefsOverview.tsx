@@ -4,7 +4,7 @@ import { User } from "../data";
 import { StandardText } from "./StandardText";
 import { StandardButton } from "./StandardButton";
 
-const CHEF_ICON_SIZE = 38;
+const CHEF_ICON_SIZE = 31;
 
 type ChefListProps = {
   users: User[];
@@ -21,37 +21,39 @@ export function ChefsOverview({ users, nav, recipeActivated }: ChefListProps) {
   //TODO, store chefs somewhere? History? Like Smash Bros
 
   return (
-    <FlatList
-      data={[...users, { id: "editChef" }]}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => {
-        if (item.id === "editChef" && !recipeActivated) {
-          return (
-            <View style={styles.flatListItemContainer}>
-              <StandardButton
-                buttonText={"Redigera kockar"}
-                buttonType={"secondary"}
-                onPress={() =>
-                  nav.navigate("ChefManagement", {
-                    users,
-                  })
-                }
-                buttonIcon={
-                  <Image
-                    style={styles.editChefsIcon}
-                    source={require("../../assets/image/editChefGreen.png")}
-                  />
-                }
-              />
-            </View>
-          );
-        }
-        if (item.id === "editChef") {
-          return <></>;
-        }
-        return <ChefItem chef={item} />; //remove chef/edit chef instead?
-      }}
-    />
+    <View>
+      <FlatList
+        data={[...users, { id: "editChef" }]}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => {
+          if (item.id === "editChef" && !recipeActivated) {
+            return (
+              <View style={styles.flatListItemContainer}>
+                <StandardButton
+                  buttonText={"Redigera kockar"}
+                  buttonType={"secondary"}
+                  onPress={() =>
+                    nav.navigate("ChefManagement", {
+                      users,
+                    })
+                  }
+                  buttonIcon={
+                    <Image
+                      style={styles.editChefsIcon}
+                      source={require("../../assets/image/editChefGreen.png")}
+                    />
+                  }
+                />
+              </View>
+            );
+          }
+          if (item.id === "editChef") {
+            return <></>;
+          }
+          return <ChefItem chef={item} />; //remove chef/edit chef instead?
+        }}
+      />
+    </View>
   );
 }
 

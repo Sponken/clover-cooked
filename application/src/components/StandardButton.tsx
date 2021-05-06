@@ -3,7 +3,7 @@ import { View, StyleSheet, Pressable, Image,ColorValue } from "react-native";
 import { StandardText, StandardTextProps } from "./StandardText";
 import { primaryColor, primaryColorVariant,passiveColor,passiveColorVariant } from "./Colors";
 
-const CHEF_BUBBLE_SIZE = 65;
+const CHEF_BUBBLE_SIZE = 54;
 
 type StandardButtonProps = {
   onPress: () => void,

@@ -60,6 +60,7 @@ export function RecipeOverview({ navigation, route }: Props) {
         size={"SM"}
         textAlignment={"left"}
         text={recipe.description}
+        textNumbOfLines={10}
       />
     </View>
   );

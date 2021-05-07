@@ -5,11 +5,11 @@ import {
   Text,
   View,
   FlatList,
-  Button,
   Image,
   Pressable,
 } from "react-native";
 import { getRecipeThumbnail } from "../data";
+import { StandardText } from "./StandardText";
 
 type RecipeListProps = {
   viewFunction: (o: Recipe) => void;
@@ -57,7 +57,7 @@ const ListRow = ({ name, id, onViewPressed }: ListRowProps) => (
         ]}
       >
         <View style={styles.recipeNameContainer}>
-          <Text style={styles.recipeNameText}>{name}</Text>
+          <StandardText text={name} textAlignment={"left"} />
         </View>
         <View style={styles.recipeThumbnailContainer}>
           <Image
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     height: 70,
     width: 70,
-    borderRadius: 10,
+    borderRadius: 8,
   },
   recipeThumbnailContainer: {
     marginLeft: 5,

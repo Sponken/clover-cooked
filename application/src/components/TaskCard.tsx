@@ -1,5 +1,5 @@
 import React from "react";
-import { ColorValue, ImageBackground } from "react-native";
+import { ColorValue } from "react-native";
 import {
   Recipe,
   Task as TaskType,
@@ -7,7 +7,6 @@ import {
   getIngredientName,
   getIngredientUnit,
   isIdleTaskID,
-  idleTasks,
   getIdleTask,
 } from "../data";
 import { StyleSheet, Text, View, FlatList, Image } from "react-native";
@@ -20,7 +19,6 @@ type TaskCardProps = {
   recipe: Recipe;
   userName: string;
   userColor: ColorValue;
-  minimized?: boolean;
 };
 
 /**
@@ -30,8 +28,7 @@ export const TaskCard = ({
   taskId,
   recipe,
   userName,
-  userColor,
-  minimized,
+  userColor
 }: TaskCardProps) => {
   let task: TaskType;
   if (taskId && isIdleTaskID(taskId)) {
@@ -53,99 +50,57 @@ export const TaskCard = ({
    * För alla task som visas vill vi sätta userNameComponent, userIndicatorComponent
    * och infoComponent
    */
-  //litet task
-  if (minimized) {
-    userNameComponent = <></>;
-    infoComponent = <Text style={styles.normalText}>{task.name}</Text>;
-    //litet och passivt
-    if (task.passive) {
-      userIndicator = (
-        <Image
-          source={require("../../assets/image/time_icon.png")}
-          style={styles.passiveTaskIconInactive}
-        />
-      );
-    }
-    //litet och tilldelat
-    else {
-      userIndicator = <UserColorIndicator color={userColor} />;
-    }
+  userNameComponent = (
+    <Text numberOfLines={1} style={[styles.userName, { color: userColor }]}>
+      {userName}
+    </Text>
+  );
+  let branch = task.branch;
+  if (branch) {
+    branchComponent = (
+      <View style={styles.branchContainer}>
+        <View style={{width: 10, height: 15, marginRight: 5}}>
+          <Image
+            style={{maxWidth: "100%", maxHeight: "100%"}}
+            source={require("../../assets/image/branch.png")}
+          />
+        </View>
+        <Text >{task.branch}</Text>
+      </View>
+    )
+  } else {
     branchComponent = <></>;
   }
-  //stort task
-  else {
-    userNameComponent = (
-      <Text numberOfLines={1} style={[styles.userName, { color: userColor }]}>
-        {userName}
-      </Text>
-    );
-    let branch = task.branch;
-    if (branch) {
-      branchComponent = (
-        <View style={styles.branchContainer}>
-          <View style={{width: 10, height: 15, marginRight: 5}}>
-            <Image
-              style={{maxWidth: "100%", maxHeight: "100%"}}
-              source={require("../../assets/image/branch.png")}
-            />
-          </View>
-          <Text >{task.branch}</Text>
-        </View>
-      )
-    } else {
-      branchComponent = <></>;
-    }
-    userIndicator = <UserColorIndicator color={userColor} />;
-    //stort och passivt
-    if (task.passive) {
-      instructionsComponent = (
-        <View style={styles.instructionsContainer}>
-          <View style={styles.passiveTaskExplanationContainer}>
-            <Image
-              source={require("../../assets/image/time_icon.png")}
-              style={styles.passiveTaskIconActive}
-            />
-            <Text style={styles.normalText}>{task.instructions}</Text>
-          </View>
-          <Text style={styles.bigText}>Är det klart?</Text>
-        </View>
-      );
-      ingredientComponent = <></>;
-    }
-    //stort och aktivt
-    else {
-      instructionsComponent = (
-        <View style={styles.instructionsContainer}>
-          <Text style={styles.bigText}>{task.instructions}</Text>
-        </View>
-      );
-      ingredientComponent = (
-        <FlatList
-          style={styles.ingredientsContainer}
-          data={task.ingredients}
-          keyExtractor={(item) => item.ingredientId}
-          renderItem={({ item }) => (
-            <Ingredient ingredient={item} recipe={recipe} />
-          )}
-        />
-      );
-    }
-    infoComponent = (
-      <View>
-        {instructionsComponent}
-        {ingredientComponent}
-      </View>
-    );
-  }
+  userIndicator = <UserColorIndicator color={userColor} />;
+
+  instructionsComponent = (
+    <View style={styles.instructionsContainer}>
+      <Text style={styles.bigText}>{task.instructions}</Text>
+    </View>
+  );
+  ingredientComponent = (
+    <FlatList
+      style={styles.ingredientsContainer}
+      data={task.ingredients}
+      keyExtractor={(item) => item.ingredientId}
+      renderItem={({ item }) => (
+        <Ingredient ingredient={item} recipe={recipe} />
+      )}
+    />
+  );
+  infoComponent = (
+    <View>
+      {instructionsComponent}
+      {ingredientComponent}
+    </View>
+  );
 
   return (
     <View style={styles.taskCompleteContainer}>
       <View
         style={[
           styles.taskContainer,
-          minimized
-            ? styles.minimizedContainerColorAndWidth
-            : styles.baseContainerColor,
+          styles.baseContainerColor,
         ]}
       >
         {userIndicator}
@@ -156,9 +111,6 @@ export const TaskCard = ({
           </View>
           <View style={styles.taskInfoContainer}>{infoComponent}</View>
         </View>
-      </View>
-      <View style={styles.notificationContainer}>
-        <Notification visable={task.passive && minimized} />
       </View>
     </View>
   );
@@ -196,18 +148,6 @@ const UserColorIndicator = ({ color }: UserColorIndicatorProps) => (
   <View style={[styles.userColorIndicator, { backgroundColor: color }]} />
 );
 
-type NotificationProps = {
-  visable: boolean | undefined;
-};
-const Notification = ({ visable }: NotificationProps) => (
-  <View
-    style={[
-      styles.notificationDot,
-      visable ? styles.notificationDotVisable : styles.notificationDotInvisable,
-    ]}
-  />
-);
-
 const styles = StyleSheet.create({
   branchContainer: {
     flexDirection: "row",
@@ -236,35 +176,15 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingVertical: 20,
   },
-  minimizedContainerColorAndWidth: {
-    backgroundColor: "#dedede",
-    opacity: 0.7,
-    width: "98.7%",
-  },
   userColorIndicator: {
     width: 6,
     borderRadius: 2.2,
     alignSelf: "stretch",
   },
-  passiveTaskIconInactive: {
-    width: 15,
-    height: 15,
-  },
   passiveTaskIconActive: {
     width: 20,
     height: 20,
     marginRight: 5,
-  },
-  passiveTaskExplanationContainer: {
-    flexDirection: "row",
-    borderRadius: 5,
-    backgroundColor: "#ebebeb",
-    padding: 10,
-    marginBottom: 10,
-    alignItems: "center",
-
-    // Förhindrar text från att komma utanför lådan
-    paddingRight: 30,
   },
   userName: {
     fontWeight: "bold",
@@ -309,20 +229,4 @@ const styles = StyleSheet.create({
   ingredientAmount: {
     fontSize: 15,
   },
-  notificationContainer: {
-    elevation: 5, //för android så den ligger högst upp
-    position: "absolute",
-    right: 0,
-    top: 0,
-  },
-  notificationDot: {
-    borderRadius: NOTIFICATTION_DOT_SIZE / 2,
-    width: NOTIFICATTION_DOT_SIZE,
-    height: NOTIFICATTION_DOT_SIZE,
-    overflow: "hidden",
-  },
-  notificationDotVisable: {
-    backgroundColor: "red",
-  },
-  notificationDotInvisable: {},
 });

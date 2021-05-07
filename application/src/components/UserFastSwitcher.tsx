@@ -10,9 +10,12 @@ import {
   Image,
 } from "react-native";
 import { undefinedToBoolean } from "../utils";
+import { StandardText } from "./StandardText";
 
 const ACTIVE_USER_BUBBLE_SIZE = 65;
 const INACTIVE_USER_BUBBLE_SIZE = 45;
+const ACTIVE_USER_ICON_SIZE = ACTIVE_USER_BUBBLE_SIZE - 27;
+const INACTIVE_USER_ICON_SIZE = INACTIVE_USER_BUBBLE_SIZE - 20;
 const ACTIVE_USER_NOTIFICATION_SIZE = ACTIVE_USER_BUBBLE_SIZE / 3;
 const INACTIVE_USER_NOTIFICATION_SIZE = INACTIVE_USER_BUBBLE_SIZE / 3;
 
@@ -92,13 +95,21 @@ const UserBubble = ({
       }
     >
       <Pressable onPress={() => onBubblePress(user.id)}>
-        <Image
+        <View
           style={[
-            isActiveUser ? styles.activeUserIcon : styles.inactiveUserIcon,
+            isActiveUser
+              ? styles.activeUserIconBubble
+              : styles.inactiveUserIconBubble,
             { borderColor: user.color, backgroundColor: user.color },
           ]}
-          source={user.icon}
-        />
+        >
+          <Image
+            style={[
+              isActiveUser ? styles.activeUserIcon : styles.inactiveUserIcon,
+            ]}
+            source={user.icon}
+          />
+        </View>
         <View
           style={
             isActiveUser
@@ -112,14 +123,8 @@ const UserBubble = ({
           />
         </View>
       </Pressable>
-      <Text
-        numberOfLines={1}
-        style={
-          isActiveUser ? styles.activeBubbleText : styles.inactiveBubbleText
-        }
-      >
-        {user.name}
-      </Text>
+
+      <StandardText text={user.name} size={isActiveUser ? "SM" : "small"} />
     </View>
   );
 };
@@ -164,29 +169,31 @@ const styles = StyleSheet.create({
     marginLeft: 7,
     overflow: "hidden",
   },
-  activeUserIcon: {
+  activeUserIconBubble: {
     width: ACTIVE_USER_BUBBLE_SIZE,
     height: ACTIVE_USER_BUBBLE_SIZE,
     borderRadius: ACTIVE_USER_BUBBLE_SIZE / 2,
     overflow: "hidden",
     borderWidth: 3,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  inactiveUserIcon: {
+  inactiveUserIconBubble: {
     width: INACTIVE_USER_BUBBLE_SIZE,
     height: INACTIVE_USER_BUBBLE_SIZE,
     borderRadius: INACTIVE_USER_BUBBLE_SIZE / 2,
     overflow: "hidden",
     borderWidth: 3,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  inactiveBubbleText: {
-    alignSelf: "center",
-    fontSize: 10,
-    flex: 1,
+  activeUserIcon: {
+    width: ACTIVE_USER_ICON_SIZE,
+    height: ACTIVE_USER_ICON_SIZE,
   },
-  activeBubbleText: {
-    alignSelf: "center",
-    fontSize: 10,
-    fontWeight: "bold",
+  inactiveUserIcon: {
+    width: INACTIVE_USER_ICON_SIZE,
+    height: INACTIVE_USER_ICON_SIZE,
   },
   activeUserNotification: {
     overflow: "hidden",

@@ -103,29 +103,39 @@ export function CookingTimerOverview({
         }}
       ></View>
       {passiveTaskIds.length > 0 ? (
-        <FlatList
-          data={passiveTaskIds}
-          keyExtractor={(item) => item}
-          renderItem={({ item }) => (
-            <PassiveTaskCard
-              taskId={item}
-              recipe={recipe}
-              finish={passiveTasks.get(item)}
-              onPress={() => endTimer(item)}
-              extendTimer={() => extendTimer(item)}
-            />
-          )}
-          ItemSeparatorComponent={() => (
-            <View
-              style={{
-                marginVertical: 10,
-                height: 2,
-                backgroundColor: "rgb(223, 223, 223)",
-              }}
-            />
-          )}
-          contentContainerStyle={styles.cardListContainer}
-        />
+        <View>
+          <FlatList
+            data={passiveTaskIds}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => (
+              <PassiveTaskCard
+                taskId={item}
+                recipe={recipe}
+                finish={passiveTasks.get(item)}
+                onPress={() => endTimer(item)}
+                extendTimer={() => extendTimer(item)}
+              />
+            )}
+            ItemSeparatorComponent={() => (
+              <View
+                style={{
+                  marginVertical: 10,
+                  height: 2,
+                  backgroundColor: "rgb(223, 223, 223)",
+                }}
+              />
+            )}
+            contentContainerStyle={styles.cardListContainer}
+          />
+
+          <View
+            style={{
+              marginHorizontal: 10,
+              height: 2,
+              backgroundColor: "rgb(223, 223, 223)",
+            }}
+          ></View>
+        </View>
       ) : (
         <View
           style={{
@@ -170,7 +180,9 @@ const PassiveTaskCard = ({
       <View
         style={{
           flexDirection: "column",
-          height: 250,
+          height: 200,
+          marginBottom: 3,
+          marginTop: 20,
         }}
       >
         <View
@@ -219,7 +231,8 @@ const PassiveTaskCard = ({
         </View>
         <View
           style={{
-            margin: 2,
+            paddingVertical: 15,
+            paddingHorizontal: 2,
             minHeight: 100,
             // backgroundColor: "red",
             justifyContent: "flex-start",
@@ -294,7 +307,7 @@ const styles = StyleSheet.create({
     width: SMALL_ICON_SIZE,
   },
   taskText: {
-    fontSize: 28,
+    fontSize: 26,
     flexGrow: 1,
     // backgroundColor: "blue",
 

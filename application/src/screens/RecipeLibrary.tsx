@@ -1,11 +1,11 @@
-import { StyleSheet, View, Text, Pressable, Image } from "react-native";
+import { StyleSheet, View, Pressable, Image } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DrawerActions } from "@react-navigation/routers";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-import { RecipeList } from "../components";
+import { RecipeList, StandardText } from "../components";
 import { RootStackParamList } from "../navigation";
 
 type RecipeLibraryScreenNavigationProp = StackNavigationProp<
@@ -36,7 +36,7 @@ export function RecipeLibrary({ navigation }: Props) {
           </View>
         </Pressable>
         <View style={styles.titleContainer}>
-          <Text style={{ fontSize: 22 }}>Receptbibliotek</Text>
+          <StandardText text={"Receptbibliotek"} textWeight={"bold"} />
         </View>
         {/*Vien under är fulhack för att centrera texten på hela skärmen*/}
         <View style={styles.topContainer}></View>
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
   hamburgerContainer: {
     height: 30,
     width: 30,
+    marginLeft: 6,
   },
   titleContainer: {
     alignItems: "center",

@@ -1,14 +1,19 @@
 import React from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Pressable, Image,ColorValue } from "react-native";
 import { StandardText, StandardTextProps } from "./StandardText";
-import { primaryColor, primaryColorVariant } from "./Colors";
+import { primaryColor, primaryColorVariant,passiveColor,passiveColorVariant } from "./Colors";
+
+const CHEF_BUBBLE_SIZE = 54;
 
 type StandardButtonProps = {
   onPress: () => void,
+  buttonType?: "primary" | "secondary" | "passive" | "black" | "white" | "customColor",
+  buttonColor?: ColorValue;
+  buttonSize?: "normal" | "small" | "circleBig" | "square",
   buttonText?: string,
-  buttonType?: "primary" | "secondary" | "grey",
-  buttonSize?: "normal" | "small",
+  buttonIcon?: Image,
   textProps?: StandardTextProps,
+  textNumbOfLines?: number,
 };
 
 export function StandardButton({ ...props }: StandardButtonProps) {
@@ -16,53 +21,102 @@ export function StandardButton({ ...props }: StandardButtonProps) {
   let buttonBackgroundColorPressed;
   let buttonTextColor;
   let buttonBorderColor;
+  let buttonBorderColorPressed;
 
   switch (props.buttonType ?? "primary"){
     case "primary":
-      buttonBackgroundColorPressed = primaryColorVariant;
       buttonBackgroundColor = primaryColor;
-      buttonTextColor = "white";
       buttonBorderColor= primaryColor;
+      buttonBackgroundColorPressed = primaryColorVariant;
+      buttonBorderColorPressed = primaryColorVariant;
+      buttonTextColor = "white";
       break;
     case "secondary":
-      buttonBackgroundColorPressed = "lightgrey";
       buttonBackgroundColor = "white";
-      buttonTextColor = "primary";
       buttonBorderColor = primaryColor;
+      buttonBackgroundColorPressed = "lightgrey";
+      buttonBorderColorPressed = primaryColor;
+      buttonTextColor = "primary";
       break;
-    case "grey":
-      buttonBackgroundColorPressed = "#828282";
-      buttonBackgroundColor = "#a1a1a1";
+    case "passive":
+      buttonBackgroundColor = passiveColor;
+      buttonBorderColor = passiveColor;
+      buttonBackgroundColorPressed = passiveColorVariant;
+      buttonBorderColorPressed = passiveColorVariant;
       buttonTextColor = "white";
-      buttonBorderColor = "#a1a1a1";
+      break;
+      case "black":
+        buttonBackgroundColor = "#292929";
+        buttonBorderColor = "#292929";
+        buttonBackgroundColorPressed = "#292929";
+        buttonBorderColorPressed = "#292929";
+        buttonTextColor = "white";
+        break;
+    case "white":
+      buttonBackgroundColor = "white";
+      buttonBorderColor = "white";
+      buttonBackgroundColorPressed = "white";
+      buttonBorderColorPressed = "white";
+      buttonTextColor = "white";
+      break;
+    case "customColor":
+      buttonBackgroundColor = props.buttonColor;
+      buttonBorderColor = props.buttonColor;
+      buttonBackgroundColorPressed = props.buttonColor;
+      buttonBorderColorPressed = props.buttonColor;
+      buttonTextColor = "white";
+      break;
   }
 
   let buttonsSize;
   let buttonTextSize;
   switch (props.buttonSize ?? "normal"){
     case "normal":
-      buttonsSize = {padding: 15,};
+      buttonsSize = {paddingVertical: 12, paddingHorizontal: 19, borderRadius: 8, borderWidth: 1.5,};
       buttonTextSize= "medium";
       break;
   case "small":
-    buttonsSize = {padding: 6,};
+    buttonsSize = {padding: 7, borderRadius: 8, borderWidth: 1.5,};
     buttonTextSize = "SM";
     break;
+  case "circleBig":
+    buttonsSize = { height: CHEF_BUBBLE_SIZE, width: CHEF_BUBBLE_SIZE, borderRadius: 100,};
+    buttonTextSize= "medium";
+    break;
+  case "square":
+    buttonsSize = { padding: 7, height: 30, width: 30, borderRadius: 8, borderWidth: 1.5};
+    buttonTextSize= "medium";
+    break;
+  
+
   }
+
+  let buttonImage= <></>;;
+  let spacingBetweenImageText = <></>
+  if (props.buttonIcon !== undefined){
+    buttonImage = props.buttonIcon;
+    if (props.buttonText !== undefined){
+    spacingBetweenImageText=<View style={{width:10}}/>}
+  }
+
+
   return (
     <View>
       <Pressable onPress={props.onPress}>
         {({ pressed }) => {
           let buttonColor = pressed
-            ? { backgroundColor: buttonBackgroundColorPressed }
-            : { backgroundColor: buttonBackgroundColor };
+            ? { backgroundColor: buttonBackgroundColorPressed, borderColor: buttonBorderColorPressed}
+            : { backgroundColor: buttonBackgroundColor, borderColor: buttonBorderColor };
           return (
-            <View style={[styles.buttonStyle, buttonColor, buttonsSize, {borderColor: buttonBorderColor}]}>
+            <View style={[ styles.buttonStyle, buttonColor, buttonsSize,]}>
+              <View>{buttonImage}</View>
+              {spacingBetweenImageText}
               <StandardText
                 size={buttonTextSize}
                 color={buttonTextColor}
                 {...props.textProps}
                 text={props.buttonText}
+                textNumbOfLines={props.textNumbOfLines}
               />
             </View>
           );
@@ -74,8 +128,7 @@ export function StandardButton({ ...props }: StandardButtonProps) {
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    borderRadius: 8,
-    borderWidth: 1.5,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     // iOS shadow

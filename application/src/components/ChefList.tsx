@@ -13,6 +13,7 @@ import {
 
 import { User } from "../data";
 import { StandardText } from "./StandardText";
+import {chefColors} from "./Colors";
 
 type ChefListProps = {
   chefList: any;
@@ -26,7 +27,7 @@ type ChefListProps = {
 
 export function ChefList({ chefList, setChefList }: ChefListProps) {
   // Hitta det senaste färgindexet för att kunna fördela nya
-  let lastColorIndex = colors.indexOf(chefList[chefList.length - 1]?.color) ?? -1
+  let lastColorIndex = chefColors.indexOf(chefList[chefList.length - 1]?.color) ?? -1
 
   let [nextColorIndex, setNextColorIndex] = useState<number>(lastColorIndex+1);
 
@@ -38,49 +39,41 @@ export function ChefList({ chefList, setChefList }: ChefListProps) {
         <ChefItem chef={item} chefList={chefList} setChefList={setChefList} />
       )}
       ListFooterComponent={() => (
-        <View style={styles.chefItemContainer}>
-          <Pressable
-            style={styles.addChefButton}
-            onPress={() => {
-              setChefList([
-                ...chefList,
-                {
-                  id: Date.now().toString(),
-                  name: "",
-                  color: colors[nextColorIndex], // TODO: randomize color from e.g. 8 ones, or always take the 4 ones that work best first
-                  icon: require("../../assets/image/chefHatSmall.png"),
-                },
-              ]);
-              setNextColorIndex((nextColorIndex + 1) % colors.length);
-            }}
-          >
-            <View>
-              <Image
-                style={styles.addChefIcon}
-                source={require("../../assets/image/Add_chef_icon.png")} //TODO: chef.image
-                // check chef.color to decide color of border
-              />
-            </View>
-            <Text style={styles.nameText}>Lägg till kock</Text>
-          </Pressable>
+        <View style={{ marginHorizontal: 5}}>
+          
+          <View style={styles.chefItemContainer}>
+            <Pressable
+              style={styles.addChefButton}
+              onPress={() => {
+                setChefList([
+                  ...chefList,
+                  {
+                    id: Date.now().toString(),
+                    name: "",
+                    color: chefColors[nextColorIndex], // TODO: randomize color from e.g. 8 ones, or always take the 4 ones that work best first
+                    icon: require("../../assets/image/chefHat.png"),
+                  },
+                ]);
+                setNextColorIndex((nextColorIndex + 1) % chefColors.length);
+              }}
+            >
+              <View>
+                <Image
+                  style={styles.addChefIcon}
+                  source={require("../../assets/image/Add_chef_icon.png")} //TODO: chef.image
+                  // check chef.color to decide color of border
+                />
+              </View>
+              <Text style={styles.nameText}>Lägg till kock</Text>
+            </Pressable>
+          </View>
         </View>
       )}
     />
   );
 }
 
-// Färger som tilldeas kockar
-let colors = [
-  "#B856E9",
-  "#E956CD",
-  "#E3993B",
-  "#EAD755",
-  "#95DD69",
-  "#22BC29",
-  "#4DE1E1",
-  "#4DA4E1",
-  "#4F5EED",
-];
+
 
 type ChefItemProps = {
   chef: any;
@@ -117,10 +110,10 @@ const ChefItem = ({ chef, chefList, setChefList }: ChefItemProps) => {
       return col == chef.color.toString();
     }
 
-    let colIndex = colors.findIndex(checkColor);
+    let colIndex = chefColors.findIndex(checkColor);
     //let colIndex = color.findIndex((c) => c == chef.color.toString());
 
-    if (colIndex < colors.length - 1) {
+    if (colIndex < chefColors.length - 1) {
       colIndex += 1;
     } else {
       colIndex = 0;
@@ -129,7 +122,7 @@ const ChefItem = ({ chef, chefList, setChefList }: ChefItemProps) => {
     let tempChef: User = {
       id: chef.id,
       name: chef.name,
-      color: colors[colIndex],
+      color: chefColors[colIndex],
       icon: chef.icon,
     };
 
@@ -138,39 +131,44 @@ const ChefItem = ({ chef, chefList, setChefList }: ChefItemProps) => {
   }
 
   return (
-    <View style={styles.chefItemContainer}>
-      <Pressable
-        style={[styles.chefColor, { backgroundColor: chef.color }]} //userColor,}
-        onPress={() => {
-          setChefList(
-            editColor(chefList.findIndex((c: User) => c.id === chef.id), chef)
-          );
-        }}
-      />
-      <View style={styles.nameContainer}>
-        <TextInput
-          style={styles.nameText}
-          placeholder="Skriv ditt namn..."
-          defaultValue={chef.name}
-          onChangeText={(name) => {
+    <View style={{ marginHorizontal: 5}}>
+      <View style={styles.chefItemContainer}>
+        <Pressable
+          style={[styles.chefColor, { backgroundColor: chef.color }]} //userColor,}
+          onPress={() => {
             setChefList(
-              edit(
-                chefList.findIndex((c: User) => c.id === chef.id),
-                chef,
-                name
-              )
+              editColor(chefList.findIndex((c: User) => c.id === chef.id), chef)
             );
           }}
         />
+        <View style={styles.nameContainer}>
+          <TextInput
+            style={styles.nameText}
+            placeholder="Skriv ditt namn..."
+            defaultValue={chef.name}
+            onChangeText={(name) => {
+              setChefList(
+                edit(
+                  chefList.findIndex((c: User) => c.id === chef.id),
+                  chef,
+                  name
+                )
+              );
+            }}
+          />
+        </View>
+        <Pressable
+          style={styles.deleteButton}
+          onPress={() =>
+            setChefList(chefList.filter((c: User) => c.id !== chef.id))
+          }
+        >
+          <Image
+                source={require("../../assets/image/delete.png")} 
+                style={{height: 18, width: 18}}
+              />
+        </Pressable>
       </View>
-      <Pressable
-        style={styles.deleteButton}
-        onPress={() =>
-          setChefList(chefList.filter((c: User) => c.id !== chef.id))
-        }
-      >
-        <StandardText text={"X"} colorValue={"red"} textWeight={"bold"} />
-      </Pressable>
     </View>
   );
 };
@@ -179,7 +177,8 @@ const styles = StyleSheet.create({
   chefItemContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 3,
+    
+    marginVertical: 3,//3,
     paddingHorizontal: 15,
     paddingVertical: 20,
     backgroundColor: "#FFFFFF",

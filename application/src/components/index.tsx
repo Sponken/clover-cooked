@@ -9,4 +9,5 @@ export { CookingTimer } from "./CookingTimer";
 export { CookingTimerOverview } from "./CookingTimerOverview";
 export { StandardButton } from "./StandardButton";
 export { StandardText } from "./StandardText";
+export { primaryColor, passiveColor, chefColors } from "./Colors";
 export { UndoButton } from "./UndoButton";

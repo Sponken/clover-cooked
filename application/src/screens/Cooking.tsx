@@ -13,6 +13,7 @@ import {
   CookingTimerOverview,
   TaskConfirmType,
   UndoButton,
+  StandardButton,
 } from "../components";
 import { User, helpOrRestTaskID } from "../data";
 import { unsafeFind, undefinedToBoolean, clearTimeoutOrUndefined } from "../utils";
@@ -314,40 +315,6 @@ export function Cooking({ navigation, route }: Props) {
     }
   }, [lastFinishedTask]);
 
-  //skapar en lista av alla task (ev passiva o ev aktiva) som ska visas som minimized
-  let minimizedTasks: string[] = [...visiblePassiveTasks];
-  const userTask = assignedTasks.get(activeUser);
-  if (userTask && visiblePassiveTasks.length > 0) {
-    minimizedTasks.push(userTask);
-  }
-  minimizedTasks = minimizedTasks.filter((taskId) => taskId !== activeTask);
-  const minimizedTasksComponent = (
-    <FlatList
-      data={minimizedTasks}
-      keyExtractor={(item) => item}
-      renderItem={({ item }) => (
-        <Pressable
-          onPress={() => {
-            setActiveTask(item);
-            setTaskConfirmType(
-              item !== assignedTasks.get(activeUser)
-                ? "extendOrFinish"
-                : "finish"
-            );
-          }}
-        >
-          <TaskCard
-            taskId={item}
-            recipe={recipe}
-            userName={unsafeFind(users, (u: User) => u.id == activeUser).name}
-            userColor={unsafeFind(users, (u: User) => u.id == activeUser).color}
-            minimized={true}
-          />
-        </Pressable>
-      )}
-    />
-  );
-
   if (scheduler) {
     // Skapa rätt knappars
     let taskConfirmButtons;
@@ -499,9 +466,10 @@ export function Cooking({ navigation, route }: Props) {
                 height: 60,
                 maxWidth: "100%",
                 padding: 5,
-                borderWidth: 1,
+                borderWidth: 2,
                 // borderColor: "rgb(197, 197, 196)",
-                borderColor: "rgb(223, 223, 223)",
+                // borderColor: "rgb(223, 223, 223)",
+                borderColor: "rgb(243, 243, 243)",
                 borderRadius: 15,
                 flexDirection: "row",
               }}
@@ -530,19 +498,10 @@ export function Cooking({ navigation, route }: Props) {
           >
             <Pressable onPress={() => navigation.navigate("SessionStart", {})}>
               <Image
-                resizeMethod={"scale"}
-                resizeMode={"center"}
-                source={require("../../assets/image/showMenuButton_icon.png")}
+                source={require("../../assets/image/showMenuButton_icon.png")} // TODO: Placeholder tills ikon finns
                 style={styles.topBarRightMenuIcon}
               />
             </Pressable>
-            {/*
-            <Pressable>
-              <Image
-                source={require("../../assets/image/icon.png")} // TODO: Placeholder tills ikon finns
-                style={styles.topBarRightMenuIcon}
-              />
-            </Pressable>*/}
           </View>
         </View>
         <View style={styles.topBarContainer}>
@@ -573,8 +532,9 @@ export function Cooking({ navigation, route }: Props) {
           </View>
         </View>
         <View style={styles.buttonContainer}>
+          {undoButton}  
           {taskConfirmButtons}
-          {undoButton}
+          
         </View>
         <View style={{flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", paddingBottom: 20}}>
           <View style={{width: "10%"}}></View>
@@ -606,7 +566,7 @@ const styles = StyleSheet.create({
   },
   timerModalContainer: {
     height: "85%",
-    maxHeight: "90%",
+    maxHeight: "84%", //"66.5%",
     width: "95%",
     marginTop: 55, //90,
   },
@@ -619,19 +579,21 @@ const styles = StyleSheet.create({
     margin: 15, //det här är bara temp när vi har en avbryt knapp istället
   },
   topBarRightMenuIcon: {
-    // width: 8,
-    // height: 30,
+     width: 30,
+     height: 35,
     // padding: 5, 
-    marginHorizontal: 20,
-    // marginTop: 17
+    margin: 6,
+    marginTop: 9,
   },
   contentContainer: {
     flex: 1,
     alignItems: "center",
+    
     width: "100%",
   },
   activeTaskCardContainer: {
     width: "95%",
+    marginVertical: 20,
   },
   spacingWithNoContent: {
     height: "0%",
@@ -656,7 +618,10 @@ const styles = StyleSheet.create({
     height: 80,
     width: 80,
     position: "absolute",
-    left: 0,
+    left: 25,
+    paddingTop: 17,
+
+    marginHorizontal: 10,
     top: "auto",
   },
   smallIcon: {

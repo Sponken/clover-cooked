@@ -1,20 +1,23 @@
 import {
   StyleSheet,
-  Text,
   View,
   Image,
   ImageBackground,
-  Pressable,
   useWindowDimensions,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { RootStackParamList } from "../navigation";
-import { IngredientList } from "../components";
+import {
+  IngredientList,
+  StandardButton,
+  primaryColor,
+  StandardText,
+} from "../components";
 import { getRecipeThumbnail } from "../data";
 
 // @ts-ignore
@@ -53,7 +56,12 @@ export function RecipeOverview({ navigation, route }: Props) {
 
   const Description = () => (
     <View style={styles.tabViewSceneContainer}>
-      <Text style={styles.descriptionText}>{recipe.description}</Text>
+      <StandardText
+        size={"SM"}
+        textAlignment={"left"}
+        text={recipe.description}
+        textNumbOfLines={10}
+      />
     </View>
   );
 
@@ -66,16 +74,15 @@ export function RecipeOverview({ navigation, route }: Props) {
   const renderTabBar = (props: any) => (
     <TabBar
       {...props}
-      indicatorStyle={{ backgroundColor: "green" }}
+      indicatorStyle={{ backgroundColor: primaryColor }}
       style={{ backgroundColor: "white" }}
       getLabelText={({ route }) => route.title}
-      labelStyle={{ color: "green" }}
       renderLabel={({ route, focused, color }) => (
-        <Text
-          style={focused ? styles.tabViewLabelFocused : styles.tabViewLabel}
-        >
-          {route.title}
-        </Text>
+        <StandardText
+          size={"SM"}
+          text={route.title}
+          color={focused ? "black" : "passive"}
+        />
       )}
     />
   );
@@ -89,24 +96,39 @@ export function RecipeOverview({ navigation, route }: Props) {
             style={styles.topImage}
           >
             <SafeAreaView style={styles.topImage} edges={["top"]}>
-              <Pressable onPress={() => navigation.navigate("RecipeLibrary")}>
-                <View style={styles.backIconContainer}>
-                  <Image source={require("../../assets/image/backImg.png")} />
-                </View>
-              </Pressable>
+              <View style={styles.backIconContainer}>
+                <StandardButton
+                  onPress={() => navigation.navigate("RecipeLibrary")}
+                  buttonIcon={
+                    <Image
+                      style={styles.backIcon}
+                      source={require("../../assets/image/backImg.png")}
+                    />
+                  }
+                  buttonType={"white"}
+                  buttonSize={"square"}
+                />
+              </View>
             </SafeAreaView>
           </ImageBackground>
         </View>
         <View style={styles.infoContainer}>
           <View style={styles.nameContainer}>
-            <Text style={styles.name}>{recipe.name}</Text>
+            <StandardText
+              text={recipe.name}
+              textAlignment={"left"}
+              textWeight={"bold"}
+            />
           </View>
           <View style={styles.portionsContainer}>
-            <Text style={styles.portions}>
-              {recipe.portions +
+            <StandardText
+              size={"SM"}
+              text={
+                recipe.portions +
                 " " +
-                (recipe.portions === 1 ? "portion" : "portioner")}
-            </Text>
+                (recipe.portions === 1 ? "portion" : "portioner")
+              }
+            />
           </View>
           <TabView
             navigationState={{ index, routes }}
@@ -119,7 +141,8 @@ export function RecipeOverview({ navigation, route }: Props) {
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <Pressable
+        <StandardButton
+          buttonText="Välj recept"
           onPress={() =>
             navigation.navigate("Current Session", {
               screen: "SessionStart",
@@ -128,18 +151,7 @@ export function RecipeOverview({ navigation, route }: Props) {
               },
             })
           }
-        >
-          {({ pressed }) => (
-            <View
-              style={[
-                styles.button,
-                pressed ? styles.buttonColorPressed : styles.buttonColor,
-              ]}
-            >
-              <Text style={styles.buttonText}>Starta matlagning</Text>
-            </View>
-          )}
-        </Pressable>
+        />
       </View>
     </SafeAreaView>
   );
@@ -150,6 +162,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
   },
+
   contentContainer: {
     flex: 1,
   },
@@ -162,12 +175,13 @@ const styles = StyleSheet.create({
   },
   backIconContainer: {
     alignSelf: "flex-start",
-    backgroundColor: "rgba(255, 255, 255, 0.5)",
-    margin: 6,
-    padding: 12,
-    borderRadius: 12,
-    flexDirection: "row",
-    alignItems: "center",
+    marginVertical: 4,
+    marginLeft: 14,
+  },
+  backIcon: {
+    height: 18,
+    width: 10,
+    marginRight: 3,
   },
   timeContainer: {
     alignSelf: "flex-end",
@@ -183,37 +197,22 @@ const styles = StyleSheet.create({
   },
 
   nameContainer: {
-    backgroundColor: "white",
     padding: 8,
     margin: 5,
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: "bold",
   },
   portionsContainer: {
     marginHorizontal: 8,
     padding: 6,
     alignSelf: "flex-start",
   },
-  portions: { fontSize: 15 },
   tabBar: {
     flex: 1,
     marginTop: 2,
-  },
-  tabViewLabel: {
-    color: "gray",
-  },
-  tabViewLabelFocused: {
-    color: "black",
   },
   tabViewSceneContainer: {
     flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 15,
-  },
-  descriptionText: {
-    fontSize: 16,
   },
   buttonContainer: {
     width: "100%",
@@ -223,35 +222,5 @@ const styles = StyleSheet.create({
     height: 70,
     borderTopWidth: 1,
     borderTopColor: "lightgray",
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-  },
-  button: {
-    borderRadius: 8,
-    height: 50,
-    marginHorizontal: 8,
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
-
-    // iOS shadow
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    // Android shadow
-    elevation: 4,
-  },
-  buttonColor: {
-    backgroundColor: "#38a13f",
-  },
-  buttonColorPressed: {
-    backgroundColor: "#1d8c25",
   },
 });

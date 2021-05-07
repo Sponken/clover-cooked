@@ -1,11 +1,11 @@
 import {
   StyleSheet,
-  Text,
   Image,
   View,
   Modal,
   Pressable,
-  FlatList
+  FlatList,
+  Text
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -19,13 +19,14 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigation";
 
 
-import { Recipe, User, recipes } from "../data";
+import { Recipe, User } from "../data";
 import { DrawerActions } from "@react-navigation/routers";
 
 import { getRecipeThumbnail } from "../data";
 
 
 import { schedulerContext } from "./scheduler-context";
+
 
 //TODO: Vet inte om vi vill ha stack navigation här, eller om en vill kunna ändra i samma vy
 type ChefManagementScreenNavigationProp = StackNavigationProp<
@@ -65,6 +66,9 @@ export function SessionStart({ navigation, route }: Props) {
   //modal poppar upp som "är du säker på att du vill deleta denna session?"
   const [deleteSessionModalVisible, setDeleteSessionModalVisible] = useState(false);
 
+  //modal poppar upp som "det måste finnas åtminstonde en kock för att starta"
+  const [chefModalVisible, setChefModalVisible] = useState(false);
+
   //Initiera users och recipe om de inte finns
   if(route.params?.users === undefined){
     users = []
@@ -85,12 +89,24 @@ export function SessionStart({ navigation, route }: Props) {
     } else {
       return (
         <View style={styles.recipeContainer}>
-          <StandardText text={recipe.name}/>
-          <Image
-          style={styles.recipeImage}
-          source={getRecipeThumbnail(recipe.id)}
-          />
-      </View>
+          <View style={styles.recipeImageAndDeleteContainer}>
+            <Image
+            style={styles.recipeImage}
+            source={getRecipeThumbnail(recipe.id)}
+            />
+            <View style={styles.deleteContainer}>
+              <StandardButton onPress={() =>{scheduler ? setDeleteSessionModalVisible(true): navigation.navigate("RecipeLibrary", {
+            screen: "RecipeLibrary"
+            })}}
+              buttonIcon={<Image style={styles.deleteIcon}source={require("../../assets/image/deleteWhite.png")}
+              />}
+              buttonSize={"small"}
+              buttonType={"black"}
+              />
+            </View>
+          </View>
+          <StandardText text={recipe.name} textWeight={"bold"}/>
+        </View>
       )
     }
   }
@@ -116,15 +132,18 @@ export function SessionStart({ navigation, route }: Props) {
 
   if(scheduler){
     progressListComponent = (
-      <View>
-      <FlatList
+      <View style={styles.progressContainer}>
+        <FlatList
+          style={{width: "100%"}}
           data={scheduler.getBranchProgress()}
           keyExtractor={([branch, progress]) => branch}
           renderItem={({ item }) => (
               <View style={{flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center"}}>
-                <Text style={{width: "25%"}}>{item[0]}</Text>
-                <Progress.Bar color="green" height={15} unfilledColor="lightgrey" borderWidth={0} progress={item[1]} width={null} style={{width:"50%"}}/>
-                <Text style={{width: "15%", paddingLeft: 5 }}>{Math.round(item[1]*100)}%</Text>
+                <View style={{left: 0, width: "25%"}}>
+                  <StandardText text={item[0]} size={"small"} textAlignment={"left"}/>
+                </View>
+                <Progress.Bar color="green" height={15} unfilledColor="lightgrey" borderWidth={0} progress={item[1]} width={null} style={{width:"63%"}}/>
+                <Text style={{width: "12%", paddingLeft: 5 }}>{Math.round(item[1]*100)}%</Text>
               </View>
           )}
           ItemSeparatorComponent={() => (
@@ -158,12 +177,13 @@ export function SessionStart({ navigation, route }: Props) {
           >
             <Pressable style={styles.modalContainer} onPress={() => null}>
               <View style={styles.modalTextContainer}>
-              <StandardText text={"Vill du radera denna matlagningssession?"}/>
+              <StandardText text={"Receptet är inte klart,"}/>
+              <StandardText text={"vill du ändå avsluta matlagningen?"}/>
               </View>
               <View style={styles.modalButtonsContainer}>
                 <StandardButton buttonType={"secondary"} buttonText={"Avbryt"} onPress={() => setDeleteSessionModalVisible(!deleteSessionModalVisible)}/>
-                <View style={{width: "10%" }}/>
-                <StandardButton buttonText={"Ta bort receptet"} onPress={() => 
+                <View style={{width: "5%" }}/>
+                <StandardButton buttonText={"Avsluta receptet"} onPress={() => 
                 {{
                   setDeleteSessionModalVisible(false);
                   setScheduler();
@@ -176,62 +196,72 @@ export function SessionStart({ navigation, route }: Props) {
             </Pressable>
           </Pressable>
         </Modal>
-
-      <View style={styles.topContainer}>
-        <Pressable
-          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        <Modal
+          visible={chefModalVisible}
+          animationType="fade"
+          onRequestClose={() => setChefModalVisible(false)}
+          transparent={true}
+          statusBarTranslucent={true}
         >
-          <View>
-            <Image
-              style={styles.hamburgerContainer}
-              source={require("../../assets/image/hamburger.png")}
+        <Pressable
+          style={styles.modalBackground}
+          onPress={() => setChefModalVisible(!chefModalVisible)}
+        >
+          <Pressable style={styles.modalContainer} onPress={() => null}>
+            <View style={styles.modalTextContainer}>
+            <StandardText text={"Du behöver minst en kock och ett recept för att påbörja ett recept"} textNumbOfLines={2}/>
+            </View>
+            <View style={styles.modalButtonsContainer}>
+              <StandardButton buttonText={"Ok"} onPress={() => setChefModalVisible(!chefModalVisible)} />
+            </View>
+          </Pressable>
+        </Pressable>
+        </Modal>
+      <View style={styles.innerContainer}>
+        <View style={styles.topContainer}>
+          <Pressable
+          style={{justifyContent: "center"}}
+            onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+          >
+            <View>
+              <Image
+                style={styles.hamburgerContainer}
+                source={require("../../assets/image/hamburger.png")}
+              />
+            </View>
+          </Pressable>
+
+          <View style={styles.topContainerSpace}></View>
+        </View>
+
+        <View style={styles.allRecipesContainer}>
+          <PrintRecipe />
+        </View>
+
+        <View style={styles.chefsContainer}>
+          <ChefsOverview users={users} nav={navigation} recipeActivated={schedulerExist()}/>
+        </View>      
+
+        {progressListComponent}
+        <View style={styles.buttonContainer}>
+          
+
+          <View style={styles.buttonContainer}>
+            <StandardButton buttonText={scheduler ? "Fortsätt" :"Påbörja matlagning"}
+              textProps={{textWeight:"bold"}}
+              buttonType={startButtonSessionCheck() ? "passive" : "primary"}
+              onPress={() =>{
+                if(!schedulerExist()){setRecipeInSession(recipe)} // Om ett recept redan är startat
+                {startButtonSessionCheck() ? setChefModalVisible(true): navigation.navigate("Cooking", {recipe, users})};
+              }}
+              buttonIcon={<Image
+                style={{marginLeft: 10, height: 25, width: 20}}
+                source={require("../../assets/image/play-button.png")}/>}
             />
           </View>
-        </Pressable>
-
-        <View style={styles.topContainerSpace}></View>
-
-        <Pressable
-          onPress={() =>{{
-            setDeleteSessionModalVisible(true)}}}>
-            <View style={styles.deleteSession}>
-          <Text style={{color: "white", fontWeight: "bold"}}>Radera</Text>
-          </View>
-        </Pressable>
-      </View>
-
-      <View style={styles.allRecipesContainer}>
-        <PrintRecipe />
-      </View>
-
-      <View style={styles.chefsContainer}>
-        <ChefsOverview users={users} nav={navigation} recipeActivated={schedulerExist()}/>
-      </View>      
-
-      {/* Conditional: ska visa "Fortsätt" om det redan är startat */}
-      {/* när schedulen inte skickas med: "börja om" istället för fortsätt */}
-      <View style={{height: "20%"}}>
-        {progressListComponent}
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <Pressable disabled={startButtonSessionCheck()} 
-          style={startButtonSessionCheck() ? styles.cannotBePressed : styles.canBePressed} 
-          onPress={() =>{
-              if(!schedulerExist()){setRecipeInSession(recipe)} // Om ett recept redan är startat
-              {navigation.navigate("Cooking", {recipe, users})};
-            }
-          }
-        >
-          <Image
-            style={{height: 32, width: 24, margin: 15, marginLeft: 40}}
-            source={require("../../assets/image/play-button.png")} //TODO: chef.image
-            // check chef.color to decide color of border
-          />
-          <Text style={{color: "white", fontSize: 32}}>{scheduler ? "Fortsätt" : "Starta"}</Text>
-        </Pressable>
-      </View>
+        </View>
       
+      </View>
       {/*<StatusBar style="auto" />*/}
     </SafeAreaView>
   );
@@ -245,15 +275,21 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     alignItems: "center",
   },
+  innerContainer: {
+    flexDirection:"column",
+    alignItems: "stretch",
+    width: "95%",
+    height: "100%"
+  },
   modalBackground: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(160, 160, 160, 0.5)",
+    backgroundColor: "rgba(87, 87, 87, 0.6)",
   },
   modalContainer: {
     backgroundColor: "white",
-    height: "40%",
+    height: "35%",
     width: "85%",
     borderRadius: 10,
   },
@@ -265,88 +301,77 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
   },
-  topContainer: {
-    height: 30,
-    flexDirection: "row",
+  drawer: {
     margin: 10,
+    height: 30,
+    width: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 30 * 2,
+    flexDirection: "row",
+  },
+  topContainer: {
+    flex: 0.3,
+    flexDirection: "row",
+    justifyContent: "center",
   },
   hamburgerContainer: {
     height: 30,
     width: 30,
+    marginLeft: 6,
   },
   topContainerSpace: {
     alignItems: "center",
     justifyContent: "center",
     flexGrow: 1,
   },
-  deleteSession:{
-    height: 40,
-    width: 70,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-    backgroundColor: "#ed4040",
-    // iOS shadow
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    // Android shadow
-    elevation: 4,
-  },
+
   allRecipesContainer:{
     alignItems: "center",
     justifyContent: "center",
     height: "25%",
-    width: "80%",
-    margin: 10,
   },
   recipeContainer:{
+    height: "100%",
     width: "80%",
+  },
+  recipeImageAndDeleteContainer: {
+    alignItems: "center",
+    flex: 1,
   },
   recipeImage:{
-    height: "80%", 
+    height: "100%", 
     width: "90%", 
-    borderRadius: 10,
-    alignSelf:"center",
-    marginTop:8,
+    borderRadius: 4,
   },
-  chefsContainer:{ 
-    height: "30%",
-    width: "80%",
+  deleteContainer:{
+    position: "absolute",
+    top: -5,
+    alignSelf: "flex-end",
+  },
+  deleteIcon:{
+    height: 17,
+    width: 17,
+  },
+  chefsContainer:{
+    width: "75%",
+    flexShrink:0,
+    flexGrow: 1.1,
+    flexBasis: 0,
     justifyContent: "center",
+    alignSelf: "center",
   },
-    
-  chefImageInList: {
-    height: 30,
-    width: 30,
-  },
-  buttonContainer:{ 
+  progressContainer: {
+    flexShrink:2,
+    flexGrow: 0,
+    padding: 5,
+    justifyContent: "center",
     alignItems: "center", 
-    justifyContent: "center", 
   },
-  startButton: {
-    height: 30,
-    width: 30,
-  },
-  canBePressed: {
-    height: 60,
-    width: 230,
-    alignItems: "center",
-    borderRadius: 10,
-    backgroundColor: "#186C3B",
-    flexDirection: "row",
-  },
-  cannotBePressed: {
-    height: 60,
-    width: 230,
-    alignItems: "center",
-    borderRadius: 10,
-    backgroundColor: "gray",
-    flexDirection: "row",
+  buttonContainer:{
+    flex: 0.4,
+    alignItems: "center", 
+    justifyContent: "center",
   },
 });
 

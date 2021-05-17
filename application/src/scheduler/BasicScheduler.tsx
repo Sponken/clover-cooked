@@ -187,6 +187,11 @@ export function createBasicScheduler(recipe: Recipe,
     getPassiveTask: function(task: TaskID) {
       return this.getPassiveTasks().get(task)
     },
+    updateCooks: function(updateToCooks: CookID[]){
+      updateToCooks.forEach(c => this.addCook(c))
+      this.cooks.forEach(c => updateToCooks.includes(c)?"":this.removeCook(c))
+      assignTasks(this)
+    },
     addCook: function(cook: CookID){
       cooks.includes(cook) ? "" : cooks.push(cook)
       assignTasks(this, cook);

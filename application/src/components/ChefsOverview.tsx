@@ -26,7 +26,7 @@ export function ChefsOverview({ users, nav, recipeActivated }: ChefListProps) {
         data={[...users, { id: "editChef" }]}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
-          if (item.id === "editChef" && !recipeActivated) {
+          if (item.id === "editChef") {
             return (
               <View style={styles.flatListItemContainer}>
                 <StandardButton
@@ -46,9 +46,6 @@ export function ChefsOverview({ users, nav, recipeActivated }: ChefListProps) {
                 />
               </View>
             );
-          }
-          if (item.id === "editChef") {
-            return <></>;
           }
           return <ChefItem chef={item} />; //remove chef/edit chef instead?
         }}

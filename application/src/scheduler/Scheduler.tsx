@@ -86,6 +86,10 @@ export interface Scheduler {
    */
   getPassiveTask: (task: TaskID) => Date | undefined;
   /**
+   * Uppdaterar kockarna i schemaläggaren så att de matcher inskickad lista
+   */
+  updateCooks: (cooks: CookID[]) => void;
+  /**
    * Lägg till en kock med dens ID.
    */
   addCook: (cook: CookID) => void;

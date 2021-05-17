@@ -49,14 +49,9 @@ type Props = {
 
 export function SessionStart({ navigation, route }: Props) {
 
-  let initScheduler: Boolean;
   const {scheduler, setScheduler} = useContext(schedulerContext);
 
   let progressListComponent: JSX.Element;
-
-  //Kolla om vi har en scheduler, i nuläget testar den bara om vi startat recept
-  if(route.params?.initScheduler === undefined){
-  } else {initScheduler = route.params?.initScheduler}
 
   
   let recipe: Recipe;
@@ -72,7 +67,11 @@ export function SessionStart({ navigation, route }: Props) {
   //Initiera users och recipe om de inte finns
   if(route.params?.users === undefined){
     users = []
-  } else {users = route.params?.users}
+  } else {
+    users = route.params?.users
+    let uid = users.map(u => u.id)
+    scheduler?.updateCooks(uid)
+  }
 
   if(route.params?.recipe === undefined){
   }

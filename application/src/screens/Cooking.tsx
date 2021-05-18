@@ -502,6 +502,12 @@ export function Cooking({ navigation, route }: Props) {
                 style={styles.topBarRightMenuIcon}
               />
             </Pressable>
+            <Pressable onPress={() => navigation.navigate("CookingOverview", {users: users})}>
+              <Image
+                source={require("../../assets/image/showMenuButton_icon.png")} // TODO: Placeholder tills ikon finns
+                style={styles.topBarRightMenuIcon}
+              />
+            </Pressable>
           </View>
         </View>
         <View style={styles.topBarContainer}>

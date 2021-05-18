@@ -58,7 +58,8 @@
       "passive": true,
       "estimatedTime": 7,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "branch": "Tillaga lasagne"
     },
     {
       "id": "hackaLök",
@@ -433,7 +434,8 @@
       "estimatedTime": 1,
       "finalTask": true,
       "ingredients": [],
-      "resources": []
+      "resources": [],
+      "branch": "Servera"
     }
   ],
   "taskDependencies": [

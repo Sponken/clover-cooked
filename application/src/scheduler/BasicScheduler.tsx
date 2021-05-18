@@ -381,7 +381,7 @@ function assignIdleTasks(scheduler: Scheduler){
       assignTask(scheduler, nextIdleCook, doDishesTaskID)
     }
   }
-  console.log("BRAP", scheduler.currentTasks);
+  //console.log("BRAP", scheduler.currentTasks);
   for (const cook of idleCooks.filter(c => !scheduler.currentTasks.has(c))){
     assignTask(scheduler, cook, helpOrRestTaskID)
   }

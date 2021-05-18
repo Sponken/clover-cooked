@@ -49,6 +49,7 @@ export type Task = {
   resources: ResourceUsage[];
   estimatedTime: number;
   branch?: string;
+  finalTask?: boolean;
 };
 
 export type TaskDependency = {

@@ -5,3 +5,4 @@ export { ChefManagement } from "./ChefManagement";
 export { SessionStart } from "./SessionStart";
 export { Cooking } from "./Cooking";
 export { RecipeFinished } from "./RecipeFinished";
+export { CookingOverview } from "./CookingOverview";

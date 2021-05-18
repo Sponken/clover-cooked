@@ -15,6 +15,7 @@ import {
   RecipeLibrary,
   RecipeOverview,
   Cooking,
+  CookingOverview,
   ChefManagement,
   SessionStart,
   RecipeFinished,
@@ -26,6 +27,7 @@ export type RootStackParamList = {
   RecipeLibrary: undefined;
   RecipeOverview: { recipe: Recipe };
   Cooking: { recipe: Recipe; users: User[] };
+  CookingOverview: { users: User[] };
   SessionStart: {
     recipe?: Recipe;
     users?: User[];
@@ -87,6 +89,11 @@ const Session = () => (
     <Stack.Screen
       name="Cooking"
       component={Cooking}
+      options={{ headerShown: false, gestureEnabled: false }}
+    />
+    <Stack.Screen
+      name="CookingOverview"
+      component={CookingOverview}
       options={{ headerShown: false, gestureEnabled: false }}
     />
     <Stack.Screen

@@ -18,7 +18,7 @@ import {
 import { User, helpOrRestTaskID } from "../data";
 import { unsafeFind, undefinedToBoolean, clearTimeoutOrUndefined } from "../utils";
 import {
-  createBasicScheduler,
+  BasicScheduler,
   Scheduler,
   RecipeFinishedSubscriber,
 } from "../scheduler";
@@ -209,7 +209,7 @@ export function Cooking({ navigation, route }: Props) {
     if (scheduler) {
       temporaryScheduler = scheduler;
     } else {
-      temporaryScheduler = createBasicScheduler(recipe, userIds);
+      temporaryScheduler = new BasicScheduler(recipe, userIds);
     }
     temporaryScheduler.subscribeTaskAssigned(taskAssignedSubscriber);
     temporaryScheduler.subscribePassiveTaskStarted(passiveTaskStartedSubscriber);

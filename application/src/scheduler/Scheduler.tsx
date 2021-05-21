@@ -1,6 +1,3 @@
-import { Recipe, Task } from "../data";
-import { BiDirectionalMap } from "bi-directional-map/dist";
-
 export type CookID = string;
 export type TaskID = string;
 
@@ -13,20 +10,10 @@ export type TaskAssignedSubscriber = (
 ) => void;
 export type RecipeFinishedSubscriber = () => void;
 export type ProgressSubscriber = (progress: number) => void;
-/** Detta representerar en schemaläggare som har koll på och delar ut tasks.
- * Enbart metoderna bör användas. Ändra inte i de övriga fälten
+/**
+ * Detta representerar en schemaläggare som har koll på och delar ut tasks.
  */
 export interface Scheduler {
-  readonly extended: Map<TaskID, [number, number]>;
-  readonly cooks: CookID[];
-  readonly recipe: Recipe;
-  readonly completedTasks: TaskID[];
-  readonly currentTasks: Map<CookID, TaskID>;
-  readonly currentPassiveTasks: Map<
-    TaskID,
-    { finish: Date; timeout: NodeJS.Timeout }
-  >;
-  readonly branches: Map<string, TaskID[]>;
   /**
    * Avslutar en given, ej passiv, task för en användare.
    */
@@ -106,24 +93,4 @@ export interface Scheduler {
   getBranchProgress: () => [string, number][];
 
   undo: (task: TaskID, cook?: CookID) => void;
-
-  // Subscription listor med alla subsribe funktioner
-  passiveTaskStartedSubscribers: PassiveTaskStartedSubscriber[];
-  passiveTaskFinishedSubscribers: PassiveTaskFinishedSubscriber[];
-  passiveTaskCheckFinishedSubscribers: PassiveTaskCheckFinishedSubscriber[];
-  taskAssignedSubscribers: TaskAssignedSubscriber[];
-  recipeFinishedSubscribers: RecipeFinishedSubscriber[];
-  progressSubscribers: ProgressSubscriber[];
-
-  /**
-   * När en user inte har något att göra så läggs den in här med datumet som den las in
-   * När nya task assignas kollar den om någon inte haft något att göra på länge och då
-   * prioriteras denna user att få ett nytt task
-   */
-  readonly lastFinished: Map<CookID, Date>;
-
-  // Data för om bordet är dukat
-  tableIsSet: boolean;
-  // Data för om det kan finnas disk att diska
-  possibleDishesRemaining: boolean;
 }

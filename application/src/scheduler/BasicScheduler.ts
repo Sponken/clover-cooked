@@ -1,6 +1,6 @@
 import { Recipe, Task, isIdleTaskID, doDishesTaskID, setTableTaskID, helpOrRestTaskID } from "../data";
 import { Scheduler, CookID, PassiveTaskStartedSubscriber, PassiveTaskFinishedSubscriber, PassiveTaskCheckFinishedSubscriber, TaskAssignedSubscriber, RecipeFinishedSubscriber, ProgressSubscriber } from "./Scheduler"
-import { includesAll, removeElement } from "../utils"
+import { includesAll, removeElement, removeItem, filteredMap, mapHasValue } from "../utils"
 
 type TaskID = string
 
@@ -275,7 +275,7 @@ export class BasicScheduler implements Scheduler {
     let [depMap, strongDepMap] = this.getDependencyMaps(recipe);
 
     for (const task of recipe.tasks) {
-      if (completedTasks.includes(task.id) || this.mapHasValue(currentTasks, task.id) || currentPassiveTasks.has(task.id)) {
+      if (completedTasks.includes(task.id) || mapHasValue(currentTasks, task.id) || currentPassiveTasks.has(task.id)) {
         continue
       }
       if (!(includesAll(completedTasks, depMap.get(task.id) ?? []) && includesAll(completedTasks, strongDepMap.get(task.id) ?? []))) {
@@ -536,7 +536,7 @@ export class BasicScheduler implements Scheduler {
 
 
     for (const task of below) {
-      let cur = this.mapHasValue(this.currentTasks, task);
+      let cur = mapHasValue(this.currentTasks, task);
       let fin = this.completedTasks.includes(task);
       let curPas = this.currentPassiveTasks.has(task);
       if (cur) {
@@ -563,7 +563,7 @@ export class BasicScheduler implements Scheduler {
   // - ongoing will be canceled
   doUndo(mainTask: TaskID, cook?: CookID) {
     let deps_pre = this.makeDepGraph();
-    let deps = this.filteredMap(deps_pre, (aa) => aa[1])
+    let deps = filteredMap(deps_pre, (aa: [number, string[]]) => aa[1])
 
 
     // Find all tasks that should be cancelled/undone
@@ -574,7 +574,7 @@ export class BasicScheduler implements Scheduler {
       let passiveProps = this.currentPassiveTasks.get(task);
       if (passiveProps) {
         this.finishPassiveTaskNotAssign(task, passiveProps);
-        this.removeItem(this.completedTasks, task);
+        removeItem(this.completedTasks, task);
       }
     }
 
@@ -588,10 +588,10 @@ export class BasicScheduler implements Scheduler {
       }
     }
     for (const task of endFin) {
-      this.removeItem(this.completedTasks, task);
+      removeItem(this.completedTasks, task);
     }
     // TODO: We assume that mainTask is completed. Is that correct?
-    this.removeItem(this.completedTasks, mainTask);
+    removeItem(this.completedTasks, mainTask);
 
     if (cook) {
       this.assignTask(cook, mainTask)
@@ -601,27 +601,7 @@ export class BasicScheduler implements Scheduler {
     this.assignTasks();
   }
 
-  // HACK: We shouldn't use arrays.
-  removeItem<T>(arr: Array<T>, value: T): Array<T> {
-    const index = arr.indexOf(value);
-    if (index > -1) {
-      arr.splice(index, 1);
-    }
-    return arr;
-  }
 
-  filteredMap<T, V, W>(m: Map<T, V>, f: (v: V) => W): Map<T, W> {
-    let m2 = new Map();
-    m.forEach((value, key) => m2.set(key, f(value)))
-    return m2
-  }
-
-  mapHasValue<K, V>(m: Map<K, V>, v: V): boolean {
-    for (const [_, vi] of Array.from(m.entries())) {
-      if (vi === v) { return true }
-    }
-    return false
-  }
 
   constructor(recipe: Recipe, cooks: CookID[]) {
     this.recipe = recipe;

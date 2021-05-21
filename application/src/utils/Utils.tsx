@@ -75,3 +75,31 @@ export const clearTimeoutOrUndefined = (
     clearInterval(i);
   }
 };
+
+/**
+ * Tar bort ett värde ur en array. Har dålig performance.
+ */
+ export function removeItem<T>(arr: Array<T>, value: T): Array<T> {
+  const index = arr.indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
+}
+
+/**
+ * Kör en funktion på varje value i en map
+ * om undefined gör den ingenting
+ */
+export function filteredMap<T, V, W>(m: Map<T, V>, f: (v: V) => W): Map<T, W> {
+  let m2 = new Map();
+  m.forEach((value, key) => m2.set(key, f(value)))
+  return m2
+}
+
+export function mapHasValue<K, V>(m: Map<K, V>, v: V): boolean {
+  for (const [_, vi] of Array.from(m.entries())) {
+    if (vi === v) { return true }
+  }
+  return false
+}

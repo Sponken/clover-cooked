@@ -7,4 +7,7 @@ export {
   getSecondsTo,
   clearIntervalOrUndefined,
   clearTimeoutOrUndefined,
+  removeItem,
+  filteredMap,
+  mapHasValue,
 } from "./Utils";

@@ -1,0 +1,258 @@
+{
+  "id": "ugnpan",
+  "name": "Ugnspankaka med bacon och rårörda lingon",
+  "description": "En riktig klassiker i den svenska matkulturen. Ingenting sitter bättre efter ditt 10 timmars pass på Volvo bandet än en go ugnspannkaka.",
+  "portions": 4,
+  "requiresSettingTable": true,
+  "ingredients": [
+    { "id": "bacon", "name": "Bacon", "unit": "paket (140g)" },
+    { "id": "lingon", "name": "Färska lingon", "unit": "dl" },
+    { "id": "socker", "name": "Strösocker", "unit": "dl" },
+    { "id": "matfett", "name": "Matfett", "unit": "tsk" },
+    { "id": "vetemjöl", "name": "Vetemjöl", "unit": "dl" },
+    { "id": "ägg", "name": "Ägg", "unit": "st" },
+    { "id": "salt", "name": "Salt", "unit": "tsk" },
+    { "id": "mjölk", "name": "Mjölk", "unit": "dl" }
+  ],
+  "resources": [
+    { "id": "platta", "name": "Spisplatta" },
+    { "id": "ugn", "name": "Ugn" }
+  ],
+  "tasks": [
+    {
+      "id": "hackaBacon",
+      "name": "Skär bacon",
+      "instructions": "Skär upp baconet i centimeterstora bitar",
+      "estimatedTime": 5,
+      "ingredients": [{ "ingredientId": "bacon", "amount": 2 }],
+      "resources": []
+    },
+    {
+      "id": "stekBacon",
+      "name": "Stek bacon",
+      "instructions": "Stek baconen till önskad grad i lite matfett på medelhög värme",
+      "estimatedTime": 10,
+      "nonInteruptable": true,
+      "ingredients": [{ "ingredientId": "matfett", "amount": 1 }],
+      "resources": [{ "resourceId": "platta", "amount": 1 }]
+    },
+    {
+      "id": "hällAvBacon",
+      "name": "Häll av fettet",
+      "instructions": "Häll av baconfettet ur stekpannan. Kan sparas att steka annat i!",
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": [],
+      "finalTask": true
+    },
+    {
+      "id": "hällUppLingon",
+      "name": "Häll upp lingon coh socker",
+      "instructions": "Häll upp lingonen och sockret i en skål/bunke.",
+      "estimatedTime": 1,
+      "ingredients": [
+        { "ingredientId": "lingon", "amount": 5 },
+        { "ingredientId": "socker", "amount": 1 }
+      ],
+      "resources": []
+    },
+    {
+      "id": "rörOmLingon",
+      "name": "Rör om i lingonen",
+      "instructions": "Rör om i lingonen och sockret tills sockret har löst sig helt.",
+      "estimatedTime": 4,
+      "ingredients": [],
+      "resources": [],
+      "finalTask": true
+    },
+    {
+      "id": "ugnStart",
+      "name": "Sätt på ugn",
+      "instructions": "Sätt ugnen på 225°C.",
+      "passive": false,
+      "initalTask": true,
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
+      "id": "ugnVarm",
+      "name": "Värm ugnen",
+      "instructions": "Låt ugnen bli 225°C.",
+      "passive": true,
+      "estimatedTime": 10,
+      "ingredients": [],
+      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
+      "id": "bunkeBlanda",
+      "name": "Blanda i bunke",
+      "instructions": "Blanda mjöl, socker, salt i bunke.",
+      "passive": false,
+      "estimatedTime": 1,
+      "ingredients": [
+        { "ingredientId": "vetemjöl", "amount": 3 },
+        { "ingredientId": "socker", "amount": 1 },
+        { "ingredientId": "salt", "amount": 1 }
+      ],
+      "resources": []
+    },
+    {
+      "id": "vispaBunke",
+      "name": "Lägg mjölk i bunken och vispa",
+      "instructions": "Lägg 3 dl mjölk i bunken och vispa till en jämn tjock smet.",
+      "passive": false,
+      "estimatedTime": 4,
+      "ingredients": [{ "ingredientId": "mjölk", "amount": 3 }],
+      "resources": []
+    },
+    {
+      "id": "vispaÄgg",
+      "name": "Rör ner äggen",
+      "instructions": "Rör ner äggen i bunken.",
+      "passive": false,
+      "estimatedTime": 2,
+      "ingredients": [{ "ingredientId": "ägg", "amount": 3 }],
+      "resources": []
+    },
+    {
+      "id": "vispaSmet",
+      "name": "Vispa klart smeten",
+      "instructions": "Vispa ner 3 dl (resterande) mjölk och vispa till en klumpfri smet.",
+      "passive": false,
+      "estimatedTime": 3,
+      "ingredients": [{ "ingredientId": "mjölk", "amount": 3 }],
+      "resources": []
+    },
+    {
+      "id": "svällSmet",
+      "name": "Smeten svälls",
+      "instructions": "Låt smeten svälla i 10 min.",
+      "passive": true,
+      "estimatedTime": 10,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "baconSmet",
+      "name": "Rör ner baconet",
+      "instructions": "Rör försiktigt ner det stekta baconet i pannkakssmeten, försök att få med så lite fett som möjligt.",
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "smörjForm",
+      "name": "Smörj form",
+      "instructions": "Smörj en ugnssäker form (ca 20 x 30 cm) med valfritt matfett",
+      "passive": false,
+      "estimatedTime": 1,
+      "ingredients": [{ "ingredientId": "matfett", "amount": 2 }],
+      "resources": []
+    },
+    {
+      "id": "hällSmet",
+      "name": "Häll smeten i en form",
+      "instructions": "Häll smeten i den smorda formen",
+      "passive": false,
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "smetUgn",
+      "name": "Ställ in formen",
+      "instructions": "Ställ in formen mitt i ugnen",
+      "passive": false,
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
+      "id": "grädda",
+      "name": "Låt pannkakan grädda",
+      "instructions": "Grädda i mitten av ugnen 30-40 min",
+      "passive": true,
+      "estimatedTime": 35,
+      "ingredients": [],
+      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
+      "id": "utUrUgn",
+      "name": "Ta ut ur ugn",
+      "instructions": "Ta ut plåten ur ugnen",
+      "passive": false,
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
+      "id": "låtVila",
+      "name": "Låt plåten svalna",
+      "instructions": "Låt vila i 5 minuter innan servering",
+      "passive": true,
+      "estimatedTime": 5,
+      "ingredients": [],
+      "resources": [],
+      "finalTask": true
+    }
+  ],
+  "taskDependencies": [
+    {
+      "taskId": "stekBacon",
+      "dependsOn": ["hackaBacon"]
+    },
+    {
+      "taskId": "hällAvBacon",
+      "dependsOn": ["stekBacon"]
+    },
+    {
+      "taskId": "rörOmLingon",
+      "dependsOn": ["hällUppLingon"]
+    },
+    {
+      "taskId": "ugnVarm",
+      "dependsOn": ["ugnStart"]
+    },
+    {
+      "taskId": "vispaBunke",
+      "dependsOn": ["bunkeBlanda"]
+    },
+    {
+      "taskId": "vispaÄgg",
+      "dependsOn": ["vispaBunke"]
+    },
+    {
+      "taskId": "vispaSmet",
+      "dependsOn": ["vispaÄgg"]
+    },
+    {
+      "taskId": "svällSmet",
+      "dependsOn": ["vispaSmet"]
+    },
+    {
+      "taskId": "baconSmet",
+      "dependsOn": ["svällSmet", "stekBacon"]
+    },
+    {
+      "taskId": "hällSmet",
+      "dependsOn": ["baconSmet", "smörjForm"]
+    },
+    {
+      "taskId": "smetUgn",
+      "dependsOn": ["hällSmet", "ugnVarm"]
+    },
+    {
+      "taskId": "grädda",
+      "strongDependsOn": ["smetUgn"]
+    },
+    {
+      "taskId": "utUrUgn",
+      "strongDependsOn": ["grädda"]
+    },
+    {
+      "taskId": "låtVila",
+      "dependsOn": ["utUrUgn"]
+    }
+  ]
+}

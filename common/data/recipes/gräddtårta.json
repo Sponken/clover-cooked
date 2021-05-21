@@ -1,0 +1,391 @@
+{
+  "id": "gräddtårta",
+  "name": "Gräddtårta",
+  "description": "En gräddtårta med jordgubbar på",
+  "portions": 10,
+  "requiresSettingTable": false,
+  "ingredients": [
+    { "id": "vaniljstång", "name": "Vaniljstång", "unit": "st" },
+    { "id": "smör", "name": "Smör", "unit": "msk" },
+    { "id": "ströbröd", "name": "Ströbröd", "unit": "msk" },
+    { "id": "grädde", "name": "Vispgrädde", "unit": "dl" },
+    { "id": "ägg", "name": "Ägg", "unit": "st" },
+    { "id": "socker", "name": "Socker", "unit": "dl" },
+    { "id": "vetemjöl", "name": "Vetemjöl", "unit": "dl" },
+    { "id": "potmjöl", "name": "Potatismjöl", "unit": "dl" },
+    { "id": "bakpulver", "name": "Bakpulver", "unit": "tsk" },
+    { "id": "jordgubbsylt", "name": "Jordgubbsylt", "unit": "dl" },
+    { "id": "jordgubbar", "name": "Jordgubbar", "unit": "dl" },
+    { "id": "mjölk", "name": "Mjölk", "unit": "dl" },
+    { "id": "majsstärkelse", "name": "Majsstärkelse", "unit": "msk" }
+  ],
+  "resources": [
+    { "id": "ugn", "name": "Ugn" },
+    { "id": "spritspåse", "name": "Spritspåse med stjärntyll" },
+    { "id": "platta", "name": "Spisplatta" }
+  ],
+  "tasks": [
+    {
+      "id": "ugnPå",
+      "name": "Sätt på ugnen",
+      "instructions": "Sätt ugnen på 175°C.",
+      "initalTask": true,
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
+      "id": "ugnVärms",
+      "name": "Varm ugnen",
+      "instructions": "Låt ugnen bli 175°C.",
+      "initalTask": false,
+      "passive": true,
+      "estimatedTime": 5,
+      "ingredients": [],
+      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
+      "id": "förberedForm",
+      "name": "Förbered formen",
+      "instructions": "Smörj och bröa en form med löstagbar kant (ca 24cm i diameter)",
+      "estimatedTime": 5,
+      "ingredients": [
+        { "ingredientId": "smör", "amount": 1 },
+        { "ingredientId": "ströbröd", "amount": 1 }
+      ],
+      "resources": []
+    },
+    {
+      "id": "äggSocker",
+      "name": "Häll upp ägg och socker",
+      "instructions": "Kläck äggen och häll upp de och sockret i en bunke.",
+      "estimatedTime": 2,
+      "ingredients": [
+        { "ingredientId": "ägg", "amount": 4 },
+        { "ingredientId": "socker", "amount": 2 }
+      ],
+      "resources": []
+    },
+    {
+      "id": "vispaÄggSocker",
+      "name": "Vispa ägg och socker",
+      "instructions": "Vispa äggen och sockret tills det blir poröst, förslagsvis med elvisp.",
+      "estimatedTime": 5,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "blandaTorrt",
+      "name": "Torra ingredienser",
+      "instructions": "Blanda ihop vetemjöl, potatismjöl och bakpulver.",
+      "estimatedTime": 5,
+      "ingredients": [
+        { "ingredientId": "vetemjöl", "amount": 1.5 },
+        { "ingredientId": "potmjöl", "amount": 0.5 },
+        { "ingredientId": "bakpulver", "amount": 1.5 }
+      ],
+      "resources": []
+    },
+
+    {
+      "id": "sikta",
+      "name": "Rör ner det torra",
+      "instructions": "Sikta ner de torra ingredienserna i äggsmeten och rör sedan försiktigt om",
+      "estimatedTime": 4,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "hällForm",
+      "name": "Fyll formen",
+      "instructions": "Häll smeten i formen",
+      "estimatedTime": 2,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "inUgn",
+      "name": "Ställ in botten",
+      "instructions": "Ställ in formen med botten i nedre delen av ugnen",
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "gräddas",
+      "name": "Grädda botten",
+      "instructions": "Låt stå i ugnen i cirka 40 min",
+      "passive": true,
+      "estimatedTime": 40,
+      "ingredients": [],
+      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
+      "id": "taUt",
+      "name": "Ta ut botten",
+      "instructions": "Känn med en sticka att botten är kall. Ta i så fall utan, annars vänta 5 min och upprepa",
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": [{ "resourceId": "ugn", "amount": 1 }]
+    },
+    {
+      "id": "svalna",
+      "name": "Botten svalnar",
+      "instructions": "Låt botten svalna",
+      "passive": true,
+      "estimatedTime": 10,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "delaBotten",
+      "name": "Dela botten",
+      "instructions": "Skär botten i tre horisontella lager. Görs enklast genom att sticka in kniven i botten och \"skära runt\", istället för att skära rakt över",
+      "estimatedTime": 8,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "förberedVaniljstång",
+      "name": "Förbered vaniljstång",
+      "instructions": "Dela vaniljstången på längden, skrapa ut fröna.",
+      "passive": false,
+      "nonInterruptable": false,
+      "initalTask": false,
+      "finalTask": false,
+      "estimatedTime": 1,
+      "ingredients": [{ "ingredientId": "vaniljstång", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "separeraÄgg",
+      "name": "Separera äggulor",
+      "instructions": "Knäck äggen och separera äggulorna genom att låta äggvitan rinna av genom dina fingrar.",
+      "passive": false,
+      "nonInterruptable": true,
+      "initalTask": false,
+      "finalTask": false,
+      "estimatedTime": 1,
+      "ingredients": [{ "ingredientId": "ägg", "amount": 2 }],
+      "resources": []
+    },
+    {
+      "id": "förberedKräm",
+      "name": "Förbered vaniljkrämen",
+      "instructions": "Häll upp vaniljstång, vaniljfön, mjölk, vispgrädde, socker, äggulor och majsstärkelse i en kastrull.",
+      "passive": false,
+      "nonInterruptable": false,
+      "initalTask": false,
+      "finalTask": false,
+      "estimatedTime": 1,
+      "ingredients": [
+        { "ingredientId": "mjölk", "amount": 1.5 },
+        { "ingredientId": "grädde", "amount": 1.5 },
+        { "ingredientId": "socker", "amount": 0.5 },
+        { "ingredientId": "majsstärkelse", "amount": 1 }
+      ],
+      "resources": []
+    },
+    {
+      "id": "tillagaKräm",
+      "name": "TillagaKräm",
+      "instructions": "Låt krämblandinging i kastrullen skjuda under vispning på låg värme tills krämen tjocknat.",
+      "passive": false,
+      "nonInterruptable": true,
+      "initalTask": false,
+      "finalTask": false,
+      "estimatedTime": 6,
+      "ingredients": [],
+      "resources": [{ "resourceId": "platta", "amount": 1 }]
+    },
+    {
+      "id": "låtKrämSvalna",
+      "name": "Låt vaniljkrämen svalna",
+      "instructions": "Låt vaniljkrämen svalna.",
+      "passive": true,
+      "nonInterruptable": false,
+      "initalTask": false,
+      "finalTask": false,
+      "estimatedTime": 10,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "taUrVaniljstång",
+      "name": "Ta ur vaniljstång",
+      "instructions": "Ta ur vaniljstången ur den svalnade vaniljkrämen.",
+      "passive": false,
+      "nonInterruptable": false,
+      "initalTask": false,
+      "finalTask": false,
+      "estimatedTime": 0.5,
+      "ingredients": [],
+      "resources": []
+    },
+
+    {
+      "id": "vispaGrädde",
+      "name": "Vispa grädden",
+      "instructions": "Vispa 1 dl vispgrädde i en bunke",
+      "estimatedTime": 5,
+      "ingredients": [{ "ingredientId": "grädde", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "blandaGrädde",
+      "name": "Blanda vispgrädde med jordgubbssylt för att skapa jordgubbsfyllningen",
+      "instructions": "Häll jordgubbsylt i bunken med vispgrädde och blanda.",
+      "estimatedTime": 1,
+      "ingredients": [{ "ingredientId": "jordgubbsylt", "amount": 1 }],
+      "resources": []
+    },
+    {
+      "id": "vispaGräddeGarnering",
+      "name": "Vispa grädden",
+      "instructions": "Vispa 3 dl vispgrädde i en bunke",
+      "estimatedTime": 8,
+      "ingredients": [{ "ingredientId": "grädde", "amount": 3 }],
+      "resources": []
+    },
+    {
+      "id": "spritspåse",
+      "name": "Lägg grädden i spritspåse",
+      "instructions": "Lägg grädden i spritspåsen",
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": [{ "resourceId": "spritspåse", "amount": 1 }]
+    },
+    {
+      "id": "sköljJordgubbar",
+      "name": "Skölj och ansa jordgubbar",
+      "instructions": "Skölj och ansa jordgubbarna",
+      "estimatedTime": 10,
+      "ingredients": [{ "ingredientId": "jordgubbar", "amount": 10 }],
+      "resources": []
+    },
+    {
+      "id": "delaJordgubbar",
+      "name": "Dela jordgubbarna",
+      "instructions": "Dela jordgubbarna i halvor",
+      "estimatedTime": 10,
+      "ingredients": [],
+      "resources": []
+    },
+
+    {
+      "id": "lager1",
+      "name": "Gör det första lagret",
+      "instructions": "Lägg en tårtbotten på ett fat. Bred på hälften av jordgubbsfyllningen och hälften av vaniljkrämen.",
+      "estimatedTime": 5,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "lager2",
+      "name": "Gör nästa lager",
+      "instructions": "Lägg på en till tårtbotten på den första. Bred på resten av jordgubbsfyllningen och vaniljkrämen",
+      "estimatedTime": 4,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "lager3",
+      "name": "Sista botten",
+      "instructions": "Lägg den sista tårtbitsbotten på de tidigare",
+      "estimatedTime": 1,
+      "ingredients": [],
+      "resources": []
+    },
+    {
+      "id": "garnera",
+      "name": "Garnera tårtan",
+      "instructions": "Spritsa grädden på tårtan och garnera med jordgubbshalvorna",
+      "estimatedTime": 5,
+      "finalTask": true,
+      "ingredients": [],
+      "resources": []
+    }
+  ],
+  "taskDependencies": [
+    {
+      "taskId": "vispaÄggSocker",
+      "dependsOn": ["äggSocker"]
+    },
+    {
+      "taskId": "sikta",
+      "dependsOn": ["vispaÄggSocker", "blandaTorrt"]
+    },
+    {
+      "taskId": "hällForm",
+      "dependsOn": ["sikta", "förberedForm"]
+    },
+    {
+      "taskId": "ugnVärms",
+      "strongDependsOn": ["ugnPå"]
+    },
+    {
+      "taskId": "inUgn",
+      "dependsOn": ["hällForm", "ugnVärms"]
+    },
+    {
+      "taskId": "gräddas",
+      "strongDependsOn": ["inUgn"]
+    },
+    {
+      "taskId": "taUt",
+      "strongDependsOn": ["gräddas"]
+    },
+    {
+      "taskId": "svalna",
+      "strongDependsOn": ["taUt"]
+    },
+    {
+      "taskId": "delaBotten",
+      "dependsOn": ["svalna"]
+    },
+    {
+      "taskId": "blandaGrädde",
+      "dependsOn": ["vispaGrädde"]
+    },
+    {
+      "taskId": "spritspåse",
+      "dependsOn": ["vispaGräddeGarnering"]
+    },
+    {
+      "taskId": "delaJordgubbar",
+      "dependsOn": ["sköljJordgubbar"]
+    },
+    {
+      "taskId": "förberedKräm",
+      "dependsOn": ["förberedVaniljstång", "separeraÄgg"]
+    },
+    {
+      "taskId": "tillagaKräm",
+      "dependsOn": ["förberedKräm"]
+    },
+    {
+      "taskId": "låtKrämSvalna",
+      "strongDependsOn": ["tillagaKräm"]
+    },
+    {
+      "taskId": "taUrVaniljstång",
+      "dependsOn": ["låtKrämSvalna"]
+    },
+    {
+      "taskId": "lager1",
+      "dependsOn": ["delaBotten", "blandaGrädde", "taUrVaniljstång"]
+    },
+    {
+      "taskId": "lager2",
+      "dependsOn": ["lager1"]
+    },
+    {
+      "taskId": "lager3",
+      "dependsOn": ["lager2"]
+    },
+    {
+      "taskId": "garnera",
+      "dependsOn": ["lager3", "delaJordgubbar", "spritspåse"]
+    }
+  ]
+}

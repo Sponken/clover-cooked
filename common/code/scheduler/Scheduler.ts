@@ -1,3 +1,5 @@
+import { Recipe } from '../data'
+
 export type CookID = string;
 export type TaskID = string;
 
@@ -93,4 +95,6 @@ export interface Scheduler {
   getBranchProgress: () => [string, number][];
 
   undo: (task: TaskID, cook?: CookID) => void;
+
+  getRecipe: () => Recipe
 }

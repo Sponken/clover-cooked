@@ -601,9 +601,11 @@ export class BasicScheduler implements Scheduler {
     this.assignTasks();
   }
 
+  getRecipe(){
+    return this.recipe
+  }
 
-
-  constructor(recipe: Recipe, cooks: CookID[]) {
+  constructor(recipe: Recipe, cooks: CookID[]){
     this.recipe = recipe;
     this.cooks = cooks
 
@@ -611,7 +613,7 @@ export class BasicScheduler implements Scheduler {
 
     this.assignTasks()
 
-    let branches = new Map<string, TaskID[]>();
+    let branches = new Map<string, CookID[]>();
     for (const task of recipe.tasks) {
       if (task.branch) {
         let tasks = branches.get(task.branch);

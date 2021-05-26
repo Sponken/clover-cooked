@@ -21,7 +21,7 @@ import {
   BasicScheduler,
   Scheduler,
   RecipeFinishedSubscriber,
-} from "../scheduler";
+} from '../../../common/code/scheduler'
 import { FlatList } from "react-native-gesture-handler";
 import * as Progress from 'react-native-progress';
 import { Audio } from 'expo-av';

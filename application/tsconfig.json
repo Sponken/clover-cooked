@@ -9,4 +9,7 @@
     "resolveJsonModule": true,
     "strict": true
   }
+  // "references": [
+  //   { "path": "../common" }
+  // ]
 }

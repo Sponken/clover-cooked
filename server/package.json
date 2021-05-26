@@ -1,16 +1,16 @@
 {
-  "name": "server",
+  "name": "backend",
   "version": "1.0.0",
+  "private": true,
   "description": "A server for Clover Cooked",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "ws": "^7.4.5"
+    "ws": "^7.4.5",
+    "@clover/common": "*"
   },
   "devDependencies": {
     "@types/express": "^4.17.11",

@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { DrawerActions } from "@react-navigation/routers";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-import { RecipeList, StandardText } from "../components";
+import { RecipeList, StandardText, StandardButton } from "../components";
 import { RootStackParamList } from "../navigation";
 
 type RecipeLibraryScreenNavigationProp = StackNavigationProp<
@@ -50,6 +50,19 @@ export function RecipeLibrary({ navigation }: Props) {
           }
         />
         <StatusBar style="auto" />
+        <StandardButton buttonText="Test socket" onPress={() => {
+          const socket: WebSocket = new WebSocket("ws://192.168.50.99:8999")
+          socket.onmessage = (e) => {
+            console.log("Message received: " + e.data)
+          };
+          // socket.on('message', (message: string) => {
+          //   console.log("message received: " + message)
+          // })
+      
+          socket.onopen = (e) =>{
+            socket.send("Hi")
+          }
+        }}/>
       </View>
     </SafeAreaView>
   );

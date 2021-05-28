@@ -2,10 +2,9 @@ import express from 'express';
 import * as http from 'http';
 import * as WebSocket from 'ws';
 import { AddressInfo } from 'net';
-import {BasicScheduler, Scheduler} from "../../common/code/scheduler";
-import chokladbiskvier from "../../common/data/recipes/chokladbiskvier.json";
-import { functions, subscribers, SchedulerFunction } from "../../common/code/data/schedulerFunctions";
-import { TaskID, CookID } from "../../common/code/scheduler/Scheduler";
+import {BasicScheduler, Scheduler, TaskID, CookID} from "./scheduler";
+import chokladbiskvier from "./chokladbiskvier.json";
+import { functions, subscribers, SchedulerFunction } from "./scheduler/schedulerFunctions";
 const app = express();
 
 type ClientID = number;
@@ -45,39 +44,58 @@ wss.on('connection', (ws: WebSocket) => {
       //log the received message and send it back to the client
       console.log('received: %s', message);
 
-      let jsonMessage = JSON.parse(message)
+      if(message == "Hi"){
+        ws.send("Hello")
+        return
+      }
+
+
+      let jsonMessage = JSON.parse(message) as SchedulerFunction;
 
       try{
         switch(jsonMessage.type){
           case functions.addCook:
-            scheduler.addCook(jsonMessage.data.cook); break;
+            scheduler.addCook(jsonMessage.parameters.cook); break;
+
           case functions.removeCook:
-            scheduler.removeCook(jsonMessage.data.cook); break;
+            scheduler.removeCook(jsonMessage.parameters.cook); break;
+
           case functions.subscribeTaskAssigned: {
-            let fID: FunctionID = jsonMessage.data.function;
+            let fID: FunctionID = jsonMessage.parameters.function;
             subscribeTaskAssignedGlue(scheduler, ws, cID, fID, taskAssignedFunctions);
             break;
           }; 
+
           case functions.unsubscribeTaskAssigned: {
-            let fID: FunctionID = jsonMessage.data.function;
+            let fID: FunctionID = jsonMessage.parameters.function;
             unsubscribeTaskAssignedGlue(scheduler, cID, fID, taskAssignedFunctions);
             break;
-          };
+          }; 
           case functions.finishTask:
-            scheduler.finishTask(jsonMessage.data.task, jsonMessage.data.cook); break;
+            scheduler.finishTask(jsonMessage.parameters.task, jsonMessage.parameters.cook); break;
+
           case functions.finishPassiveTask:
-            scheduler.finishPassiveTask(jsonMessage.data.task); break;
+            scheduler.finishPassiveTask(jsonMessage.parameters.task); break;
+
           case functions.checkPassiveTaskFinished:
-            scheduler.checkPassiveTaskFinished(jsonMessage.data.task); break;
+            scheduler.checkPassiveTaskFinished(jsonMessage.parameters.task); break;
+            
           case functions.subscribePassiveTaskStarted: {
-            let fID: FunctionID = jsonMessage.data.function;
-            subscribePassiveTaskStartedGlue(scheduler, ws, cID, fID, passiveTaskStartedFunctions); 
-          }; break;
+            let fID: FunctionID = jsonMessage.parameters.function;
+            subscribePassiveTaskStartedGlue(scheduler, ws, cID, fID, passiveTaskStartedFunctions);
+            break;
+          };
+
           case functions.unsubscribePassiveTaskStarted: {
-            let fID: FunctionID = jsonMessage.data.function;
+            let fID: FunctionID = jsonMessage.parameters.function;
             unsubscribePassiveTaskStartedGlue(scheduler, cID, fID, passiveTaskStartedFunctions);
-          }; break;
+            break;
+          }; 
           
+          default: {
+            ws.send("Invalid function: " + jsonMessage.type)
+            console.log("Invalid function from client: " + jsonMessage.type)
+          }
         }
       }
       catch{
@@ -94,7 +112,7 @@ wss.on('connection', (ws: WebSocket) => {
 
     //send immediatly a feedback to the incoming connection
     ws.send('Hi there, I am a WebSocket server');
-    ws.send("Current recipe is: " + scheduler.getRecipe.name)
+    ws.send("Current recipe is: " + scheduler.getRecipe().name)
 });
 
 //start our server

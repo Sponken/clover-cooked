@@ -29,13 +29,16 @@ import {
   GetProgress,
   GetBranchProgress,
   Undo,
-} from '../../../common/code/data'
+} from './schedulerFunctions'
 
 export class ServerScheduler implements Scheduler {
 
-  ws: WebSocket
+  ws: WebSocket;
 
-  
+  getRecipe(): Recipe {
+
+  }
+
   finishTask(task: string, cook: string): void{
     
   }
@@ -141,18 +144,34 @@ export class ServerScheduler implements Scheduler {
   }
 
 
-  send(message: SchedulerFunction){
+  sendFunction(message: SchedulerFunction){
     this.ws.send(JSON.stringify(message))
     console.log('Sent message of type ${message.type}')
   }
+
+
+  initSocket(){
+    this.ws = new WebSocket("ws://192.168.50.99:8999")
+
+    this.ws.onmessage = (e) => {
+      console.log("Message received: " + e.data)
+    };
+
+    this.ws.send("Hi")
+
+  }
+
   
   constructor(recipe: Recipe, cooks:CookID[]){
-    this.ws = new WebSocket("INSERT URL")
+    this.initSocket()
 
-    let msg: Initialize = {type: schedulerFunctions.initialize, parameters:{recipeId: recipe.id, cooks: cooks}}
+    
 
-    this.send(msg)
+    //let msg: Initialize = {type: schedulerFunctions.initialize, parameters:{recipeId: recipe.id, cooks: cooks}}
+1
+    //this.send(msg)
   
+    
   
   }
   

@@ -1,7 +1,7 @@
 import { PassiveTaskFinishedSubscriber, PassiveTaskStartedSubscriber, ProgressSubscriber, RecipeFinishedSubscriber, Scheduler, TaskAssignedSubscriber, CookID } from './Scheduler'
 import { 
   functions as schedulerFunctions,
-  SchedulerFunction,
+  ServerFunction,
   Recipe, 
   Initialize,
   FinishPassiveTask,
@@ -144,26 +144,26 @@ export class ServerScheduler implements Scheduler {
   }
 
 
-  sendFunction(message: SchedulerFunction){
+  sendFunction(message: ServerFunction){
     this.ws.send(JSON.stringify(message))
     console.log('Sent message of type ${message.type}')
   }
 
 
-  initSocket(){
-    this.ws = new WebSocket("ws://192.168.50.99:8999")
+  initSocket(ws: WebSocket){
 
-    this.ws.onmessage = (e) => {
+    ws.onmessage = (e) => {
       console.log("Message received: " + e.data)
     };
 
-    this.ws.send("Hi")
+    ws.send("Hi")
 
   }
 
   
   constructor(recipe: Recipe, cooks:CookID[]){
-    this.initSocket()
+    this.ws = new WebSocket("ws://192.168.50.99:8999")
+    this.initSocket(this.ws)
 
     
 

@@ -30,55 +30,42 @@ export enum functions {
   undo,
 }
 
+export type ClientFunction = TaskAssigned
+                           | PassiveTaskStarted
+                           | PassiveTaskFinished
+                           | PassiveTaskCheckFinished
+                           | RecipeFinished
+                           | Progress
+
+export type TaskAssigned = {type: subscribers.taskAssigned, parameters: { task: string, cook: string }}
+export type PassiveTaskStarted = {type: subscribers.passiveTaskStarted, parameters:{task: string, finish: Date}}
+export type PassiveTaskFinished = {type: subscribers.passiveTaskFinished, parameters:{task: string}}
+export type PassiveTaskCheckFinished = {type: subscribers.passiveTaskCheckFinished, parameters:{task: string}}
+export type RecipeFinished = {type: subscribers.recipeFinished, parameters:{}}
+export type Progress = {type: subscribers.progress, parameters:{progress: number}}
 
 
-export type SchedulerFunction =  Initialize|
-                            FinishTask|
-                            FinishPassiveTask|
-                            CheckPassiveTaskFinished|
-                            SubscribeTaskAssigned|
-                            UnsubscribeTaskAssigned|
-                            SubscribePassiveTaskStarted|
-                            UnsubscribePassiveTaskStarted|
-                            SubscribePassiveTaskFinished|
-                            UnsubscribePassiveTaskFinished|
-                            SubscribePassiveTaskCheckFinished|
-                            UnsubscribePassiveTaskCheckFinished|
-                            SubscribeRecipeFinished|
-                            UnsubscribeRecipeFinished|
-                            SubscribeProgress|
-                            UnsubscribeProgress|
-                            ExtendPassive|
-                            GetPassiveTasks|
-                            GetPassiveTask|
-                            AddCook|
-                            RemoveCook|
-                            TimeLeft|
-                            GetTasks|
-                            GetCompletedTasks|
-                            GetProgress|
-                            GetBranchProgress|
-                            Undo
+export type ServerFunction = Initialize
+                           | FinishTask
+                           | FinishPassiveTask
+                           | CheckPassiveTaskFinished
+                           | ExtendPassive
+                           | GetPassiveTasks
+                           | GetPassiveTask
+                           | AddCook
+                           | RemoveCook
+                           | TimeLeft
+                           | GetTasks
+                           | GetCompletedTasks
+                           | GetProgress
+                           | GetBranchProgress
+                           | Undo
 
-type FunctionID = string
-
-export type Initialize = {type: functions.initialize, parameters:{recipeId: string, cooks: string[]}}
+export type Initialize = {type: functions.initialize, parameters:{recipe: Recipe, cooks: string[]}}
 
 export type FinishTask = {type: functions.finishTask, parameters:{task: string, cook: string}}
 export type FinishPassiveTask = {type: functions.finishPassiveTask, parameters:{task: string}}
 export type CheckPassiveTaskFinished = {type: functions.checkPassiveTaskFinished, parameters:{task:string}}
-export type SubscribeTaskAssigned = {type: functions.subscribeTaskAssigned, parameters:{function: FunctionID}}
-export type UnsubscribeTaskAssigned = {type: functions.unsubscribeTaskAssigned, parameters:{function: FunctionID}}
-export type SubscribePassiveTaskStarted = {type: functions.subscribePassiveTaskStarted, parameters:{function: FunctionID}}
-export type UnsubscribePassiveTaskStarted = {type: functions.unsubscribePassiveTaskStarted, parameters:{function: FunctionID}}
-export type SubscribePassiveTaskFinished = {type: functions.subscribePassiveTaskFinished, parameters:{function: FunctionID}}
-export type UnsubscribePassiveTaskFinished = {type: functions.unsubscribePassiveTaskFinished, parameters:{function: FunctionID}}
-export type SubscribePassiveTaskCheckFinished = {type: functions.subscribePassiveTaskCheckFinished, parameters:{function: FunctionID}}
-export type UnsubscribePassiveTaskCheckFinished = {type: functions.unsubscribePassiveTaskCheckFinished, parameters:{function: FunctionID}}
-export type SubscribeRecipeFinished = {type: functions.subscribeRecipeFinished, parameters:{function: FunctionID}}
-export type UnsubscribeRecipeFinished = {type: functions.unsubscribeRecipeFinished, parameters:{function: FunctionID}}
-export type SubscribeProgress = {type: functions.subscribeProgress, parameters:{function: FunctionID}}
-export type UnsubscribeProgress = {type: functions.unsubscribeProgress, parameters:{function: FunctionID}}
 export type ExtendPassive = {type: functions.extendPassive, parameters:{task: string, add?: number}}
 export type GetPassiveTasks = {type: functions.getPassiveTasks, parameters:{}}
 export type GetPassiveTask = {type: functions.getPassiveTask, parameters:{task: string}}
@@ -92,10 +79,10 @@ export type GetBranchProgress = {type: functions.getBranchProgress, parameters:{
 export type Undo = {type: functions.undo, parameters:{task: string, cook?: string}}
 
 export enum subscribers {
-  passiveTaskStartedSubscriber,
-  passiveTaskFinishedSubscriber,
-  passiveTaskCheckFinishedSubscriber,
-  taskAssignedSubscriber,
-  recipeFinishedSubscriber,
-  progressSubscriber,
+  passiveTaskStarted,
+  passiveTaskFinished,
+  passiveTaskCheckFinished,
+  taskAssigned,
+  recipeFinished,
+  progress,
 }

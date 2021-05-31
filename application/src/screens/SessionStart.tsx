@@ -130,12 +130,16 @@ export function SessionStart({ navigation, route }: Props) {
     }
   }
 
+  
+  let [branchProgress, setBranchProgress] = useState<[string, number][]>([])
+  
   if(scheduler){
+    scheduler.getBranchProgress().then((res) => setBranchProgress(res))
     progressListComponent = (
       <View style={styles.progressContainer}>
         <FlatList
           style={{width: "100%"}}
-          data={scheduler.getBranchProgress()}
+          data={branchProgress}
           keyExtractor={([branch, progress]) => branch}
           renderItem={({ item }) => (
               <View style={{flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center"}}>

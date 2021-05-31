@@ -1,11 +1,11 @@
 //Recept import TODO: dynamiskt få in recept i databas eller liknande
-import gräddtårta from "../../../common/data/recipes//gräddtårta.json";
-import ikeaköttbullar_med_snabbmakaroner from "../../../common/data/recipes//ikeaköttbullar_med_snabbmakaroner.json";
-import ugnspannkaka from "../../../common/data/recipes//ugnspannkaka.json";
-import chokladbiskvier from "../../../common/data/recipes//chokladbiskvier.json";
-import auberginegratäng from "../../../common/data/recipes//auberginegratäng.json";
-import mexikans_bönsallad from "../../../common/data/recipes//mexikans_bönsallad.json";
-import lasagne from "../../../common/data/recipes/lasagne.json";
+import gräddtårta from "../../../application/data/recipes/gräddtårta.json";
+import ikeaköttbullar_med_snabbmakaroner from "../../../application/data/recipes/ikeaköttbullar_med_snabbmakaroner.json";
+import ugnspannkaka from "../../../application/data/recipes/ugnspannkaka.json";
+import chokladbiskvier from "../../../application/data/recipes/chokladbiskvier.json";
+import auberginegratäng from "../../../application/data/recipes/auberginegratäng.json";
+import mexikans_bönsallad from "../../../application/data/recipes/mexikans_bönsallad.json";
+import lasagne from "../../../application/data/recipes/lasagne.json";
 
 export const recipes = [
   auberginegratäng,

@@ -4,11 +4,17 @@ import * as WebSocket from 'ws';
 import { AddressInfo } from 'net';
 import {BasicScheduler, Scheduler, TaskID, CookID} from "./scheduler";
 import chokladbiskvier from "./chokladbiskvier.json";
-import { functions, subscribers, SchedulerFunction } from "./scheduler/schedulerFunctions";
+import { functions, subscribers, ServerFunction, TaskAssigned,
+  PassiveTaskStarted,
+  PassiveTaskFinished,
+  PassiveTaskCheckFinished,
+  RecipeFinished,
+  Progress,
+  ClientFunction,
+} from "./scheduler/schedulerFunctions";
 const app = express();
 
 type ClientID = number;
-type FunctionID = number;
 
 //initialize a simple http server
 const server = http.createServer(app);
@@ -22,10 +28,9 @@ const tempCooks = ["enkock", "tvåkock", "trekock"]
 
 const scheduler: Scheduler = new BasicScheduler(chokladbiskvier, tempCooks)
 
-
 // We store subscriber functions here so we can retrieve them when the client wants to subscribe
-type TaskAssignedFunctions       = Map<[ClientID, FunctionID], (task: TaskID | undefined, cook: CookID) => void>
-type PassiveTaskStartedFunctions = Map<[ClientID, FunctionID], (task: TaskID, finish: Date)             => void>
+type TaskAssignedFunctions       = Map<ClientID, (task: TaskID | undefined, cook: CookID) => void>
+type PassiveTaskStartedFunctions = Map<ClientID, (task: TaskID, finish: Date)             => void>
 const taskAssignedFunctions       : TaskAssignedFunctions = new Map();
 const passiveTaskStartedFunctions : PassiveTaskStartedFunctions = new Map();
 
@@ -38,19 +43,18 @@ wss.on('connection', (ws: WebSocket) => {
     const cID: ClientID = clients.size;
     clients.set(cID, ws)
 
+
+    subscribeTaskAssignedGlue(scheduler, ws, cID, taskAssignedFunctions);
+    subscribePassiveTaskStartedGlue(scheduler, ws, cID, passiveTaskStartedFunctions);
+
     //connection is up, let's add a simple simple event
     ws.on('message', (message: string) => {
       
       //log the received message and send it back to the client
       console.log('received: %s', message);
 
-      if(message == "Hi"){
-        ws.send("Hello")
-        return
-      }
 
-
-      let jsonMessage = JSON.parse(message) as SchedulerFunction;
+      let jsonMessage = JSON.parse(message) as ServerFunction;
 
       try{
         switch(jsonMessage.type){
@@ -60,17 +64,6 @@ wss.on('connection', (ws: WebSocket) => {
           case functions.removeCook:
             scheduler.removeCook(jsonMessage.parameters.cook); break;
 
-          case functions.subscribeTaskAssigned: {
-            let fID: FunctionID = jsonMessage.parameters.function;
-            subscribeTaskAssignedGlue(scheduler, ws, cID, fID, taskAssignedFunctions);
-            break;
-          }; 
-
-          case functions.unsubscribeTaskAssigned: {
-            let fID: FunctionID = jsonMessage.parameters.function;
-            unsubscribeTaskAssignedGlue(scheduler, cID, fID, taskAssignedFunctions);
-            break;
-          }; 
           case functions.finishTask:
             scheduler.finishTask(jsonMessage.parameters.task, jsonMessage.parameters.cook); break;
 
@@ -80,18 +73,6 @@ wss.on('connection', (ws: WebSocket) => {
           case functions.checkPassiveTaskFinished:
             scheduler.checkPassiveTaskFinished(jsonMessage.parameters.task); break;
             
-          case functions.subscribePassiveTaskStarted: {
-            let fID: FunctionID = jsonMessage.parameters.function;
-            subscribePassiveTaskStartedGlue(scheduler, ws, cID, fID, passiveTaskStartedFunctions);
-            break;
-          };
-
-          case functions.unsubscribePassiveTaskStarted: {
-            let fID: FunctionID = jsonMessage.parameters.function;
-            unsubscribePassiveTaskStartedGlue(scheduler, cID, fID, passiveTaskStartedFunctions);
-            break;
-          }; 
-          
           default: {
             ws.send("Invalid function: " + jsonMessage.type)
             console.log("Invalid function from client: " + jsonMessage.type)
@@ -101,19 +82,21 @@ wss.on('connection', (ws: WebSocket) => {
       catch{
         
       }
-
-      if (broadcastRegex.test(message)) {
-        broadcast(message)
-          
-      } else {
-          ws.send(`Hello, you sent -> ${message}`);
-      }
   });
 
     //send immediatly a feedback to the incoming connection
-    ws.send('Hi there, I am a WebSocket server');
-    ws.send("Current recipe is: " + scheduler.getRecipe().name)
+    // ws.send('Hi there, I am a WebSocket server');
+    // ws.send("Current recipe is: " + scheduler.getRecipe().name)
 });
+
+
+type BranchProgressJson = {data: [string,number][]};
+
+app.get('/branchProgress', function (req, res) {
+  let progress = scheduler.getBranchProgress();
+  let message: BranchProgressJson = {data: progress}
+  res.send(message)
+})
 
 //start our server
 server.listen(process.env.PORT || 8999, () => {
@@ -123,59 +106,48 @@ server.listen(process.env.PORT || 8999, () => {
   }
 });
 
+function sendMessage(ws: WebSocket, message: ClientFunction): void {
+  ws.send(JSON.stringify(message));
+  console.log('Sent message of type' + message.type)
 
-
-function broadcast(message: string){
-  console.log("BROADCASTING")
-  message = message.replace(broadcastRegex, '');
-
-  //send back the message to the other clients
-  wss.clients
-      .forEach(client => {
-
-            client.send(`Hello, broadcast message -> ${message}`);
-          
-      });
 }
 
-function subscribeTaskAssignedGlue(scheduler: Scheduler, ws: WebSocket, cID: ClientID, fID: FunctionID, functions: TaskAssignedFunctions) {
+
+function subscribeTaskAssignedGlue(scheduler: Scheduler, ws: WebSocket, cID: ClientID, functions: TaskAssignedFunctions) {
   let serverFunction = (task: TaskID | undefined, cook: CookID) => {
-    let message = {
-      type : subscribers.taskAssignedSubscriber,
-      data : { task, cook, clientFunction: fID }
+    let message: TaskAssigned = {
+      type : subscribers.taskAssigned,
+      parameters : { task, cook }
     };
-    ws.send(message.toString());
+    sendMessage(ws, message);
   }
-  functions.set([cID, fID], serverFunction);
+  functions.set(cID, serverFunction);
   scheduler.subscribeTaskAssigned(serverFunction)
 }
 
-function unsubscribeTaskAssignedGlue(scheduler: Scheduler, cID: ClientID, fID: FunctionID, functions: TaskAssignedFunctions) {
-  let fun = functions.get([cID, fID]);
-  if (fun) {
-    scheduler.unsubscribeTaskAssigned(fun)
-  } else {
-    // TODO: What should happen if you unsubscribe a function that doesn't exist?
-  }
-  functions.delete([cID, fID])
+function unsubscribeTaskAssignedGlue(scheduler: Scheduler, cID: ClientID, functions: TaskAssignedFunctions) {
+  let fun = functions.get(cID);
+  // TODO: What should happen if you unsubscribe a function that doesn't exist?
+  if (fun) { scheduler.unsubscribeTaskAssigned(fun) }
+  functions.delete(cID)
 }
 
 
-function subscribePassiveTaskStartedGlue(scheduler: Scheduler, ws: WebSocket, cID: ClientID, fID: FunctionID, functions: PassiveTaskStartedFunctions) {
+function subscribePassiveTaskStartedGlue(scheduler: Scheduler, ws: WebSocket, cID: ClientID, functions: PassiveTaskStartedFunctions) {
   let serverFunction = (task: TaskID , finish: Date) => {
-    let message = {
-      type : subscribers.passiveTaskStartedSubscriber,
-      data : { task, finish, clientFunction: fID }
+    let message: PassiveTaskStarted = {
+      type : subscribers.passiveTaskStarted,
+      parameters : { task, finish }
     };
-    ws.send(message.toString());
+    sendMessage(ws, message);
   }
-  functions.set([cID, fID], serverFunction);
+  functions.set(cID, serverFunction);
   scheduler.subscribePassiveTaskStarted(serverFunction)
 }
 
-function unsubscribePassiveTaskStartedGlue(scheduler: Scheduler, cID: ClientID, fID: FunctionID, functions: PassiveTaskStartedFunctions) {
-  let fun = functions.get([cID, fID]);
+function unsubscribePassiveTaskStartedGlue(scheduler: Scheduler, cID: ClientID, functions: PassiveTaskStartedFunctions) {
+  let fun = functions.get(cID);
   if (fun) { scheduler.unsubscribePassiveTaskStarted(fun) }
-  functions.delete([cID, fID])
+  functions.delete(cID)
 }
 

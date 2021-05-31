@@ -185,7 +185,7 @@ export class BasicScheduler implements Scheduler {
     return this.completedTasks.length / this.recipe.tasks.length;
   }
 
-  getBranchProgress() {
+  async getBranchProgress() {
     let ratio = this.completedTasks.length / this.recipe.tasks.length;
     let ret: [string, number][] = [["Måltiden", ratio]];
     for (const [branch, tasks] of Array.from(this.branches.entries())) {

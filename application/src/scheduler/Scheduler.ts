@@ -92,7 +92,7 @@ export interface Scheduler {
   getTasks: () => Map<CookID, TaskID>;
   getCompletedTasks: () => TaskID[];
   getProgress: () => number;
-  getBranchProgress: () => [string, number][];
+  getBranchProgress: () => Promise<[string, number][]>;
 
   undo: (task: TaskID, cook?: CookID) => void;
 

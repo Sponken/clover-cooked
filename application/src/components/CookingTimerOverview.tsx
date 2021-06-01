@@ -174,6 +174,7 @@ const PassiveTaskCard = ({
   extendTimer,
 }: PassiveTaskCardProps) => {
   if (finish) {
+    console.log("WHAT IS FINISH ", typeof finish)
     let [isFinished, setIsFinished] = useState(finish.getTime() < Date.now());
 
     return (

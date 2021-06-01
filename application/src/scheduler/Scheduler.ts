@@ -69,11 +69,11 @@ export interface Scheduler {
   /**
    * Returnerar alla pågående passiva tasks, tillsammans med Date för när de är slut
    */
-  getPassiveTasks: () => Map<TaskID, Date>;
+  getPassiveTasks: () => Promise<Map<TaskID, Date>>;
   /**
    * Returnerar Date för när passivt task är slut. Returnerar undefined om tasken inte är pågående
    */
-  getPassiveTask: (task: TaskID) => Date | undefined;
+  getPassiveTask: (task: TaskID) => Promise<Date | undefined>;
   /**
    * Lägg till en kock med dens ID.
    */
@@ -85,16 +85,16 @@ export interface Scheduler {
   /**
    * Hur lång tid som är kvar i minuter innan maten är klar
    */
-  timeLeft: () => number;
+  timeLeft: () => Promise<number>;
   /**
    * Hämtar nuvarande tasks
    */
-  getTasks: () => Map<CookID, TaskID>;
-  getCompletedTasks: () => TaskID[];
-  getProgress: () => number;
+  getTasks: () => Promise<Map<CookID, TaskID>>;
+  getCompletedTasks: () => Promise<TaskID[]>;
+  getProgress: () => Promise<number>;
   getBranchProgress: () => Promise<[string, number][]>;
 
   undo: (task: TaskID, cook?: CookID) => void;
 
-  getRecipe: () => Recipe
+  getRecipe: () => Promise<Recipe>
 }

@@ -217,22 +217,21 @@ export function Cooking({ navigation, route }: Props) {
     temporaryScheduler.subscribePassiveTaskCheckFinished(passiveTaskCheckFinishedSubscriber);
     temporaryScheduler.subscribeRecipeFinished(recipeFinishedSubscriber);
     temporaryScheduler.subscribeProgress(progressSubscriber);
-    setAssignedTasks(temporaryScheduler.getTasks());
-    setPassiveTasks(temporaryScheduler.getPassiveTasks());
 
-    setProgress(temporaryScheduler.getProgress())
+    temporaryScheduler.getTasks().then(response => {console.log("useeffect tasks", response.entries); setAssignedTasks(response)})
+    temporaryScheduler.getPassiveTasks().then(response => setPassiveTasks(response))
+
+    temporaryScheduler.getProgress().then(response => setProgress(response))
 
     let _userNotifications = new Map<string, boolean>();
-    temporaryScheduler
-      .getTasks()
-      .forEach((task, user) =>
-        _userNotifications.set(user, task !== undefined && user !== activeUser)
-      );
+    temporaryScheduler.getTasks().then(response =>
+      response.forEach((task, user) =>
+        userNotifications.set(user, task !== undefined && user !== activeUser)))
+
     setUserNotifications(new Map(_userNotifications));
     setScheduler(temporaryScheduler);
 
     return () => {
-      console.log("UNSUBSCRIBING");
       temporaryScheduler.unsubscribeTaskAssigned(taskAssignedSubscriber);
       temporaryScheduler.unsubscribePassiveTaskStarted(
         passiveTaskStartedSubscriber
@@ -249,11 +248,12 @@ export function Cooking({ navigation, route }: Props) {
   }, []);
 
   useEffect(() => {
-    setActiveTask(assignedTasks.get(activeUser));
+    let task = assignedTasks?.get(activeUser)
+    setActiveTask(task);
     // För tillfället den enda task som inte går att avsluta
-    if (assignedTasks.get(activeUser) === helpOrRestTaskID) {
+    if (task === helpOrRestTaskID) {
       setTaskConfirmType("unavailable");
-    } else if (assignedTasks.get(activeUser)) {
+    } else if (task) {
       setTaskConfirmType("finish");
     } else {
       //om ett task är undefined/"du har paus", så visas en grå knapp

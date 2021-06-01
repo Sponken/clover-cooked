@@ -11,6 +11,14 @@ import { functions, subscribers, ServerFunction, TaskAssigned,
   RecipeFinished,
   Progress,
   ClientFunction,
+  BranchProgressJson,
+  ProgressJson,
+  TasksJson,
+  CompletedTasksJson,
+  TimeLeftJson,
+  PassiveTaskJson,
+  PassiveTasksJson,
+  RecipeJson,
 } from "./scheduler/schedulerFunctions";
 const app = express();
 
@@ -24,15 +32,27 @@ const wss = new WebSocket.Server({ server });
 
 const broadcastRegex = /^broadcast\:/;
 
-const tempCooks = ["enkock", "tvåkock", "trekock"]
-
-const scheduler: Scheduler = new BasicScheduler(chokladbiskvier, tempCooks)
+const scheduler: Scheduler = new BasicScheduler(chokladbiskvier, [])
 
 // We store subscriber functions here so we can retrieve them when the client wants to subscribe
-type TaskAssignedFunctions       = Map<ClientID, (task: TaskID | undefined, cook: CookID) => void>
-type PassiveTaskStartedFunctions = Map<ClientID, (task: TaskID, finish: Date)             => void>
-const taskAssignedFunctions       : TaskAssignedFunctions = new Map();
-const passiveTaskStartedFunctions : PassiveTaskStartedFunctions = new Map();
+type PassiveTaskStartedFunctions = Map<ClientID, (task: TaskID, finish: Date) => void>
+type PassiveTaskFinishedFunctions = Map<ClientID, (task: TaskID) => void>
+type PassiveTaskCheckFinishedFunctions = PassiveTaskFinishedFunctions
+type TaskAssignedFunctions = Map<ClientID, (
+  task: TaskID | undefined,
+  cook: CookID
+) => void>
+type RecipeFinishedFunctions = Map<ClientID, () => void>
+type ProgressFunctions = Map<ClientID, (progress: number) => void>
+
+
+
+const passiveTaskStartedFunctions       : PassiveTaskStartedFunctions       = new Map();
+const passiveTaskFinishedFunctions      : PassiveTaskFinishedFunctions      = new Map();
+const passiveTaskCheckFinishedFunctions : PassiveTaskCheckFinishedFunctions = new Map();
+const taskAssignedFunctions             : TaskAssignedFunctions             = new Map();
+const recipeFinishedFunctions           : RecipeFinishedFunctions           = new Map();
+const progressFunctions                 : ProgressFunctions                 = new Map();
 
 let clients: Map<number, WebSocket> = new Map();
 
@@ -46,18 +66,31 @@ wss.on('connection', (ws: WebSocket) => {
 
     subscribeTaskAssignedGlue(scheduler, ws, cID, taskAssignedFunctions);
     subscribePassiveTaskStartedGlue(scheduler, ws, cID, passiveTaskStartedFunctions);
+    subscribePassiveTaskFinishedGlue(scheduler, ws, cID, passiveTaskFinishedFunctions);
+    subscribePassiveTaskCheckFinishedGlue(scheduler, ws, cID, passiveTaskCheckFinishedFunctions);
+    subscribeRecipeFinishedGlue(scheduler, ws, cID, recipeFinishedFunctions);
+    subscribeProgressGlue(scheduler, ws, cID, progressFunctions);
 
     //connection is up, let's add a simple simple event
     ws.on('message', (message: string) => {
       
-      //log the received message and send it back to the client
+      //log the received message
       console.log('received: %s', message);
 
 
       let jsonMessage = JSON.parse(message) as ServerFunction;
 
+      // if(jsonMessage.type == functions.initialize){
+      //   scheduler = new BasicScheduler(jsonMessage.parameters.recipe, jsonMessage.parameters.cooks)
+      // }else if(!scheduler){
+      //   ws.send("Scheduler is not initalized")
+      //   console.log("Client sent function to a non-initialized scheduler")
+      // }
+      
+
       try{
         switch(jsonMessage.type){
+
           case functions.addCook:
             scheduler.addCook(jsonMessage.parameters.cook); break;
 
@@ -72,6 +105,12 @@ wss.on('connection', (ws: WebSocket) => {
 
           case functions.checkPassiveTaskFinished:
             scheduler.checkPassiveTaskFinished(jsonMessage.parameters.task); break;
+          
+          case functions.extendPassive:
+            scheduler.extendPassive(jsonMessage.parameters.task, jsonMessage.parameters.add); break;
+
+          case functions.undo:
+            scheduler.undo(jsonMessage.parameters.task, jsonMessage.parameters.cook); break;
             
           default: {
             ws.send("Invalid function: " + jsonMessage.type)
@@ -84,19 +123,70 @@ wss.on('connection', (ws: WebSocket) => {
       }
   });
 
-    //send immediatly a feedback to the incoming connection
-    // ws.send('Hi there, I am a WebSocket server');
-    // ws.send("Current recipe is: " + scheduler.getRecipe().name)
 });
 
 
-type BranchProgressJson = {data: [string,number][]};
+app.get('/recipe', function (req, res) {
+  let progress = scheduler.getRecipe();
+  let message: RecipeJson = {data: progress}
+  res.send(message)
+})
+
+app.get('/passiveTasks', function (req, res) {
+  let progress = scheduler.getPassiveTasks();
+  let message: PassiveTasksJson = {data: progress}
+  res.send(message)
+})
+
+app.get('/passiveTask/:taskID', function (req, res) {
+  let taskID = req.params["taskID"]
+  let progress = scheduler.getPassiveTask(taskID);
+  let message: PassiveTaskJson = {data: progress}
+  res.send(message)
+})
+
+app.get('/progress', function (req, res) {
+  let progress = scheduler.getProgress();
+  let message: ProgressJson = {data: progress}
+  res.send(message)
+})
+
+app.get('/timeLeft', function (req, res) {
+  let timeLeft = scheduler.timeLeft();
+  let message: TimeLeftJson = {data: timeLeft}
+  res.send(message)
+})
+
+app.get('/tasks', function (req, res) {
+  let tasks = scheduler.getTasks();
+  let message: TasksJson = {data: tasks}
+  res.send(message)
+})
+
+app.get('/completedTasks', function (req, res) {
+  let completedTasks = scheduler.getCompletedTasks();
+  let message: CompletedTasksJson = {data: completedTasks}
+  res.send(message)
+})
+
+app.get('/progress', function (req, res) {
+  let progress = scheduler.getProgress();
+  let message: ProgressJson = {data: progress}
+  res.send(message)
+})
 
 app.get('/branchProgress', function (req, res) {
   let progress = scheduler.getBranchProgress();
   let message: BranchProgressJson = {data: progress}
   res.send(message)
 })
+
+
+
+
+
+
+
 
 //start our server
 server.listen(process.env.PORT || 8999, () => {
@@ -151,3 +241,52 @@ function unsubscribePassiveTaskStartedGlue(scheduler: Scheduler, cID: ClientID, 
   functions.delete(cID)
 }
 
+
+function subscribeProgressGlue(scheduler: Scheduler, ws: WebSocket, cID: ClientID, functions: ProgressFunctions) {
+  let serverFunction = (progress: number) => {
+    let message: Progress = {
+      type : subscribers.progress,
+      parameters : { progress }
+    };
+    sendMessage(ws, message);
+  }
+  functions.set(cID, serverFunction);
+  scheduler.subscribeProgress(serverFunction)
+}
+
+function subscribeRecipeFinishedGlue(scheduler: Scheduler, ws: WebSocket, cID: ClientID, functions: RecipeFinishedFunctions) {
+  let serverFunction = () => {
+    let message: RecipeFinished = {
+      type : subscribers.recipeFinished,
+      parameters : {}
+    };
+    sendMessage(ws, message);
+  }
+  functions.set(cID, serverFunction);
+  scheduler.subscribeRecipeFinished(serverFunction)
+}
+
+function subscribePassiveTaskFinishedGlue(scheduler: Scheduler, ws: WebSocket, cID: ClientID, functions: PassiveTaskFinishedFunctions) {
+  let serverFunction = (task: TaskID) => {
+    let message: PassiveTaskFinished = {
+      type : subscribers.passiveTaskFinished,
+      parameters : {task}
+    };
+    sendMessage(ws, message);
+  }
+  functions.set(cID, serverFunction);
+  scheduler.subscribePassiveTaskFinished(serverFunction)
+}
+
+
+function subscribePassiveTaskCheckFinishedGlue(scheduler: Scheduler, ws: WebSocket, cID: ClientID, functions: PassiveTaskCheckFinishedFunctions) {
+  let serverFunction = (task: TaskID) => {
+    let message: PassiveTaskCheckFinished = {
+      type : subscribers.passiveTaskCheckFinished,
+      parameters : {task}
+    };
+    sendMessage(ws, message);
+  }
+  functions.set(cID, serverFunction);
+  scheduler.subscribePassiveTaskCheckFinished(serverFunction)
+}

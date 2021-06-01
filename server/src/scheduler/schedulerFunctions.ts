@@ -86,3 +86,14 @@ export enum subscribers {
   recipeFinished,
   progress,
 }
+
+
+
+export type BranchProgressJson = {data: [string,number][]};
+export type ProgressJson = {data: number};
+export type TasksJson  = {data: Map<string, string>}
+export type CompletedTasksJson  = {data: string[]}
+export type TimeLeftJson = {data: number};
+export type PassiveTaskJson = {data: Date | undefined}
+export type PassiveTasksJson = {data: Map<string, Date>}
+export type RecipeJson = {data: Recipe}

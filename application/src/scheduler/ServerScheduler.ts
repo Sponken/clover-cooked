@@ -20,11 +20,21 @@ import {
   functions,
   subscribers,
   ClientFunction,
+  BranchProgressJson,
+  ProgressJson,
+  TasksJson,
+  CompletedTasksJson,
+  TimeLeftJson,
+  PassiveTaskJson,
+  PassiveTasksJson,
+  RecipeJson,
 } from './schedulerFunctions'
-
+import {filteredMap} from '../utils'
 import {Recipe} from '../data' 
 
-type BranchProgressJson = {data: [string,number][]};
+
+const SERVER_URL = '192.168.50.99:8999'
+
 
 export class ServerScheduler implements Scheduler {
 
@@ -38,8 +48,13 @@ export class ServerScheduler implements Scheduler {
   recipeFinishedSubscribers:           RecipeFinishedSubscriber[]           = [];
   progressSubscribers:                 ProgressSubscriber[]                 = [];
 
-  getRecipe(): Recipe {
+  // TODO: Use this
+  getRecipe(): Promise<Recipe> {
+    const response = fetch('http://' + SERVER_URL + '/recipe')
+          .then((response) => response.json())
+          .then((json : RecipeJson) => json.data);
 
+    return response
   }
 
   finishTask(task: string, cook: string): void{
@@ -100,12 +115,21 @@ export class ServerScheduler implements Scheduler {
     this.sendFunction(message)
   }
   
-  getPassiveTasks(): Map<string, Date> {
-    return new Map
+  getPassiveTasks(): Promise<Map<string, Date>> {
+    const response = fetch('http://' + SERVER_URL + '/passiveTasks')
+          .then((response) => response.json())
+          .then((json : PassiveTasksJson) => filteredMap(new Map(json.data), (v) => new Date(v)))
+          .then((res) => {console.log("TYPE INSIDE", typeof res); return res})
+
+    return response
   }
   
-  getPassiveTask(task: string): Date | undefined {
-    return undefined
+  getPassiveTask(task: string): Promise<Date | undefined> {
+    const response = fetch('http://' + SERVER_URL + '/passiveTask/' + task)
+          .then((response) => response.json())
+          .then((json : PassiveTaskJson) => json.data ? new Date(json.data) : undefined);
+      
+    return response
   }
   
   addCook(cook: string): void {
@@ -125,27 +149,41 @@ export class ServerScheduler implements Scheduler {
     
   }
   
-  timeLeft(): number{
-    return 0
+  timeLeft(): Promise<number> {
+    const response = fetch('http://' + SERVER_URL + '/timeLeft')
+          .then((response) => response.json())
+          .then((json : TimeLeftJson) => json.data);
+
+    return response
   }
   
-  getTasks(): Map<string, string>{
-    return new Map();
+  getTasks(): Promise<Map<string, string>>{
+    const response = fetch('http://' + SERVER_URL + '/tasks')
+          .then((response) => response.json())
+          .then((json : TasksJson) => new Map(json.data));
+
+    return response
   }
   
-  getCompletedTasks(): string[]{
-    return [];
+  getCompletedTasks(): Promise<string[]>{
+    const response = fetch('http://' + SERVER_URL + '/completedTasks')
+          .then((response) => response.json())
+          .then((json : CompletedTasksJson) => json.data);
+
+    return response
   }
   
-  getProgress(): number{
-    return 0
+  getProgress(): Promise<number>{
+    const response = fetch('http://' + SERVER_URL + '/progress')
+          .then((response) => response.json())
+          .then((json : ProgressJson) => json.data);
+
+    return response
   }
   
 
-
-
-  async getBranchProgress(): Promise<[string, number][]> {
-    const response = fetch('192.168.50.99:8999/branchProgress')
+  getBranchProgress(): Promise<[string, number][]> {
+    const response = fetch('http://' + SERVER_URL + '/branchProgress')
           .then((response) => response.json())
           .then((json : BranchProgressJson) => json.data);
 
@@ -185,7 +223,7 @@ export class ServerScheduler implements Scheduler {
           }
           case subscribers.passiveTaskStarted: {
             const task   = jsonMessage.parameters.task;
-            const finish = jsonMessage.parameters.finish;
+            const finish = new Date(jsonMessage.parameters.finish);
             this.passiveTaskStartedSubscribers.forEach(f => f(task, finish));
             break;
           }
@@ -223,8 +261,9 @@ export class ServerScheduler implements Scheduler {
 
   
   constructor(recipe: Recipe, cooks:CookID[]){
-    this.ws = new WebSocket("ws://192.168.50.99:8999")
+    this.ws = new WebSocket("ws://"  + SERVER_URL)
     this.initSocket(this.ws)
+
     this.ws.onopen = () => {
       cooks.forEach((c) => this.addCook(c))
     };

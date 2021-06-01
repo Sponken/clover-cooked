@@ -67,6 +67,8 @@ export class BasicScheduler implements Scheduler {
         this.lastFinished.set(cook, new Date(Date.now()));
 
         this.completedTasks.push(task);
+        console.log("completed", this.completedTasks)
+        console.log("currentTasks", this.currentTasks)
         this.currentTasks.delete(cook);
         this.possibleDishesRemaining = true;
         if (this.isRecipeFinished()) {
@@ -220,6 +222,7 @@ export class BasicScheduler implements Scheduler {
  * @timeLeft Tid i minuter tills task förväntas vara färdigt
  */
   startPassiveTask(timeLeft: number, task: TaskID) {
+    console.log("STARTED")
     const finish = new Date(Date.now() + timeLeft * MINUTE)
     const timeout = setTimeout(() => this.checkPassiveTaskFinished(task), timeLeft * MINUTE)
     this.currentPassiveTasks.set(task, { finish: finish, timeout: timeout });
@@ -350,7 +353,6 @@ export class BasicScheduler implements Scheduler {
         this.assignTask(nextIdleCook, doDishesTaskID)
       }
     }
-    console.log("BRAP", this.currentTasks);
     for (const cook of idleCooks.filter(c => !this.currentTasks.has(c))) {
       this.assignTask(cook, helpOrRestTaskID)
     }

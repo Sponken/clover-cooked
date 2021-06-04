@@ -25,6 +25,7 @@ import { getRecipeThumbnail, User } from "../data";
 import { schedulerContext } from "./scheduler-context";
 import * as Progress from "react-native-progress";
 import { OverviewCard } from "../components/OverviewCard";
+import { getBranchesGraph, getSortedBranches } from "../utils/RecipeAlgs";
 
 type CookingOverviewNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -42,7 +43,8 @@ type Props = {
 };
 
 export function CookingOverview({ navigation, route }: Props) {
-  const { users } = route.params;
+  const { users, recipe } = route.params;
+  console.log(getSortedBranches(recipe));
   const { scheduler } = useContext(schedulerContext);
   if (scheduler) {
     return (

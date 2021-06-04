@@ -27,7 +27,7 @@ export type RootStackParamList = {
   RecipeLibrary: undefined;
   RecipeOverview: { recipe: Recipe };
   Cooking: { recipe: Recipe; users: User[] };
-  CookingOverview: { users: User[] };
+  CookingOverview: { users: User[]; recipe: Recipe };
   SessionStart: {
     recipe?: Recipe;
     users?: User[];

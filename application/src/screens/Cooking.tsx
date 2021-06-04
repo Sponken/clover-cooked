@@ -502,7 +502,7 @@ export function Cooking({ navigation, route }: Props) {
                 style={styles.topBarRightMenuIcon}
               />
             </Pressable>
-            <Pressable onPress={() => navigation.navigate("CookingOverview", {users: users})}>
+            <Pressable onPress={() => navigation.navigate("CookingOverview", {users: users, recipe: recipe})}>
               <Image
                 source={require("../../assets/image/showMenuButton_icon.png")} // TODO: Placeholder tills ikon finns
                 style={styles.topBarRightMenuIcon}

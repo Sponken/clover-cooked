@@ -2,12 +2,15 @@
 
 Kollaborativ matlagningsapp utvecklad för ett kandidatarbete på Chalmers
 
-
-![cooking](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/cooking.PNG?raw=true)
-![timers](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/timers.PNG?raw=true)
+![cloverCookedIcon](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/Clover-Cooked.jpg?raw=true)
+![exampleScreens](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/cloverCookedExampleScreens.png?raw=true)
+[//]: # (![cooking](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/cooking.PNG?raw=true))
+[//]: # (![timers](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/timers.PNG?raw=true))
 ![concurrency](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/concurrency.png?raw=true)
 
-[Presentation Slides](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing)
+
+
+Presentation Slides([Swedish](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing), [English](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing))
 
 
 På Android går applikationen enkelt att testa genom följande:

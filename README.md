@@ -90,3 +90,7 @@ Joar Granström
 
 
 [Project report](https://odr.chalmers.se/handle/20.500.12380/304131?locale=en)
+
+
+
+MIT license

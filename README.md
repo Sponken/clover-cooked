@@ -19,8 +19,8 @@ Clover Cooked empowers you through behavior design and scheduling to make it mor
 
 On Android the application can easily be tried by:
 
-1. Downloading the application ['Expo Go'](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) on your Android-device
-2. Scan the QR code below inside  ['Expo Go'](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US), or visit [this link](https://expo.io/@sponken/projects/clover-cooked).
+1. Downloading the application [Expo Go](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) on your Android-device
+2. Scan the QR code below inside  [Expo Go](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US), or visit [this link](https://expo.io/@sponken/projects/clover-cooked).
 
    ![Expo qr](./expo_qr.png)
 
@@ -47,7 +47,7 @@ Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5F
 - Download the application Expo Go on your [iOS](https://apps.apple.com/us/app/expo-go/id982107779) or [Android](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) device
 
 - Run `expo start` in the folder `/application` using your terminal application of choice, add the flag `--tunnel` to the command like so: `expo start --tunnel` if the device isn't on the same network as the computer
-- Scan the QR code shown in the terminal or in the page that the webbrowser probably shows you after running the command. On iOS you can just with the normal camera and follow the notification. On Android you can open the ['Expo Go'](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) app and scan the QR code from there.
+- Scan the QR code shown in the terminal or in the page that the webbrowser probably shows you after running the command. On iOS you can just with the normal camera and follow the notification. On Android you can open the [Expo Go](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) app and scan the QR code from there.
 
 
 ### Android emulator

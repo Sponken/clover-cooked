@@ -2,6 +2,14 @@
 
 Kollaborativ matlagningsapp utvecklad för ett kandidatarbete på Chalmers
 
+
+![cooking](https://your-copied-image-address)
+![timers](https://your-copied-image-address)
+![concurrency](https://your-copied-image-address)
+
+[Presentation Slides](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing)
+
+
 På Android går applikationen enkelt att testa genom följande:
 
 1. Ladda ned applikation Expo Go på Android-enheten

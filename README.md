@@ -1,24 +1,22 @@
 # Clover-Cooked
 
-Collaborative cooking tool developed for Degree project at bachelor's level at [Chalmers](https://www.chalmers.se/en/Pages/default.aspx)
-Clover Cooked empowers you through behavior design and scheduling to make it more enjoyable to cook with other people!
+A collaborative cooking tool developed for Degree project at bachelor's level at [Chalmers](https://www.chalmers.se/en/Pages/default.aspx)
+Clover Cooked empowers you through behavior design and scheduling to make it more enjoyable and effective to cook with other people!
 
 Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing), [Swedish](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing))
 
+
+
+![exampleScreens](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/cloverCookedExampleScreens.png?raw=true)
+![concurrency](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/concurrency.png?raw=true)
+![cloverCookedIcon](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/Clover-Cooked.jpg?raw=true)
 "To live in clover" means to live well, in ease.
 
 
-![cloverCookedIcon](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/Clover-Cooked.jpg?raw=true)
-![exampleScreens](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/cloverCookedExampleScreens.png?raw=true)
-![concurrency](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/concurrency.png?raw=true)
 
 
 
-
-
-[Project report](https://odr.chalmers.se/handle/20.500.12380/304131?locale=en)
-
-
+## Quickly give it a try!
 
 
 On Android the application can easily be tried by:
@@ -28,23 +26,17 @@ On Android the application can easily be tried by:
 
    ![Expo qr](./expo_qr.png)
 
+
+
+
+## Running the application
+
 ## Initial installation
 
 1. Install node.js 14.15.4 LTS <https://nodejs.org/en/download/>
 2. Install Expo CLI by running `npm install -g expo-cli` in a [terminal application](https://en.wikipedia.org/wiki/Command-line_interface) of your choice.
 3. Navigate your [terminal application](https://en.wikipedia.org/wiki/Command-line_interface) to where you cloned this repo and run `npm install`. Might need to run it with privilege as system administrator, e.g. on Mac using the `sudo npm install` command instead.
 
-## Folder structure
-
-- All image, video and audio files relevant to the application are located in  `assets`
-- All code for the application is located in 'src'
-- All screens of the application are located in `src/screens`,
-  a screen is a [react](https://reactjs.org) component that fill the whole (or almost the whole) screen.
-- Alla mindre react componenter ligger under `src/components/namn`
-- All smaller [react](https://reactjs.org) components are located in `src/components/nameOfComponent`
-
-
-## Running the application
 
 ### Physical device
 
@@ -63,6 +55,18 @@ On Android the application can easily be tried by:
 
 <https://docs.expo.io/workflow/ios-simulator/>
 
+
+
+## Folder structure
+
+- All image, video and audio files relevant to the application are located in  `assets`
+- All code for the application is located in 'src'
+- All screens of the application are located in `src/screens`,
+  a screen is a [react](https://reactjs.org) component that fill the whole (or almost the whole) screen.
+- Alla mindre react componenter ligger under `src/components/namn`
+- All smaller [react](https://reactjs.org) components are located in `src/components/nameOfComponent`
+
+
 ## Formatting
 
 - Prettier - Code formatter "esbenp.prettier-vscode", you can install this in [vscode](https://code.visualstudio.com/Download) 
@@ -72,9 +76,11 @@ On Android the application can easily be tried by:
 
 # Authors
 
-Parkegren, Alexandra
-Albertsson, William
-Olaison, Emanuel
-Bergdahl, Eric
-Sundqvist, Pontus
-Granström, Joar
+Alexandra Parkegren,  
+William Albertsson,  
+Emanuel Olaison, 
+Eric Bergdahl, 
+Pontus Sundqvist, 
+Joar Granström
+
+[Project report](https://odr.chalmers.se/handle/20.500.12380/304131?locale=en)

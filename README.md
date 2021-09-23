@@ -7,7 +7,7 @@ Clover Cooked empowers you through behavior design and scheduling to make it mor
 ![exampleScreens](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/cloverCookedExampleScreens.png?raw=true)
 ![concurrency](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/concurrency.png?raw=true)
 ![cloverCookedIcon](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/Clover-Cooked.jpg?raw=true)
-### "To live in clover" means to live well, in ease.
+#### "To live in clover" means to live well, in ease.
 
 
 
@@ -92,5 +92,6 @@ Pontus Sundqvist,
 Joar Granström
 
 
+## Rights
 
 MIT license

@@ -1,16 +1,18 @@
 # Clover-Cooked
 
-A collaborative cooking tool developed for the scope of a Degree project at bachelor's level at [Chalmers](https://www.chalmers.se/en/Pages/default.aspx)
+A collaborative cooking tool developed for the scope of a Degree project at bachelor's level at [Chalmers](https://www.chalmers.se/en/Pages/default.aspx). 
+
 Clover Cooked empowers you through behavior design and scheduling to make it more enjoyable and effective to cook with other people!
 
+For more on the why and how of Clover Cooked:
 Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing), [Swedish](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing))
-
 
 
 ![exampleScreens](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/cloverCookedExampleScreens.png?raw=true)
 ![concurrency](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/concurrency.png?raw=true)
 ![cloverCookedIcon](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/Clover-Cooked.jpg?raw=true)
 ### "To live in clover" means to live well, in ease.
+
 
 
 

@@ -4,10 +4,6 @@ A collaborative cooking tool developed for the scope of a Degree project at bach
 
 Clover Cooked empowers you through behavior design and scheduling to make it more enjoyable and effective to cook with other people!
 
-For more on the why and how of Clover Cooked:
-Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing), [Swedish](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing))
-
-
 ![exampleScreens](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/cloverCookedExampleScreens.png?raw=true)
 ![concurrency](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/concurrency.png?raw=true)
 ![cloverCookedIcon](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/Clover-Cooked.jpg?raw=true)
@@ -29,7 +25,7 @@ On Android the application can easily be tried by:
    ![Expo qr](./expo_qr.png)
 
 
-The why and how of Clover Cooked:
+## The why and how of Clover Cooked:
 
 Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing), [Swedish](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing))
 

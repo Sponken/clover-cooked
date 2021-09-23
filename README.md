@@ -8,49 +8,67 @@ Kollaborativ matlagningsapp utvecklad för ett kandidatarbete på Chalmers
 
 
 
-Presentation Slides([Swedish](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing), [English](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing))
+Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing), [Swedish](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing))
+
+[Project report](https://odr.chalmers.se/handle/20.500.12380/304131?locale=en)
 
 
-På Android går applikationen enkelt att testa genom följande:
+On Android the application can easily be tried by:
 
-1. Ladda ned applikation Expo Go på Android-enheten
-2. Skanna QR koden nedan med Expo Go, alternativ följ [denna länk](https://expo.io/@sponken/projects/clover-cooked)
+1. Download the application ['Expo Go'](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) on your Android-device
+2. Scan the QR code below inside  ['Expo Go'](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US), or visit [this link](https://expo.io/@sponken/projects/clover-cooked).
 
    ![Expo qr](./expo_qr.png)
 
 ## Initial installation
 
-1. Installera node.js 14.15.4 LTS <https://nodejs.org/en/download/>
-2. Installera Expo CLI genom att köra `npm install -g expo-cli` i valfri terminal
-3. Öppna valfri terminal i mappen application och kör `npm install`, kan behöva köras med priveleger
+1. Install node.js 14.15.4 LTS <https://nodejs.org/en/download/>
+2. Install Expo CLI by running `npm install -g expo-cli` in a [terminal application](https://en.wikipedia.org/wiki/Command-line_interface) of your choice.
+3. Navigate your [terminal application](https://en.wikipedia.org/wiki/Command-line_interface) to where you cloned this repo and run `npm install`. Might need to run it with privilege as system administrator, e.g. on Mac using the `sudo npm install` command instead.
 
-## Mappstruktur
+## Folder structure
 
-- Alla bilder, video, ljud och liknande ligger under `assets`
-- All kod ligger under `src`
-- Alla skärmar "screens" ligger under `src/screens`,
-  en screen är en react component som ska fylla hela (eller nästan hela) skärmen.
+- All image, video and audio files relevant to the application are located in  `assets`
+- All code for the application is located in 'src'
+- Alla skärmar "screens" ligger under `src/screens`
+- All screens of the application are located in `src/screens`,
+  a screen is a [react](https://reactjs.org) component that fill the whole (or almost the whole) screen.
 - Alla mindre react componenter ligger under `src/components/namn`
-- Inte säker på tester, kanske `src/__tests__`, kanske en test mapp per annan mapp i den
+- All smaller [react](https://reactjs.org) components are located in `src/components/nameOfComponent`
 
-## Körning av applikation
 
-### Fysisk enhet
+## Running the application
 
-- Klona projektet
-- Ladda ner Expo Go på enheten
-- Kör `expo start` i `/application` mappen i valfri terminal, använd `--tunnel` om enheten inte är på samma närverk som datorn
+### Physical device
+
+- Clone the project
+- Download the application Expo Go on your [iOS](https://apps.apple.com/us/app/expo-go/id982107779) or [Android](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) device
+
+- Run `expo start` in the folder `/application` using your terminal application of choice, add the flag `--tunnel` to the command like so: `expo start --tunnel` if the device isn't on the same network as the computer
 - Scanna QR-koden som visas i webbläsare eller terminal (använd kameran på ios och Expo Go på Android)
+- Scan the QR code shown in the terminal or in the page that the webbrowser probably shows you after running the command. On iOS you can just with the normal camera and follow the notification. On Android you can open the ['Expo Go'](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) app and scan the QR code from there.
+
 
 ### Android emulator
 
 <https://docs.expo.io/workflow/android-studio-emulator/>
 
-### iOS emulator (fungerar bara på mac (osx))
+### iOS emulator (Only works on macOS/osx)
 
 <https://docs.expo.io/workflow/ios-simulator/>
 
-## Formatering
+## Formatting
 
-- Formatering körs med Prettier - Code formatter "esbenp.prettier-vscode", installera detta i vscode
-- Hela projectet kan enkelt formateras genom att köra `npm run format`
+- Prettier - Code formatter "esbenp.prettier-vscode", you can install this in [vscode](https://code.visualstudio.com/Download) 
+- The whole project can easily be formatted by running `npm run format` in the terminal while inside the project directory
+
+
+
+# Authors
+
+Parkegren, Alexandra
+Albertsson, William
+Olaison, Emanuel
+Bergdahl, Eric
+Sundqvist, Pontus
+Granström, Joar

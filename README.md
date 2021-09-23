@@ -2,7 +2,7 @@
 
 A collaborative cooking tool developed for the scope of a Degree project at bachelor's level at [Chalmers](https://www.chalmers.se/en/Pages/default.aspx). 
 
-Clover Cooked empowers you through behavior design and scheduling to make it more enjoyable and effective to cook with other people!
+Clover Cooked make it more enjoyable and effective to cook with other people, by empowers you through behavior design and automatic task delegation scheduling.
 
 ![exampleScreens](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/cloverCookedExampleScreens.png?raw=true)
 ![concurrency](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/concurrency.png?raw=true)

@@ -4,8 +4,6 @@ Kollaborativ matlagningsapp utvecklad för ett kandidatarbete på Chalmers
 
 ![cloverCookedIcon](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/Clover-Cooked.jpg?raw=true)
 ![exampleScreens](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/cloverCookedExampleScreens.png?raw=true)
-[//]: # (![cooking](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/cooking.PNG?raw=true))
-[//]: # (![timers](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/timers.PNG?raw=true))
 ![concurrency](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/concurrency.png?raw=true)
 
 

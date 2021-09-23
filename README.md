@@ -79,15 +79,15 @@ Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5F
 
 # Authors
 
-Alexandra Parkegren,
+Alexandra Parkegren
 
-William Albertsson,
+William Albertsson
 
-Emanuel Olaison, 
+Emanuel Olaison
 
-Eric Bergdahl,
+Eric Bergdahl
 
-Pontus Sundqvist,
+Pontus Sundqvist
 
 Joar Granström
 

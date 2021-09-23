@@ -1,6 +1,12 @@
 # Clover-Cooked
 
-Kollaborativ matlagningsapp utvecklad för ett kandidatarbete på Chalmers
+Collaborative cooking tool developed for Degree project at bachelor's level at [Chalmers](https://www.chalmers.se/en/Pages/default.aspx)
+Clover Cooked empowers you through behavior design and scheduling to make it more enjoyable to cook with other people!
+
+Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing), [Swedish](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing))
+
+"To live in clover" means to live well, in ease.
+
 
 ![cloverCookedIcon](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/Clover-Cooked.jpg?raw=true)
 ![exampleScreens](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/cloverCookedExampleScreens.png?raw=true)
@@ -8,14 +14,16 @@ Kollaborativ matlagningsapp utvecklad för ett kandidatarbete på Chalmers
 
 
 
-Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing), [Swedish](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing))
+
 
 [Project report](https://odr.chalmers.se/handle/20.500.12380/304131?locale=en)
 
 
+
+
 On Android the application can easily be tried by:
 
-1. Download the application ['Expo Go'](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) on your Android-device
+1. Downloading the application ['Expo Go'](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) on your Android-device
 2. Scan the QR code below inside  ['Expo Go'](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US), or visit [this link](https://expo.io/@sponken/projects/clover-cooked).
 
    ![Expo qr](./expo_qr.png)
@@ -30,7 +38,6 @@ On Android the application can easily be tried by:
 
 - All image, video and audio files relevant to the application are located in  `assets`
 - All code for the application is located in 'src'
-- Alla skärmar "screens" ligger under `src/screens`
 - All screens of the application are located in `src/screens`,
   a screen is a [react](https://reactjs.org) component that fill the whole (or almost the whole) screen.
 - Alla mindre react componenter ligger under `src/components/namn`
@@ -45,7 +52,6 @@ On Android the application can easily be tried by:
 - Download the application Expo Go on your [iOS](https://apps.apple.com/us/app/expo-go/id982107779) or [Android](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) device
 
 - Run `expo start` in the folder `/application` using your terminal application of choice, add the flag `--tunnel` to the command like so: `expo start --tunnel` if the device isn't on the same network as the computer
-- Scanna QR-koden som visas i webbläsare eller terminal (använd kameran på ios och Expo Go på Android)
 - Scan the QR code shown in the terminal or in the page that the webbrowser probably shows you after running the command. On iOS you can just with the normal camera and follow the notification. On Android you can open the ['Expo Go'](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) app and scan the QR code from there.
 
 

@@ -18,7 +18,7 @@ Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5F
 
 
 
-## Quickly give it a try!
+## Give it a try!
 
 
 On Android the application can easily be tried by:
@@ -29,6 +29,11 @@ On Android the application can easily be tried by:
    ![Expo qr](./expo_qr.png)
 
 
+The why and how of Clover Cooked:
+
+Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing), [Swedish](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing))
+
+[Project report](https://odr.chalmers.se/handle/20.500.12380/304131?locale=en)
 
 
 ## Running the application
@@ -89,9 +94,6 @@ Eric Bergdahl,
 Pontus Sundqvist,
 
 Joar Granström
-
-
-[Project report](https://odr.chalmers.se/handle/20.500.12380/304131?locale=en)
 
 
 

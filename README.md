@@ -10,7 +10,7 @@ Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5F
 ![exampleScreens](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/cloverCookedExampleScreens.png?raw=true)
 ![concurrency](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/concurrency.png?raw=true)
 ![cloverCookedIcon](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/Clover-Cooked.jpg?raw=true)
-"To live in clover" means to live well, in ease.
+### "To live in clover" means to live well, in ease.
 
 
 
@@ -31,14 +31,14 @@ On Android the application can easily be tried by:
 
 ## Running the application
 
-## Initial installation
+### Initial installation
 
 1. Install node.js 14.15.4 LTS <https://nodejs.org/en/download/>
 2. Install Expo CLI by running `npm install -g expo-cli` in a [terminal application](https://en.wikipedia.org/wiki/Command-line_interface) of your choice.
 3. Navigate your [terminal application](https://en.wikipedia.org/wiki/Command-line_interface) to where you cloned this repo and run `npm install`. Might need to run it with privilege as system administrator, e.g. on Mac using the `sudo npm install` command instead.
 
 
-### Physical device
+### Run the app locally on a smartphone device
 
 - Clone the project
 - Download the application Expo Go on your [iOS](https://apps.apple.com/us/app/expo-go/id982107779) or [Android](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en&gl=US) device
@@ -76,11 +76,17 @@ On Android the application can easily be tried by:
 
 # Authors
 
-Alexandra Parkegren,  
-William Albertsson,  
+Alexandra Parkegren,
+
+William Albertsson,
+
 Emanuel Olaison, 
-Eric Bergdahl, 
-Pontus Sundqvist, 
+
+Eric Bergdahl,
+
+Pontus Sundqvist,
+
 Joar Granström
+
 
 [Project report](https://odr.chalmers.se/handle/20.500.12380/304131?locale=en)

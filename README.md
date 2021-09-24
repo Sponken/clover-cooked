@@ -4,12 +4,10 @@ A collaborative cooking tool developed for the scope of a Degree project at bach
 
 Clover Cooked makes cooking with other people more enjoyable and effective, by empowering you through behavior design, automatic task delegation scheduling and more.
 
-![exampleScreens](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/cloverCookedExampleScreens.png?raw=true)
-![concurrency](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/concurrency.png?raw=true)
-![cloverCookedIcon](https://github.com/Sponken/clover-cooked/blob/imagesInReadme/exampleImagesOfUserInterface/Clover-Cooked.jpg?raw=true)
+![exampleScreens](https://github.com/Sponken/clover-cooked/blob/main/exampleImagesOfUserInterface/cloverCookedExampleScreens.png?raw=true)
+![concurrency](https://github.com/Sponken/clover-cooked/blob/main/exampleImagesOfUserInterface/concurrency.png?raw=true)
+![cloverCookedIcon](https://github.com/Sponken/clover-cooked/blob/main/exampleImagesOfUserInterface/Clover-Cooked.jpg?raw=true)
 #### "To live in clover" means to live well, in ease.
-
-
 
 
 

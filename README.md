@@ -2,15 +2,15 @@
 
 A collaborative cooking tool developed for the scope of a Degree project at bachelor's level at [Chalmers](https://www.chalmers.se/en/Pages/default.aspx). 
 
-Clover Cooked makes cooking with other people more enjoyable and effective, by empowering you through behavior design, automatic task delegation scheduling and more.
+Clover-Cooked makes cooking with other people more enjoyable and effective, by empowering you through behavior design, automatic task delegation scheduling and more.
 
 ![exampleScreens](https://github.com/Sponken/clover-cooked/blob/main/exampleImagesOfUserInterface/cloverCookedExampleScreens.png?raw=true)
 ![concurrency](https://github.com/Sponken/clover-cooked/blob/main/exampleImagesOfUserInterface/concurrency.png?raw=true)
 ![cloverCookedIcon](https://github.com/Sponken/clover-cooked/blob/main/exampleImagesOfUserInterface/Clover-Cooked.jpg?raw=true)
-#### "To live in clover" means to live well, in ease.
+### "To live in clover" means to live well, in ease.
 
 
-
+ <br/><br/>
 
 ## Give it a try!
 
@@ -22,13 +22,15 @@ On Android the application can easily be tried by:
 
    ![Expo qr](./expo_qr.png)
 
+ <br/><br/>
 
 ## The why and how of Clover Cooked:
 
-Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing), [Swedish](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing))
+Presentation Slides([English](https://docs.google.com/presentation/d/18PNLe7HZH0IaUYP2KFCK1KNVV7QhFnigdsAjf6Yd-nQ/edit?usp=sharing), [Swedish](https://docs.google.com/presentation/d/1NERPcrvg5FEZKNry3iajL7epWdKtxhluA5uOk2f7pVU/edit?usp=sharing))
 
 [Project report](https://odr.chalmers.se/handle/20.500.12380/304131?locale=en)
 
+ <br/><br/>
 
 ## Running the application
 
@@ -57,6 +59,7 @@ Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5F
 <https://docs.expo.io/workflow/ios-simulator/>
 
 
+ <br/><br/>
 
 ## Folder structure
 
@@ -73,7 +76,7 @@ Presentation Slides([English](https://docs.google.com/presentation/d/1NERPcrvg5F
 - Prettier - Code formatter "esbenp.prettier-vscode", you can install this in [vscode](https://code.visualstudio.com/Download) 
 - The whole project can easily be formatted by running `npm run format` in the terminal while inside the project directory
 
-
+ <br/><br/>
 
 # Authors
 
